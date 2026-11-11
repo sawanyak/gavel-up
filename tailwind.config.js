@@ -1,0 +1,96 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        among: {
+          red: "#C51111",
+          redDark: "#7A0838",
+          blue: "#132ED1",
+          blueDark: "#09158E",
+          green: "#117F2D",
+          greenDark: "#0A4D1A",
+          pink: "#ED54BA",
+          pinkDark: "#AB2BAB",
+          orange: "#F07D0D",
+          orangeDark: "#B04400",
+          yellow: "#F5F557",
+          yellowDark: "#C28700",
+          black: "#3F474E",
+          blackDark: "#1E1F26",
+          white: "#D6E0F0",
+          whiteDark: "#8394BF",
+          purple: "#6B2FBC",
+          purpleDark: "#3B177C",
+          cyan: "#38FEDC",
+          cyanDark: "#24A8BE",
+          lime: "#50EF39",
+          limeDark: "#15A700",
+          maroon: "#5F1E2D",
+          maroonDark: "#3B0D18",
+          rose: "#EC7578",
+          banana: "#FFFEA3",
+          gray: "#758593",
+          visor: "#98DDF4",
+          visorLight: "#E0F7FA",
+          visorDark: "#4D8DA3",
+        },
+        space: {
+          deep: "#030712",
+          cockpit: "#090d1a",
+          card: "rgba(15, 23, 42, 0.75)",
+          border: "#1e293b",
+          neonCyan: "#00f0ff",
+          neonRed: "#ff3366",
+          neonYellow: "#ffd600",
+        },
+      },
+      fontFamily: {
+        game: ["'Amatic SC'", "'Caveat'", "sans-serif"],
+        pixel: ["'Press Start 2P'", "monospace"],
+        hud: ["'Share Tech Mono'", "'Courier New'", "monospace"],
+      },
+      animation: {
+        float: "float 8s ease-in-out infinite",
+        "float-reverse": "float-reverse 9s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "emergency-pulse": "emergency-pulse 1.2s infinite",
+        "spin-slow": "spin 20s linear infinite",
+        "drift-space": "drift 25s linear infinite",
+      },
+      keyframes: {
+        float: {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(-18px) rotate(3deg)" },
+        },
+        "float-reverse": {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(16px) rotate(-3deg)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "1", filter: "drop-shadow(0 0 15px rgba(0, 240, 255, 0.6))" },
+          "50%": { opacity: "0.8", filter: "drop-shadow(0 0 5px rgba(0, 240, 255, 0.2))" },
+        },
+        "emergency-pulse": {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(239, 68, 68, 0.6), inset 0 0 15px rgba(239, 68, 68, 0.4)" },
+          "50%": { boxShadow: "0 0 40px rgba(239, 68, 68, 0.9), inset 0 0 30px rgba(239, 68, 68, 0.7)" },
+        },
+        drift: {
+          "0%": { transform: "translateX(-20vw) translateY(10vh) rotate(0deg)" },
+          "100%": { transform: "translateX(120vw) translateY(-10vh) rotate(360deg)" },
+        },
+      },
+      boxShadow: {
+        "neon-cyan": "0 0 20px -3px rgba(0, 240, 255, 0.6), 0 0 8px -1px rgba(0, 240, 255, 0.4)",
+        "neon-red": "0 0 25px -2px rgba(239, 68, 68, 0.7), 0 0 10px -1px rgba(239, 68, 68, 0.5)",
+        "card-glass": "0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.1)",
+      },
+    },
+  },
+  plugins: [],
+};
