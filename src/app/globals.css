@@ -79,3 +79,23 @@ body {
 .font-hud {
   font-family: 'Share Tech Mono', monospace;
 }
+
+/* Among Us Character Running Trot Animation */
+@keyframes runTrot {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(3deg);
+  }
+}
+
+.animate-run-trot {
+  animation: runTrot 0.32s infinite ease-in-out;
+}

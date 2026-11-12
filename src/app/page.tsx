@@ -65,7 +65,7 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* 2. SPEAKER SCENE (Red Crewmate at Podium with Mic + Audience) */}
+      {/* 2. MAIN AUDITORIUM DECK (Speaker Scene: Red Crewmate at Podium with Mic + Audience) */}
       <section className="w-full max-w-4xl mb-12">
         <SpeakerScene />
       </section>
@@ -97,39 +97,7 @@ export default function HomePage() {
         </span>
       </section>
 
-      {/* 4. REAL-LIFE AMONG US EMPHASIS BANNER */}
-      <section className="w-full max-w-5xl mb-14">
-        <div className="relative overflow-hidden rounded-3xl border-2 border-red-500/60 bg-gradient-to-r from-red-950/80 via-slate-950/90 to-red-950/80 p-6 sm:p-8 shadow-[0_0_35px_rgba(239,68,68,0.4)]">
-          {/* Animated Warning Glow */}
-          <div className="absolute top-0 right-0 w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex flex-col text-center md:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-400/40 text-red-300 font-mono text-xs font-bold tracking-widest uppercase mb-2 w-fit mx-auto md:mx-0">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                <span>SPECIAL ORIENTATION GAMEPLAY</span>
-              </div>
-              <h3 className="text-2xl sm:text-4xl font-black text-white tracking-wide uppercase">
-                WE ARE PLAYING <span className="text-red-500 underline decoration-red-600">AMONG US IN REAL LIFE</span>!
-              </h3>
-              <p className="mt-2 text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-                Step away from your screen. At this orientation, students will roam the university campus, complete public speaking & icebreaker tasks, dodge secret impostors, and hold real-life Emergency Meetings!
-              </p>
-            </div>
-
-            <Link
-              href="/about"
-              onClick={() => sounds.playClick()}
-              className="px-6 py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-mono font-bold text-sm tracking-wider uppercase shadow-lg transition-transform hover:scale-105 active:scale-95 flex items-center gap-2 whitespace-nowrap"
-            >
-              <span>READ IRL MISSION RULES</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. EVENT DETAILS HUD & COUNTDOWN (Spaceship Monitor Screen) */}
+      {/* 4. EVENT COORDINATES & TIMELINE (Details HUD & Countdown) */}
       <section className="w-full max-w-5xl mb-14">
         <div className="rounded-3xl border-2 border-cyan-500/40 bg-slate-950/85 p-6 sm:p-8 backdrop-blur-md shadow-2xl">
           <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4 mb-6">
@@ -219,8 +187,45 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. GAME START MENU (ONLINE / LOCAL / HOW TO PLAY vibes) */}
-      <section className="w-full max-w-4xl mb-14">
+      {/* 5. AMONG US IN REAL LIFE REVEAL */}
+      <section className="w-full max-w-5xl mb-14">
+        <div className="relative overflow-hidden rounded-3xl border-2 border-red-500/60 bg-gradient-to-r from-red-950/80 via-slate-950/90 to-red-950/80 p-6 sm:p-8 shadow-[0_0_35px_rgba(239,68,68,0.4)]">
+          {/* Animated Warning Glow */}
+          <div className="absolute top-0 right-0 w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col text-center md:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-400/40 text-red-300 font-mono text-xs font-bold tracking-widest uppercase mb-2 w-fit mx-auto md:mx-0">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                <span>SPECIAL ORIENTATION GAMEPLAY</span>
+              </div>
+              <h3 className="text-2xl sm:text-4xl font-black text-white tracking-wide uppercase">
+                WE ARE PLAYING <span className="text-red-500 underline decoration-red-600">AMONG US IN REAL LIFE</span>!
+              </h3>
+              <p className="mt-2 text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+                Step away from your screen. At this orientation, students will complete public speaking & icebreaker tasks, dodge secret impostors, and hold real-life Emergency Meetings!
+              </p>
+            </div>
+
+            <Link
+              href="/about"
+              onClick={() => sounds.playClick()}
+              className="px-6 py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-mono font-bold text-sm tracking-wider uppercase shadow-lg transition-transform hover:scale-105 active:scale-95 flex items-center gap-2 whitespace-nowrap"
+            >
+              <span>READ IRL MISSION RULES</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. GAVEL REGISTRATION VERIFICATION (Task Mini Game) */}
+      <section className="w-full max-w-xl mb-14">
+        <TaskMiniGame />
+      </section>
+
+      {/* 7. SELECT SHIP SECTOR (Game Start Menu) */}
+      <section className="w-full max-w-4xl mb-12">
         <div className="text-center mb-6">
           <h3 className="text-xl sm:text-2xl font-black tracking-widest text-white uppercase font-mono">
             SELECT SHIP SECTOR
@@ -300,11 +305,6 @@ export default function HomePage() {
             </div>
           </Link>
         </div>
-      </section>
-
-      {/* 7. INTERACTIVE TASK MINIGAME (Easter Egg) */}
-      <section className="w-full max-w-xl mb-12">
-        <TaskMiniGame />
       </section>
     </div>
   );

@@ -2,100 +2,81 @@
 
 import React from "react";
 import Link from "next/link";
-import { eventConfig } from "@/config/eventConfig";
-import { sounds } from "@/lib/sounds";
+import Image from "next/image";
+import { Instagram, Facebook, Linkedin, Globe, ExternalLink } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (
     <footer className="relative z-10 w-full border-t border-cyan-500/20 bg-slate-950/90 py-12 select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-          {/* Column 1: Event Identity */}
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-red-600 border border-red-400 flex items-center justify-center">
-                <span className="text-white font-mono font-bold text-sm">G</span>
-              </div>
-              <span className="text-xl font-black tracking-wider text-white">
-                GAVEL UP 2026
-              </span>
-            </div>
-            <p className="text-sm text-slate-400 max-w-md mb-4 leading-relaxed">
-              The flagship orientation event of the{" "}
-              <strong className="text-cyan-300">SLIIT Gavel Club</strong>. Find your authentic voice, develop leadership command, and experience the adrenaline of Among Us in real life!
-            </p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-10">
+          {/* Brand & Affiliation */}
+          <div className="flex flex-col items-start">
+            <Link href="/" className="inline-block mb-3 hover:opacity-90 transition-opacity">
+              <Image
+                src="/images/sliit-gavel-club-logo.png"
+                alt="SLIIT Gavel Club Logo"
+                width={170}
+                height={52}
+                className="h-11 sm:h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+              />
+            </Link>
+
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-[11px] font-mono text-cyan-300">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
               <span>Affiliated with Toastmasters International</span>
             </div>
           </div>
 
-          {/* Column 2: Navigation Links */}
-          <div>
+          {/* Gavel Social Media Channels (2x2 Grid) */}
+          <div className="flex flex-col items-start md:items-end w-full md:w-auto">
             <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 mb-3">
-              SPACESHIP DECKS
+              CONNECT WITH US
             </h4>
-            <ul className="space-y-2 text-sm text-slate-300 font-medium">
-              <li>
-                <Link
-                  href="/"
-                  onClick={() => sounds.playClick()}
-                  className="hover:text-cyan-300 transition-colors"
-                >
-                  Bridge (Home)
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  onClick={() => sounds.playClick()}
-                  className="hover:text-cyan-300 transition-colors"
-                >
-                  Mission Briefing (About)
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/why-join"
-                  onClick={() => sounds.playClick()}
-                  className="hover:text-cyan-300 transition-colors"
-                >
-                  Crewmate Perks (Why Join?)
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  onClick={() => sounds.playClick()}
-                  className="hover:text-cyan-300 transition-colors"
-                >
-                  Emergency Meeting (Contact)
-                </Link>
-              </li>
-            </ul>
-          </div>
+            <div className="grid grid-cols-2 gap-3 w-full sm:w-auto">
+              <a
+                href="https://www.instagram.com/sliitgavel?dlrf=MTY1MmRhMzNucTFxbw=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-pink-500/50 hover:bg-slate-800/80 text-slate-300 hover:text-white transition-all text-xs font-mono group min-w-[140px] sm:min-w-[170px]"
+              >
+                <Instagram className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-semibold">Instagram</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-pink-400 ml-auto hidden sm:inline" />
+              </a>
 
-          {/* Column 3: Registration & Socials */}
-          <div>
-            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 mb-3">
-              COMMUNICATIONS
-            </h4>
-            <p className="text-xs text-slate-400 mb-3 font-mono">
-              Ready to take the stage? Secure your seat via the official registration form:
-            </p>
-            <a
-              href={eventConfig.googleFormUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => sounds.playStart()}
-              className="inline-block px-4 py-2 rounded-lg bg-red-600/30 border border-red-500 text-red-300 text-xs font-bold tracking-wider uppercase hover:bg-red-600 hover:text-white transition-all shadow-[0_0_12px_rgba(239,68,68,0.4)] mb-4"
-            >
-              Open Google Form &gt;
-            </a>
+              <a
+                href="https://www.facebook.com/share/1G8Gm1nfTK/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-blue-500/50 hover:bg-slate-800/80 text-slate-300 hover:text-white transition-all text-xs font-mono group min-w-[140px] sm:min-w-[170px]"
+              >
+                <Facebook className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-semibold">Facebook</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 ml-auto hidden sm:inline" />
+              </a>
 
-            <div className="flex items-center gap-3 text-slate-400 text-xs font-mono">
-              <span>VENUE:</span>
-              <span className="text-slate-200">{eventConfig.venue}</span>
+              <a
+                href="https://www.linkedin.com/company/sliit-gavel/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-cyan-500/50 hover:bg-slate-800/80 text-slate-300 hover:text-white transition-all text-xs font-mono group min-w-[140px] sm:min-w-[170px]"
+              >
+                <Linkedin className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-semibold">LinkedIn</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 ml-auto hidden sm:inline" />
+              </a>
+
+              <a
+                href="https://sliitgavel.wordpress.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500/50 hover:bg-slate-800/80 text-slate-300 hover:text-white transition-all text-xs font-mono group min-w-[140px] sm:min-w-[170px]"
+              >
+                <Globe className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-semibold">Official Website</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 ml-auto hidden sm:inline" />
+              </a>
             </div>
           </div>
         </div>

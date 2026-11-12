@@ -13,7 +13,7 @@ import {
   AlertTriangle,
   Compass,
   CheckCircle2,
-  ExternalLink,
+  Award,
 } from "lucide-react";
 
 export default function AboutPage() {
@@ -56,52 +56,71 @@ export default function AboutPage() {
                 <span className="text-red-500 underline decoration-red-600">AMONG US IN REAL LIFE</span>!
               </h2>
               <p className="mt-4 text-base sm:text-lg text-slate-200 leading-relaxed">
-                Forget boring PowerPoint lectures. At <strong>Gavel Up</strong>, the entire SLIIT campus transforms into our very own spaceship! You and your fellow recruits will get secret role cards, roam between physical task stations, communicate with teammates, and uncover the impostors in our midst.
+                At <strong>Gavel Up</strong>, the entire SLIIT campus transforms into our very own spaceship! You and your fellow recruits will get secret role cards, roam between physical task stations, communicate with teammates, and uncover the impostors in our midst.
               </p>
 
               {/* Real Life Gameplay Features */}
-              <div className="mt-6 space-y-3.5 font-mono text-xs sm:text-sm">
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-900/80 border border-red-500/30">
-                  <Compass className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-white font-bold uppercase">PHYSICAL CAMPUS TASKS:</span>
-                    <p className="text-slate-300 text-xs mt-0.5">
-                      Visit checkpoints across campus to complete 30-second impromptu speech challenges, riddle solving, and vocal projection drills.
-                    </p>
-                  </div>
+              <div className="mt-6 flex flex-col items-start space-y-2.5 font-mono text-xs sm:text-sm">
+                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-red-500/30">
+                  <Compass className="w-5 h-5 text-red-400 shrink-0" />
+                  <span className="text-white font-bold uppercase tracking-wider">PHYSICAL CAMPUS TASKS</span>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-900/80 border border-red-500/30">
-                  <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-white font-bold uppercase">SECRET IMPOSTORS AMONG US:</span>
-                    <p className="text-slate-300 text-xs mt-0.5">
-                      Watch your back! Selected players are secret impostors tasked with sabotaging speech missions and blending into the crowd without detection.
-                    </p>
-                  </div>
+                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-red-500/30">
+                  <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0" />
+                  <span className="text-white font-bold uppercase tracking-wider">SECRET IMPOSTORS AMONG US</span>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-900/80 border border-red-500/30">
-                  <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-white font-bold uppercase">LIVE EMERGENCY MEETINGS:</span>
-                    <p className="text-slate-300 text-xs mt-0.5">
-                      Hit the emergency siren! When foul play is suspected, all recruits assemble to debate, defend their innocence, and vote off suspects!
-                    </p>
-                  </div>
+                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-red-500/30">
+                  <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
+                  <span className="text-white font-bold uppercase tracking-wider">LIVE EMERGENCY MEETINGS</span>
                 </div>
               </div>
             </div>
 
-            {/* Visual Crewmates Illustration */}
-            <div className="lg:col-span-5 flex flex-col items-center justify-center p-6 rounded-2xl bg-slate-950/70 border border-red-500/40 text-center">
-              <div className="relative mb-4">
-                <CrewmateVector color="red" size={130} isFloating glow />
-                <div className="absolute -bottom-2 -left-4">
-                  <CrewmateVector color="cyan" size={70} facing="left" />
+            {/* Visual Crewmates Illustration: 10 Crewmates with 1 Impostor Placed Among Them (Wider Spacing) */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center p-6 rounded-2xl bg-slate-950/70 border border-red-500/40 text-center overflow-hidden">
+              <div className="w-full max-w-lg mb-4 flex flex-col items-center justify-center select-none py-2">
+                {/* Row 1: 4 Crewmates with the Impostor Placed Right Among Them */}
+                <div className="flex items-end justify-center gap-3.5 sm:gap-6 mb-3">
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="cyan" size={46} facing="right" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="lime" size={44} facing="right" />
+                  </div>
+                  {/* The Impostor Standing Right Among Crewmates */}
+                  <div className="hover:scale-110 transition-transform cursor-pointer relative" title="Impostor Among Us">
+                    <CrewmateVector color="red" size={54} isImpostor facing="right" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="blue" size={46} facing="left" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="yellow" size={44} facing="left" />
+                  </div>
                 </div>
-                <div className="absolute -bottom-2 -right-4">
-                  <CrewmateVector color="yellow" size={70} facing="right" />
+
+                {/* Row 2: 6 Crewmates Spaced Wider */}
+                <div className="flex items-end justify-center gap-2.5 sm:gap-5">
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="green" size={50} facing="right" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="pink" size={48} facing="right" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="orange" size={52} facing="right" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="purple" size={50} facing="left" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="black" size={48} facing="left" />
+                  </div>
+                  <div className="hover:scale-110 transition-transform cursor-pointer">
+                    <CrewmateVector color="white" size={46} facing="left" />
+                  </div>
                 </div>
               </div>
 
@@ -116,94 +135,160 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 3. FULL EVENT AGENDA BREAKDOWN */}
+      {/* 3. FULL EVENT AGENDA BREAKDOWN (Sequential Timeline) */}
       <section className="mb-16">
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-4xl font-black tracking-widest text-white uppercase font-mono">
             ORIENTATION MISSION SCHEDULE
           </h2>
           <p className="text-xs sm:text-sm font-mono text-slate-400">
-            Everything planned for you during the Gavel Up orientation session
+            Chronological mission timeline planned for the Gavel Up orientation session
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Segment 1: Keynote Speech */}
-          <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-cyan-400 transition-all flex gap-4">
-            <div className="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 shrink-0">
-              <Mic className="w-6 h-6" />
+        {/* Timeline Container */}
+        <div className="relative max-w-3xl mx-auto border-l-2 border-cyan-500/30 ml-4 sm:ml-8 pl-6 sm:pl-10 space-y-8">
+          {/* Item 1: Introduction to Gavel Club session */}
+          <div className="relative group">
+            {/* Timeline Node */}
+            <div className="absolute -left-[35px] sm:-left-[51px] top-4 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border-2 border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_12px_rgba(0,240,255,0.4)] group-hover:scale-110 transition-transform">
+              <Compass className="w-5 h-5 text-cyan-400" />
             </div>
-            <div>
+
+            <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-cyan-400 transition-all hover:scale-[1.01] shadow-xl">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest px-2 py-0.5 rounded bg-cyan-950 border border-cyan-800">
+                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest px-2.5 py-0.5 rounded bg-cyan-950 border border-cyan-800 font-bold">
                   PHASE 01
                 </span>
-                <h3 className="text-lg font-bold text-white uppercase font-mono">
-                  KEYNOTE SPEECH
-                </h3>
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  MISSION TIMELINE
+                </span>
               </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white uppercase font-mono mt-1">
+                INTRODUCTION TO GAVEL CLUB SESSION
+              </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
-                An electrifying opening address by an accomplished public speaker. Learn how mastering your voice transforms academic presentations, job interviews, and everyday conversations.
+                Welcome to the spaceship! Learn about the history, vision, and legacy of SLIIT Gavel Club and how our sessions run under Toastmasters International standards.
               </p>
             </div>
           </div>
 
-          {/* Segment 2: Prepared Speech & Evaluation */}
-          <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-cyan-400 transition-all flex gap-4">
-            <div className="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center text-yellow-300 shrink-0">
-              <FileText className="w-6 h-6" />
+          {/* Item 2: Ice Breaker Session */}
+          <div className="relative group">
+            <div className="absolute -left-[35px] sm:-left-[51px] top-4 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border-2 border-pink-400 flex items-center justify-center text-pink-300 shadow-[0_0_12px_rgba(237,84,186,0.4)] group-hover:scale-110 transition-transform">
+              <Flame className="w-5 h-5 text-pink-400" />
             </div>
-            <div>
+
+            <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-pink-400 transition-all hover:scale-[1.01] shadow-xl">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono text-yellow-400 uppercase tracking-widest px-2 py-0.5 rounded bg-yellow-950 border border-yellow-800">
+                <span className="text-[10px] font-mono text-pink-400 uppercase tracking-widest px-2.5 py-0.5 rounded bg-pink-950 border border-pink-800 font-bold">
                   PHASE 02
                 </span>
-                <h3 className="text-lg font-bold text-white uppercase font-mono">
-                  PREPARED SPEECH &amp; EVALUATION
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
-                Witness the core magic of Gavel Club! Experience a model prepared speech followed by a positive, constructive Toastmasters evaluation showing how feedback creates champions.
-              </p>
-            </div>
-          </div>
-
-          {/* Segment 3: Ice Breaker Session */}
-          <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-cyan-400 transition-all flex gap-4">
-            <div className="w-12 h-12 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-pink-300 shrink-0">
-              <Flame className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono text-pink-400 uppercase tracking-widest px-2 py-0.5 rounded bg-pink-950 border border-pink-800">
-                  PHASE 03
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  MISSION TIMELINE
                 </span>
-                <h3 className="text-lg font-bold text-white uppercase font-mono">
-                  ICE BREAKER SESSION
-                </h3>
               </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white uppercase font-mono mt-1">
+                ICE BREAKER SESSION
+              </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
                 Shatter the awkward silence! High-energy group activities designed to help you meet friendly peers, laugh off anxiety, and feel completely at home in our gavel family.
               </p>
             </div>
           </div>
 
-          {/* Segment 4: Interactive Games */}
-          <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-cyan-400 transition-all flex gap-4">
-            <div className="w-12 h-12 rounded-xl bg-green-500/20 border border-green-500/40 flex items-center justify-center text-green-300 shrink-0">
-              <Gamepad2 className="w-6 h-6" />
+          {/* Item 3: Prepared Speech and Evaluation */}
+          <div className="relative group">
+            <div className="absolute -left-[35px] sm:-left-[51px] top-4 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border-2 border-yellow-400 flex items-center justify-center text-yellow-300 shadow-[0_0_12px_rgba(245,245,87,0.4)] group-hover:scale-110 transition-transform">
+              <FileText className="w-5 h-5 text-yellow-400" />
             </div>
-            <div>
+
+            <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-yellow-400 transition-all hover:scale-[1.01] shadow-xl">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono text-green-400 uppercase tracking-widest px-2 py-0.5 rounded bg-green-950 border border-green-800">
+                <span className="text-[10px] font-mono text-yellow-400 uppercase tracking-widest px-2.5 py-0.5 rounded bg-yellow-950 border border-yellow-800 font-bold">
+                  PHASE 03
+                </span>
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  MISSION TIMELINE
+                </span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white uppercase font-mono mt-1">
+                PREPARED SPEECH AND EVALUATION
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
+                Witness the core magic of Gavel Club! Experience a model prepared speech followed by a positive, constructive Toastmasters evaluation showing how feedback creates champions.
+              </p>
+            </div>
+          </div>
+
+          {/* Item 4: Interactive Gavel Games */}
+          <div className="relative group">
+            <div className="absolute -left-[35px] sm:-left-[51px] top-4 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border-2 border-green-400 flex items-center justify-center text-green-300 shadow-[0_0_12px_rgba(80,239,57,0.4)] group-hover:scale-110 transition-transform">
+              <Gamepad2 className="w-5 h-5 text-green-400" />
+            </div>
+
+            <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-green-400 transition-all hover:scale-[1.01] shadow-xl">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-mono text-green-400 uppercase tracking-widest px-2.5 py-0.5 rounded bg-green-950 border border-green-800 font-bold">
                   PHASE 04
                 </span>
-                <h3 className="text-lg font-bold text-white uppercase font-mono">
-                  INTERACTIVE GAVEL GAMES
-                </h3>
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  MISSION TIMELINE
+                </span>
               </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white uppercase font-mono mt-1">
+                INTERACTIVE GAVEL GAMES
+              </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
                 Fast-paced word games, impromptu mini-debates, and team challenges where you can test your quick thinking and win exclusive Gavel Club merchandise and titles!
+              </p>
+            </div>
+          </div>
+
+          {/* Item 5: Keynote Speech */}
+          <div className="relative group">
+            <div className="absolute -left-[35px] sm:-left-[51px] top-4 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border-2 border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_12px_rgba(0,240,255,0.4)] group-hover:scale-110 transition-transform">
+              <Mic className="w-5 h-5 text-cyan-400" />
+            </div>
+
+            <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-cyan-400 transition-all hover:scale-[1.01] shadow-xl">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest px-2.5 py-0.5 rounded bg-cyan-950 border border-cyan-800 font-bold">
+                  PHASE 05
+                </span>
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  MISSION TIMELINE
+                </span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white uppercase font-mono mt-1">
+                KEYNOTE SPEECH
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
+                An electrifying address by an accomplished public speaker. Learn how mastering your voice transforms academic presentations, job interviews, and everyday conversations.
+              </p>
+            </div>
+          </div>
+
+          {/* Item 6: Why join Gavel session */}
+          <div className="relative group">
+            <div className="absolute -left-[35px] sm:-left-[51px] top-4 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border-2 border-purple-400 flex items-center justify-center text-purple-300 shadow-[0_0_12px_rgba(107,47,188,0.4)] group-hover:scale-110 transition-transform">
+              <Award className="w-5 h-5 text-purple-400" />
+            </div>
+
+            <div className="p-6 rounded-2xl border-2 border-slate-800 bg-slate-950/80 hover:border-purple-400 transition-all hover:scale-[1.01] shadow-xl">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-mono text-purple-400 uppercase tracking-widest px-2.5 py-0.5 rounded bg-purple-950 border border-purple-800 font-bold">
+                  PHASE 06
+                </span>
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  MISSION TIMELINE
+                </span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white uppercase font-mono mt-1">
+                WHY JOIN GAVEL SESSION
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
+                Discover the lifelong benefits of membership, pathways for personal growth, leadership opportunities, and how to become an official inducted member of our club.
               </p>
             </div>
           </div>
@@ -215,24 +300,13 @@ export default function AboutPage() {
         <h3 className="text-2xl font-bold text-white font-mono uppercase mb-4">
           ARE YOU READY TO BOARD THE SKELD?
         </h3>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href={eventConfig.googleFormUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => sounds.playStart()}
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-mono font-bold text-base tracking-wider uppercase border border-red-400 shadow-[0_0_20px_rgba(239,68,68,0.7)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
-          >
-            <span>REGISTER NOW VIA GOOGLE FORM</span>
-            <ExternalLink className="w-5 h-5" />
-          </a>
-
+        <div className="flex items-center justify-center">
           <Link
             href="/why-join"
             onClick={() => sounds.playClick()}
-            className="px-8 py-4 rounded-xl border border-cyan-500/40 bg-slate-900 text-cyan-300 font-mono font-bold text-base tracking-wider uppercase hover:bg-slate-800 transition-all"
+            className="px-8 py-4 rounded-xl border border-cyan-500/40 bg-slate-900 text-cyan-300 font-mono font-bold text-base tracking-wider uppercase hover:bg-slate-800 transition-all flex items-center gap-2"
           >
-            SEE CREWMATE PERKS &gt;
+            <span>SEE CREWMATE PERKS &gt;</span>
           </Link>
         </div>
       </section>

@@ -48,6 +48,7 @@ export const CrewmateVector: React.FC<CrewmateVectorProps> = ({
   className = "",
   hasGavel = false,
   hasMic = false,
+  isImpostor = false,
   isFloating = false,
   facing = "right",
   glow = false,
@@ -65,7 +66,11 @@ export const CrewmateVector: React.FC<CrewmateVectorProps> = ({
       <svg
         viewBox="0 0 100 125"
         className={`w-full h-full ${
-          glow ? "filter drop-shadow-[0_0_12px_rgba(0,240,255,0.7)]" : "drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+          isImpostor
+            ? "filter drop-shadow-[0_0_18px_rgba(239,68,68,0.95)]"
+            : glow
+            ? "filter drop-shadow-[0_0_12px_rgba(0,240,255,0.7)]"
+            : "drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
         }`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -76,6 +81,12 @@ export const CrewmateVector: React.FC<CrewmateVectorProps> = ({
             <stop offset="25%" stopColor="#98DDF4" />
             <stop offset="80%" stopColor="#41849E" />
             <stop offset="100%" stopColor="#255163" />
+          </linearGradient>
+          <linearGradient id="visor-impostor" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFAAAA" />
+            <stop offset="30%" stopColor="#EF4444" />
+            <stop offset="80%" stopColor="#990011" />
+            <stop offset="100%" stopColor="#440005" />
           </linearGradient>
         </defs>
 
@@ -150,17 +161,27 @@ export const CrewmateVector: React.FC<CrewmateVectorProps> = ({
             width="38"
             height="22"
             rx="11"
-            fill={`url(#visor-${color})`}
+            fill={isImpostor ? "url(#visor-impostor)" : `url(#visor-${color})`}
           />
-          {/* Visor White Glare Reflection */}
+          {/* Visor Glare Reflection */}
           <ellipse
             cx="66"
             cy="40"
             rx="12"
             ry="4"
-            fill="#FFFFFF"
+            fill={isImpostor ? "#FFAAAA" : "#FFFFFF"}
             opacity="0.9"
           />
+          {isImpostor && (
+            <ellipse
+              cx="67"
+              cy="45"
+              rx="5"
+              ry="3"
+              fill="#FF0033"
+              opacity="0.9"
+            />
+          )}
         </g>
 
         {/* 4. Accessories: Gavel or Mic */}

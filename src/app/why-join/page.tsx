@@ -12,8 +12,9 @@ import {
   Users2,
   Award,
   Briefcase,
-  ExternalLink,
   ChevronRight,
+  UserPlus,
+  ExternalLink,
 } from "lucide-react";
 
 export default function WhyJoinPage() {
@@ -108,7 +109,7 @@ export default function WhyJoinPage() {
         </p>
       </div>
 
-      {/* 2. The 6 Major Perks Grid */}
+      {/* 2. The 6 Major Perks Grid (Benefits of joining the club) */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         {perks.map((perk, idx) => (
           <div
@@ -146,7 +147,39 @@ export default function WhyJoinPage() {
         ))}
       </section>
 
-      {/* 3. Member Log Entries (Testimonials) */}
+      {/* 3. Get Membership Section (Point to Membership Details Google Form) */}
+      <section className="mb-16 p-8 sm:p-10 rounded-3xl border-2 border-emerald-500/40 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 shadow-[0_0_25px_rgba(16,185,129,0.15)] text-center relative overflow-hidden">
+        <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-32 bg-emerald-500/10 blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-950/60 text-xs font-mono text-emerald-400 uppercase tracking-widest mb-3">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>OFFICIAL CREWMATE INTAKE</span>
+          </div>
+
+          <h2 className="text-2xl sm:text-4xl font-black tracking-widest text-white uppercase font-mono mb-3">
+            BECOME AN OFFICIAL GAVELIER
+          </h2>
+
+          <p className="text-xs sm:text-sm font-mono text-slate-300 max-w-xl mx-auto mb-6 leading-relaxed">
+            Ready to secure your permanent position aboard the crew? Fill out the membership intake form to register your details and unlock official Gavel Club materials and privileges.
+          </p>
+
+          <a
+            href={eventConfig.membershipGoogleFormUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => sounds.playStart()}
+            className="group px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-mono font-bold text-base tracking-wider uppercase border border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.6)] hover:scale-105 active:scale-95 transition-all flex items-center gap-3 cursor-pointer"
+          >
+            <UserPlus className="w-5 h-5 text-emerald-200 group-hover:scale-110 transition-transform" />
+            <span>GET MEMBERSHIP</span>
+            <ExternalLink className="w-4 h-4 text-emerald-200" />
+          </a>
+        </div>
+      </section>
+
+      {/* 4. Member Log Entries (Testimonials) */}
       <section className="mb-16">
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-4xl font-black tracking-widest text-white uppercase font-mono">
@@ -186,26 +219,15 @@ export default function WhyJoinPage() {
         </div>
       </section>
 
-      {/* 4. Bottom CTA */}
+      {/* 5. Bottom CTA */}
       <section className="text-center p-8 sm:p-12 rounded-3xl border-2 border-cyan-500/40 bg-slate-950/90 shadow-2xl">
         <h3 className="text-2xl sm:text-4xl font-black text-white font-mono uppercase mb-3">
-          CLAIM YOUR CREWMATE SUIT TODAY
+          HAVE QUESTIONS ABOUT THE MISSION?
         </h3>
         <p className="text-sm text-slate-300 font-mono max-w-xl mx-auto mb-6">
-          Seats for the Gavel Up orientation are limited. Register via our Google Form to reserve your place in the auditorium!
+          Reach out to the leadership crew or call an emergency meeting to learn more about SLIIT Gavel Club!
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href={eventConfig.googleFormUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => sounds.playStart()}
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white font-mono font-bold text-base tracking-wider uppercase border-2 border-red-400 shadow-[0_0_25px_rgba(239,68,68,0.7)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
-          >
-            <span>REGISTER NOW (GOOGLE FORM)</span>
-            <ExternalLink className="w-5 h-5" />
-          </a>
-
+        <div className="flex items-center justify-center">
           <Link
             href="/contact"
             onClick={() => sounds.playEmergency()}

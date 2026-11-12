@@ -1,8 +1,29 @@
 "use client";
 
 import React, { useState } from "react";
-import { CrewmateVector } from "./CrewmateVector";
+import { CrewmateVector, CrewmateColor } from "./CrewmateVector";
 import { sounds } from "@/lib/sounds";
+
+interface AudienceMember {
+  color: CrewmateColor;
+  facing: "left" | "right";
+}
+
+const AUDIENCE_ROW_1: AudienceMember[] = [
+  { color: "cyan", facing: "right" },
+  { color: "lime", facing: "right" },
+  { color: "yellow", facing: "right" },
+  { color: "purple", facing: "left" },
+  { color: "pink", facing: "left" },
+];
+
+const AUDIENCE_ROW_2: AudienceMember[] = [
+  { color: "orange", facing: "right" },
+  { color: "blue", facing: "right" },
+  { color: "white", facing: "right" },
+  { color: "green", facing: "left" },
+  { color: "black", facing: "left" },
+];
 
 const GAVEL_QUOTES = [
   "Welcome crewmates! Your voice is your ultimate superpower.",
@@ -124,26 +145,63 @@ export const SpeakerScene: React.FC = () => {
           <div className="w-64 sm:w-80 h-6 bg-gradient-to-r from-transparent via-cyan-900/40 to-transparent rounded-full blur-xs mt-1" />
         </div>
 
-        {/* Audience Crewmates in Foreground (Seen from Behind, looking up at speaker) */}
-        <div className="relative z-20 w-full flex items-end justify-between px-2 sm:px-8 mt-2 -mb-2">
-          {/* Blue Crewmate */}
-          <div className="transform -translate-y-2 hover:-translate-y-4 transition-transform cursor-pointer" onClick={() => sounds.playClick()}>
-            <CrewmateVector color="blue" size={85} facing="right" />
+        {/* Audience Section (Stationed as the Meeting Audience, all looking at the Speaker) */}
+        <div className="relative z-20 w-full max-w-2xl mx-auto flex flex-col items-center gap-3.5 mt-4 select-none px-2 sm:px-4">
+          {/* Subtle Stage Floor Indicator Line */}
+          <div className="w-full max-w-md h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent -mb-1" />
+
+          {/* Row 1 (Front Row - 5 Crewmates in Curved Arc) */}
+          <div className="flex items-end justify-center gap-3 sm:gap-7">
+            {AUDIENCE_ROW_1.map((cm, idx) => {
+              const curveClass =
+                idx === 0 || idx === 4
+                  ? "-translate-y-1.5"
+                  : idx === 1 || idx === 3
+                  ? "-translate-y-0.5"
+                  : "translate-y-0";
+
+              return (
+                <div
+                  key={idx}
+                  className={`hover:scale-125 active:scale-95 transition-transform cursor-pointer ${curveClass}`}
+                  onClick={() => sounds.playClick()}
+                  title={`Audience: ${cm.color}`}
+                >
+                  <CrewmateVector
+                    color={cm.color}
+                    size={42}
+                    facing={cm.facing}
+                  />
+                </div>
+              );
+            })}
           </div>
 
-          {/* Yellow Crewmate */}
-          <div className="transform translate-y-1 hover:-translate-y-2 transition-transform cursor-pointer" onClick={() => sounds.playClick()}>
-            <CrewmateVector color="yellow" size={95} facing="right" />
-          </div>
+          {/* Row 2 (Middle Row - 5 Crewmates in Curved Arc) */}
+          <div className="flex items-end justify-center gap-3 sm:gap-7">
+            {AUDIENCE_ROW_2.map((cm, idx) => {
+              const curveClass =
+                idx === 0 || idx === 4
+                  ? "-translate-y-1.5"
+                  : idx === 1 || idx === 3
+                  ? "-translate-y-0.5"
+                  : "translate-y-0";
 
-          {/* Purple Crewmate */}
-          <div className="transform -translate-y-1 hover:-translate-y-3 transition-transform cursor-pointer" onClick={() => sounds.playClick()}>
-            <CrewmateVector color="purple" size={90} facing="left" />
-          </div>
-
-          {/* Green Crewmate */}
-          <div className="transform -translate-y-3 hover:-translate-y-5 transition-transform cursor-pointer" onClick={() => sounds.playClick()}>
-            <CrewmateVector color="green" size={80} facing="left" />
+              return (
+                <div
+                  key={idx}
+                  className={`hover:scale-125 active:scale-95 transition-transform cursor-pointer ${curveClass}`}
+                  onClick={() => sounds.playClick()}
+                  title={`Audience: ${cm.color}`}
+                >
+                  <CrewmateVector
+                    color={cm.color}
+                    size={42}
+                    facing={cm.facing}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

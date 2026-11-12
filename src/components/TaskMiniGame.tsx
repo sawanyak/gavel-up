@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { sounds } from "@/lib/sounds";
-import { AlertTriangle, CheckCircle, RotateCcw } from "lucide-react";
+import { AlertTriangle, CheckCircle } from "lucide-react";
+import { CrewmateVector } from "./CrewmateVector";
 
 export const TaskMiniGame: React.FC = () => {
   const [taskState, setTaskState] = useState<"idle" | "in_progress" | "success" | "sabotage">("idle");
@@ -64,9 +65,7 @@ export const TaskMiniGame: React.FC = () => {
                   <div className="w-4 h-4 rounded-full bg-cyan-400" />
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-red-600 border border-white/50 flex items-center justify-center font-bold text-white text-xs">
-                    ★
-                  </div>
+                  <CrewmateVector color="red" size={28} />
                   <div className="text-left font-mono">
                     <p className="text-xs font-bold text-white">NEW MEMBER</p>
                     <p className="text-[9px] text-slate-400">STATUS: RECRUIT</p>
@@ -98,22 +97,6 @@ export const TaskMiniGame: React.FC = () => {
             <p className="text-xs text-slate-300 font-mono mt-1 max-w-sm">
               Your voice is registered for orientation. Next step: Click the Register Now button to submit your details!
             </p>
-            <div className="flex items-center gap-3 mt-4">
-              <button
-                onClick={handleReset}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-xs text-slate-300 font-mono hover:bg-slate-700"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Swipe Again</span>
-              </button>
-              <button
-                onClick={handleEmergencyTrigger}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-500 bg-red-950/60 text-xs text-red-300 font-mono hover:bg-red-900/80 shadow-[0_0_10px_rgba(239,68,68,0.4)]"
-              >
-                <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
-                <span>Test Emergency Siren</span>
-              </button>
-            </div>
           </div>
         )}
 

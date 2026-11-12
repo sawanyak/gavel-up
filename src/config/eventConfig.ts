@@ -8,6 +8,7 @@ export interface ContactPerson {
   email: string;
   whatsapp: string;
   bio: string;
+  image?: string; // Path or URL to organizer image (e.g. "/images/organizers/president.jpg")
 }
 
 export interface EventDetails {
@@ -21,6 +22,7 @@ export interface EventDetails {
   venue: string;
   registrationClosingDate: string;
   googleFormUrl: string;
+  membershipGoogleFormUrl: string; // Google Form to collect details from students joining the club
   countdownTarget: string; // ISO date string for countdown timer
   contacts: ContactPerson[];
 }
@@ -33,16 +35,19 @@ export const eventConfig: EventDetails = {
   parentOrganization: "Affiliated with Toastmasters International",
   
   // NOTE: You can update these details anytime right here!
-  date: "Date TBA (Coming Soon)",
-  time: "Time TBA",
-  venue: "SLIIT Main Campus, Malabe",
+  date: "21st of November 2026",
+  time: "9:00 AM - 12:00 PM",
+  venue: "SLIIT, Malabe",
   registrationClosingDate: "To Be Announced",
   
-  // Replace this with your actual Google Form URL when ready:
+  // Replace this with your actual Google Form URL for the Gavel Up event when ready:
   googleFormUrl: "https://docs.google.com/forms/d/e/your-form-id-here/viewform",
   
+  // Replace this with your actual Google Form URL to get details from members joining the club:
+  membershipGoogleFormUrl: "https://bit.ly/sliit-gavel",
+  
   // Countdown target date (Update to your event launch date)
-  countdownTarget: "2026-11-25T09:00:00+05:30",
+  countdownTarget: "2026-11-21T09:00:00+05:30",
   
   contacts: [
     {

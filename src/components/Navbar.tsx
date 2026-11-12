@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Volume2, VolumeX, Menu, X, ExternalLink } from "lucide-react";
 import { eventConfig } from "@/config/eventConfig";
@@ -38,28 +39,20 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo & Name */}
+        {/* Brand Logo */}
         <Link
           href="/"
           onClick={handleLinkClick}
-          className="flex items-center gap-3 group transition-transform hover:scale-105"
+          className="flex items-center group transition-transform hover:scale-105"
         >
-          {/* Mini Crewmate Icon */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-rose-900 border border-red-400/50 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.5)]">
-            <svg viewBox="0 0 40 40" className="w-7 h-7" fill="none">
-              <rect x="18" y="10" width="16" height="10" rx="5" fill="#98DDF4" stroke="#FFF" strokeWidth="1.5" />
-              <path d="M 12 12 C 12 6, 28 6, 28 12 L 28 32 C 28 36, 22 36, 22 32 L 22 26 L 18 26 L 18 32 C 18 36, 12 36, 12 32 Z" fill="#FFF" />
-            </svg>
-          </div>
-
-          <div className="flex flex-col">
-            <span className="text-xl font-black tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
-              GAVEL UP
-            </span>
-            <span className="text-[10px] tracking-widest uppercase font-mono text-cyan-400 font-semibold">
-              SLIIT GAVEL CLUB
-            </span>
-          </div>
+          <Image
+            src="/images/sliit-gavel-club-logo.png"
+            alt="SLIIT Gavel Club Logo"
+            width={160}
+            height={50}
+            priority
+            className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+          />
         </Link>
 
         {/* Desktop Nav Links */}
