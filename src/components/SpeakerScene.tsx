@@ -6,7 +6,7 @@ import { sounds } from "@/lib/sounds";
 
 const GAVEL_QUOTES = [
   "Welcome crewmates! Your voice is your ultimate superpower.",
-  "Public speaking isn't about being fearless—it's about speaking even when nervous!",
+  "Public speaking isn't about being fearless: it's about speaking even when nervous!",
   "There is 1 Impostor Among Us... and their name is Self-Doubt!",
   "At SLIIT Gavel Club, everyone gets the stage. No one is ejected!",
   "Master the art of impromptu speaking and lead every emergency meeting!",
@@ -116,7 +116,7 @@ export const SpeakerScene: React.FC = () => {
             </div>
 
             <span className="text-[9px] font-mono text-slate-400 tracking-wider">
-              [ CLICK TO SPEAK ]
+               CLICK TO SPEAK 
             </span>
           </div>
 

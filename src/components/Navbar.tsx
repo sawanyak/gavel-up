@@ -10,7 +10,13 @@ import { sounds } from "@/lib/sounds";
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Sound is muted initially
+
+  React.useEffect(() => {
+    setIsMuted(sounds.getMuted());
+    const unsubscribe = sounds.subscribe((muted) => setIsMuted(muted));
+    return unsubscribe;
+  }, []);
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -79,13 +85,21 @@ export const Navbar: React.FC = () => {
 
         {/* Desktop Actions: Audio Toggle & "Register Now" Button */}
         <div className="hidden md:flex items-center gap-4">
-          {/* Sound Toggle */}
+          {/* Sound Toggle (Theme Music & Sounds) */}
           <button
             onClick={handleAudioToggle}
-            className="p-2.5 rounded-xl border border-slate-700 bg-slate-900/80 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 transition-colors shadow-inner"
-            title={isMuted ? "Unmute Sound" : "Mute Sound"}
+            className={`p-2.5 rounded-xl border transition-all duration-300 shadow-inner flex items-center justify-center ${
+              isMuted
+                ? "border-slate-700 bg-slate-900/80 text-slate-400 hover:text-slate-200 hover:border-slate-600"
+                : "border-cyan-400/60 bg-cyan-950/60 text-cyan-300 shadow-[0_0_15px_rgba(0,240,255,0.4)]"
+            }`}
+            title={isMuted ? "Click to play Among Us Theme Music & Sounds" : "Click to mute Theme Music & Sounds"}
           >
-            {isMuted ? <VolumeX className="w-5 h-5 text-red-400" /> : <Volume2 className="w-5 h-5 text-cyan-400" />}
+            {isMuted ? (
+              <VolumeX className="w-5 h-5 text-red-400" />
+            ) : (
+              <Volume2 className="w-5 h-5 text-cyan-400 animate-pulse" />
+            )}
           </button>
 
           {/* Primary CTA: Register Now (Points to Google Form) */}
@@ -106,9 +120,14 @@ export const Navbar: React.FC = () => {
         <div className="flex md:hidden items-center gap-2">
           <button
             onClick={handleAudioToggle}
-            className="p-2 rounded-lg border border-slate-700 bg-slate-900 text-slate-300"
+            className={`p-2 rounded-lg border transition-colors ${
+              isMuted
+                ? "border-slate-700 bg-slate-900 text-slate-400"
+                : "border-cyan-400/60 bg-cyan-950/60 text-cyan-300 shadow-[0_0_12px_rgba(0,240,255,0.4)]"
+            }`}
+            title={isMuted ? "Play Among Us Theme" : "Mute Sound"}
           >
-            {isMuted ? <VolumeX className="w-5 h-5 text-red-400" /> : <Volume2 className="w-5 h-5 text-cyan-400" />}
+            {isMuted ? <VolumeX className="w-5 h-5 text-red-400" /> : <Volume2 className="w-5 h-5 text-cyan-400 animate-pulse" />}
           </button>
 
           <button

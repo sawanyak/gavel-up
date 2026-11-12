@@ -73,7 +73,7 @@ export const TaskMiniGame: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-center text-[10px] font-mono text-cyan-300 animate-pulse">
-                  👉 [ CLICK TO SWIPE CARD ] 👈
+                   CLICK TO SWIPE CARD 
                 </div>
               </div>
             </div>

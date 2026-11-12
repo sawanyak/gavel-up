@@ -24,34 +24,46 @@ Open `src/config/eventConfig.ts` to customize:
 
 ---
 
-## 2. Among Us Sound Effects (Step-by-Step Instructions)
+## 2. Among Us Theme Music & Sound Effects
 
-### Built-in Web Audio API:
-The website already comes with a built-in **Web Audio API synthesizer** that plays Among Us-inspired terminal blips, emergency siren alarms, task completed chimes, and role reveal chords with **zero external files needed**!
+The website includes support for both ambient background music and game sound effects:
 
-### How to use original Among Us MP3 files (Optional):
-If you want to use the game's actual audio files, the website is pre-configured to detect them automatically.
+### Background Music (`main_theme.mp3`)
+- The sound button in the Navbar is **muted initially**.
+- When the user clicks the sound button, it un-mutes and plays the **Among Us Main Theme** continuously on a seamless loop (`loop = true`).
+- Clicking it again pauses/mutes the music and sound effects.
 
-1. **Where to find them on the internet:**
-   - **Myinstants (Instant MP3 downloads):**
-     - Emergency Meeting Sound: [https://www.myinstants.com/en/search/?name=among+us+emergency](https://www.myinstants.com/en/search/?name=among+us+emergency)
-     - Role Reveal / Start: [https://www.myinstants.com/en/search/?name=among+us+role](https://www.myinstants.com/en/search/?name=among+us+role)
-     - Task Complete: [https://www.myinstants.com/en/search/?name=among+us+task](https://www.myinstants.com/en/search/?name=among+us+task)
-     - Kill / Sabotage: [https://www.myinstants.com/en/search/?name=among+us+kill](https://www.myinstants.com/en/search/?name=among+us+kill)
-   - **GitHub Game Asset Rips:**
-     - Search GitHub for repositories with `among-us-sounds` or `among-us-audio`.
-   - **Internet Archive:**
-     - Search Archive.org for `Among Us Sound Effects Gamerip`.
+### Sound Files in `public/sounds/`:
+- `public/sounds/main_theme.mp3` (Continuous background theme music)
+- `public/sounds/emergency.mp3` (Emergency siren alarm)
+- `public/sounds/click.mp3` (Terminal button click)
+- `public/sounds/task.mp3` (Task completed two-tone chime)
+- `public/sounds/role_reveal.mp3` (Role reveal / Impostor sting)
+- `public/sounds/start.mp3` (Game start / whoosh sound)
 
-2. **Save them into your project's `public/sounds/` folder:**
-   Save the files with these exact names:
-   - `public/sounds/emergency.mp3` (Emergency siren alarm)
-   - `public/sounds/click.mp3` (Terminal button click)
-   - `public/sounds/task.mp3` (Task completed two-tone chime)
-   - `public/sounds/role_reveal.mp3` (Role reveal / Impostor sting)
-   - `public/sounds/start.mp3` (Game start / whoosh sound)
+---
 
-The website will automatically play these files whenever they exist, and fallback seamlessly if they don't!
+## 3. How to Get the Clean "Main Theme" Audio
+
+The 6-minute YouTube video is a 4x repeat of the original 1-minute 26-second track. Here are the 2 easiest ways to get the clean MP3:
+
+### Option A: Download via Cobalt Tools (Fast & No Ads)
+1. Go to [https://cobalt.tools](https://cobalt.tools) (clean, open-source downloader).
+2. Paste your YouTube link: `https://youtu.be/o7oKN3IkO4M`
+3. Select **Audio** (MP3) and download.
+4. Rename the downloaded file to:
+   👉 `main_theme.mp3`
+5. Move it into your project folder:
+   👉 `public/sounds/main_theme.mp3`
+
+*(Note: Even as a full-length file, the browser automatically loops it in the background at low memory footprint).*
+
+### Option B: Trim to the Exact 1:26 Loop using ffmpeg (Mac Terminal)
+If you downloaded the audio from YouTube to your Downloads folder:
+```bash
+ffmpeg -i ~/Downloads/AmongUsTheme.mp3 -t 01:26 -c copy "public/sounds/main_theme.mp3"
+```
+This produces a lightweight ~1.2 MB file that loops seamlessly.
 
 ---
 

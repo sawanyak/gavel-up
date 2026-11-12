@@ -55,12 +55,12 @@ export default function HomePage() {
 
   return (
     <div className="w-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12 select-none">
-      {/* 1. HERO TITLE SECTION (Matching Poster Typography) */}
-      <section className="w-full max-w-5xl flex flex-col items-center text-center mb-8 sm:mb-12">
+      {/* 1. HERO TITLE SECTION (Matching Poster Typography - Twice as Big) */}
+      <section className="w-full max-w-7xl flex flex-col items-center text-center mb-10 sm:mb-14 px-2">
         {/* The Exact "GAVEL UP" Poster Title */}
-        <GavelUpTitle size="xl" showSubtitle={true} className="mb-4" />
+        <GavelUpTitle size="2xl" showSubtitle={true} className="mb-6 w-full" />
 
-        <p className="text-base sm:text-xl font-mono text-cyan-300 font-semibold tracking-wider max-w-2xl drop-shadow-[0_0_10px_rgba(0,240,255,0.4)]">
+        <p className="text-base sm:text-2xl font-mono text-cyan-300 font-bold tracking-wider max-w-3xl drop-shadow-[0_0_12px_rgba(0,240,255,0.5)]">
           {eventConfig.tagline}
         </p>
       </section>
@@ -93,7 +93,7 @@ export default function HomePage() {
         </a>
 
         <span className="mt-3 text-xs font-mono text-slate-400 tracking-widest uppercase">
-          SECURE YOUR CREWMATE BADGE VIA GOOGLE FORM
+          SECURE YOUR CREWMATE BADGE 
         </span>
       </section>
 
