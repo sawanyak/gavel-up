@@ -34,8 +34,8 @@ export const eventConfig: EventDetails = {
   
   // NOTE: You can update these details anytime right here!
   date: "21st of November 2026",
-  time: "9:00 AM - 12:00 PM",
-  venue: "SLIIT, Malabe",
+  time: "From 11:00 AM",
+  venue: "G606, SLIIT Malabe",
   registrationClosingDate: "To Be Announced",
   
   // Replace this with your actual Google Form URL for the Gavel Up event when ready:
@@ -45,7 +45,7 @@ export const eventConfig: EventDetails = {
   membershipGoogleFormUrl: "https://bit.ly/sliit-gavel",
   
   // Countdown target date (Update to your event launch date)
-  countdownTarget: "2026-11-21T09:00:00+05:30",
+  countdownTarget: "2026-11-21T11:00:00+05:30",
   
   contacts: [
     {
