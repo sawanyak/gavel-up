@@ -22,20 +22,22 @@ import {
 export default function HomePage() {
   // Countdown Timer State
   const [timeLeft, setTimeLeft] = useState({
-    days: "14",
-    hours: "08",
-    minutes: "45",
-    seconds: "20",
+    days: "00",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
   });
+  const [countdownSubtitle, setCountdownSubtitle] = useState("MISSION COUNTDOWN TIMER");
 
   useEffect(() => {
-    const target = new Date(eventConfig.countdownTarget).getTime();
+    const targetStart = new Date(eventConfig.countdownTarget).getTime();
+    const targetEnd = new Date("2026-11-21T14:00:00+05:30").getTime();
 
-    const interval = setInterval(() => {
+    const updateCountdown = () => {
       const now = new Date().getTime();
-      const diff = target - now;
 
-      if (diff > 0) {
+      if (now < targetStart) {
+        const diff = targetStart - now;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -47,8 +49,28 @@ export default function HomePage() {
           minutes: String(minutes).padStart(2, "0"),
           seconds: String(seconds).padStart(2, "0"),
         });
+        setCountdownSubtitle("MISSION COUNTDOWN TIMER");
+      } else if (now < targetEnd) {
+        setTimeLeft({
+          days: "00",
+          hours: "00",
+          minutes: "00",
+          seconds: "00",
+        });
+        setCountdownSubtitle("MISSION UNDERWAY // EVENT IN PROGRESS");
+      } else {
+        setTimeLeft({
+          days: "00",
+          hours: "00",
+          minutes: "00",
+          seconds: "00",
+        });
+        setCountdownSubtitle("ORIENTATION COMPLETED // THANK YOU FOR JOINING");
       }
-    }, 1000);
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -159,8 +181,8 @@ export default function HomePage() {
 
           {/* Real-time Countdown Clocks */}
           <div className="flex flex-col items-center pt-2 border-t border-slate-800/80">
-            <span className="text-xs font-mono text-cyan-400 tracking-widest uppercase mb-3">
-              MISSION COUNTDOWN TIMER
+            <span className="text-xs font-mono text-cyan-400 tracking-widest uppercase mb-3 text-center px-2">
+              {countdownSubtitle}
             </span>
             <div className="flex items-center gap-2 sm:gap-4 font-mono">
               <div className="flex flex-col items-center p-3 sm:p-4 rounded-xl border border-cyan-500/40 bg-slate-900 min-w-[64px] sm:min-w-[80px]">
