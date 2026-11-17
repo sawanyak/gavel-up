@@ -41,7 +41,7 @@ export const eventConfig: EventDetails = {
   registrationClosingDate: "To Be Announced",
   
   // Replace this with your actual Google Form URL for the Gavel Up event when ready:
-  googleFormUrl: "https://docs.google.com/forms/d/e/your-form-id-here/viewform",
+  googleFormUrl: "https://forms.gle/L9BjHbABk1NHFXBN8",
   
   // Replace this with your actual Google Form URL to get details from members joining the club:
   membershipGoogleFormUrl: "https://bit.ly/sliit-gavel",
