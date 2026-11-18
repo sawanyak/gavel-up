@@ -6,7 +6,7 @@ import { audit, bumpVersion } from "../audit";
 import { assertNotArchived, assertTeamAccess, getGameByCode, staffActor } from "../auth/guards";
 import { createSession, revokeSessionsFor, sha256 } from "../auth/session";
 import { ApiError, badRequest, conflict, forbidden, isDuplicateKey, notFound, unauthenticated } from "../errors";
-import { LoginCode, Player, Team, type GameDoc, type PlayerDoc, type StaffDoc } from "../models";
+import { Game, LoginCode, Player, Team, type GameDoc, type PlayerDoc, type StaffDoc } from "../models";
 import { rateLimit } from "../rateLimit";
 
 export interface RegisterInput {
@@ -66,6 +66,19 @@ export async function registerPlayer(
       );
     }
     throw err;
+  }
+
+  // Race guard: if roles were revealed between reading the game and inserting this player,
+  // the reveal's sweep may have missed us — give the late-joiner role now. (The reveal does
+  // its own sweep too, so whichever happens second catches it.)
+  if (!late) {
+    const fresh = await Game.findById(game._id).select("rolesRevealedAt config.lateJoinerRole").lean<GameDoc>();
+    if (fresh?.rolesRevealedAt) {
+      await Player.updateOne(
+        { _id: player._id, role: null },
+        { $set: { role: fresh.config?.lateJoinerRole ?? "crewmate", roleAssignedAt: new Date(), roleSource: "late", late: true } },
+      );
+    }
   }
 
   const token = await createSession({

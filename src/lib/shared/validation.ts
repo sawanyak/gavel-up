@@ -92,3 +92,29 @@ export const playerRemoveSchema = z.object({
 });
 
 export { objectId };
+
+/* ───────── Phase 2: roles ───────── */
+
+export const revealSchema = z.object({
+  confirm: z.literal("REVEAL", { errorMap: () => ({ message: 'Type "REVEAL" to confirm.' }) }),
+});
+
+export const roleOverrideSchema = z.object({
+  role: z.enum(["crewmate", "impostor", "detective"]),
+  reason: z.string().transform(cleanName).pipe(z.string().min(3, "Give a reason.").max(120)),
+});
+
+export const assignRandomRoleSchema = z.object({
+  role: z.enum(["impostor", "detective"]),
+});
+
+const smallCount = z.number().int().min(0).max(5);
+export const roleConfigSchema = z
+  .object({
+    impostorsPerTeam: smallCount.optional(),
+    detectivesPerTeam: smallCount.optional(),
+    minTeamSizeForSpecialRoles: z.number().int().min(1).max(20).optional(),
+    impostorsSeeEachOther: z.boolean().optional(),
+    impostorOverrides: z.record(objectId, smallCount).optional(),
+  })
+  .strict();
