@@ -18,7 +18,10 @@
     "test:phase3": "vitest run tests/phase3",
     "test:phase4": "vitest run tests/phase4",
     "test:phase5": "vitest run tests/phase5",
-    "test:phase6": "vitest run tests/phase6"
+    "test:phase6": "vitest run tests/phase6",
+    "test:phase7": "vitest run tests/phase7",
+    "load-test": "tsx scripts/load-test.ts",
+    "purge-pii": "tsx scripts/purge-pii.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
