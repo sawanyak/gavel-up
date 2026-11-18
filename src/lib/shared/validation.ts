@@ -194,3 +194,33 @@ export const cancelMeetingSchema = z.object({ reason: reasonSchema });
 export const invalidateSchema = z.object({ reason: reasonSchema });
 export const voteSchema = z.object({ meetingId: objectId, targetId: objectId.nullable() });
 export const predictionSchema = z.object({ meetingId: objectId, targetTeamId: objectId, targetPlayerId: objectId });
+
+/* ───────── Phase 5: scoring ───────── */
+
+export const manualAwardSchema = z
+  .object({
+    teamId: objectId,
+    amount: z
+      .number()
+      .int("Whole numbers only.")
+      .min(-1000)
+      .max(1000)
+      .refine((n) => n !== 0, "The amount can't be 0."),
+    reason: reasonSchema,
+    activityTaskId: objectId.optional(),
+    earnedByPlayerId: objectId.optional(),
+  })
+  .strict();
+
+/** Client-generated per form submit (plan §9.1); retries reuse it. */
+export const idempotencyKeySchema = z
+  .string({ required_error: "Missing Idempotency-Key header." })
+  .regex(/^[A-Za-z0-9-]{8,64}$/, "Invalid Idempotency-Key header.");
+
+export const reverseSchema = z.object({ reason: reasonSchema });
+
+export const ledgerQuerySchema = z.object({
+  teamId: objectId.optional(),
+  category: z.enum(["task", "activity", "manual", "internal_vote", "prediction", "penalty", "reversal"]).optional(),
+  limit: z.coerce.number().int().min(1).max(500).default(200),
+});

@@ -43,6 +43,9 @@ export interface PlayerSnapshot {
   activities: { id: string; title: string; description: string; points: number }[];
   announcements: AnnouncementView[];
   meeting: PlayerMeetingView | null;
+  leaderboard: LeaderboardRow[];
+  /** Own team's latest point changes. */
+  teamFeed: FeedItem[];
 }
 
 /* ───────── Phase 4: meetings ───────── */
@@ -267,6 +270,9 @@ export interface TMSnapshot {
   queue: VerificationItem[];
   announcements: AnnouncementView[];
   meeting: TMMeetingView | null;
+  points: { min: number; max: number };
+  feed: FeedItem[];
+  activities: { id: string; title: string }[];
 }
 
 export interface StaffMe {
@@ -283,4 +289,49 @@ export interface StaffListItem extends StaffMe {
 
 export interface ApiErrorBody {
   error: { code: string; message: string; details?: unknown };
+}
+
+/* ───────── Phase 5: scoring ───────── */
+
+export type PointCategory = "task" | "activity" | "manual" | "internal_vote" | "prediction" | "penalty" | "reversal";
+
+export interface LeaderboardRow {
+  teamId: string;
+  key: TeamColorKey;
+  name: string;
+  colorHex: string;
+  score: number;
+  /** Competition ranking: equal scores share a rank (1, 1, 3). */
+  rank: number;
+}
+
+export interface FeedItem {
+  id: string;
+  teamId: string;
+  amount: number;
+  reason: string;
+  category: PointCategory;
+  at: string;
+}
+
+export interface LedgerItem extends FeedItem {
+  teamName: string;
+  colorHex: string;
+  createdByName: string;
+  earnedByName: string | null;
+  reversed: boolean;
+  isReversal: boolean;
+}
+
+export interface GMPointsSnapshot {
+  version: number;
+  serverTime: number;
+  phase: GamePhase;
+  leaderboard: LeaderboardRow[];
+  ledger: LedgerItem[];
+  totals: { transactions: number; byCategory: Record<string, number> };
+  teams: TeamInfo[];
+  players: { id: string; name: string; teamId: string }[];
+  activities: { id: string; title: string }[];
+  bounds: { min: number; max: number };
 }

@@ -6,6 +6,8 @@ import type { GamePhase, Role, StaffRole, TeamColorKey } from "@/lib/shared/cons
 import type { GameRules } from "@/lib/shared/roleContent";
 import { revealPreview, roleConfigOf } from "./services/roles";
 import { gmMeetingView, playerMeetingView, tmMeetingView } from "./meetingDto";
+import { gameLeaderboard, teamFeed } from "./scoringDto";
+import { manualBounds } from "./services/scoring";
 import type {
   AnnouncementView,
   AssignmentStatus,
@@ -139,12 +141,14 @@ export async function playerSnapshot(game: GameDoc, player: PlayerDoc): Promise<
     game.rolesRevealedAt ? Player.findById(player._id).select("+role").lean<PlayerDoc>() : null,
   ]);
   const role = (withRole?.role as Role | null | undefined) ?? null;
-  const [extras, tasks, activities, announcements, meeting] = await Promise.all([
+  const [extras, tasks, activities, announcements, meeting, board, feed] = await Promise.all([
     role ? roleExtras(game, player, role) : {},
     playerTasks(game, player),
     Task.find({ gameId: game._id, kind: "activity", revealed: true }).sort({ order: 1 }).lean<TaskDoc[]>(),
     announcementsFor(game._id, [player.teamId]),
     playerMeetingView(game, player),
+    game.rolesRevealedAt ? gameLeaderboard(game._id) : [],
+    game.rolesRevealedAt ? teamFeed(game._id, [player.teamId], 8) : [],
   ]);
   return {
     version: game.version,
@@ -167,6 +171,8 @@ export async function playerSnapshot(game: GameDoc, player: PlayerDoc): Promise<
     activities: activities.map((t) => ({ id: String(t._id), title: t.title, description: t.description ?? "", points: t.points })),
     announcements,
     meeting,
+    leaderboard: board,
+    teamFeed: feed,
   };
 }
 
@@ -427,6 +433,12 @@ export async function tmSnapshot(game: GameDoc, staff: StaffDoc): Promise<TMSnap
     queue: await verificationQueue(game._id, staff.role === "GM" ? null : mine.map((t) => t._id)),
     announcements: (await announcementDocs(game._id, staff.role === "GM" ? null : mine.map((t) => t._id))).map(announcementView),
     meeting: await tmMeetingView(game, mine.map((t) => t._id)),
+    points: manualBounds(game, staff),
+    feed: await teamFeed(game._id, mine.map((t) => t._id), 20),
+    activities: (await Task.find({ gameId: game._id, kind: "activity" }).select("title").sort({ order: 1 }).lean<TaskDoc[]>()).map((a) => ({
+      id: String(a._id),
+      title: a.title,
+    })),
   };
 }
 

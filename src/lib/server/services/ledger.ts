@@ -20,6 +20,8 @@ export interface AwardInput {
   createdBy: { type: "system" | "staff" | "player"; id?: Types.ObjectId | null; name?: string };
   earnedByPlayerId?: Types.ObjectId | null;
   source?: { type: string; id: Types.ObjectId | null } | null;
+  /** Set on reversal transactions: the transaction being cancelled out. */
+  reversesId?: Types.ObjectId | null;
 }
 
 /** Writes one transaction inside an existing session. Throws E11000 if the key was already used. */
@@ -36,6 +38,7 @@ export async function awardInSession(input: AwardInput, session: ClientSession):
         createdBy: { type: input.createdBy.type, id: input.createdBy.id ?? null, name: input.createdBy.name ?? "" },
         earnedByPlayerId: input.earnedByPlayerId ?? null,
         source: input.source ?? null,
+        reversesId: input.reversesId ?? null,
       },
     ],
     { session },
