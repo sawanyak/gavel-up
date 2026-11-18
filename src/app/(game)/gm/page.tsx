@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
-import { ClipboardCheck, Pencil, Search, Trash2, UserPlus } from "lucide-react";
+import { AlertTriangle, ClipboardCheck, Pencil, Search, Trash2, UserPlus } from "lucide-react";
 import { StaffNav } from "@/components/game/StaffNav";
 import { IssueCodeButton, useStaffMe } from "@/components/game/staff";
 import { RevealRolesButton, RoleChip, RolesPanel } from "@/components/game/gmRoles";
@@ -77,7 +77,7 @@ export default function GMDashboard() {
   };
 
   const now = Date.now() + serverOffset;
-  const canKill = data.game.phase === "PLAYING" || data.game.phase === "MEETING";
+  const canKill = data.game.phase === "PLAYING" || (data.game.phase === "MEETING" && data.meeting?.status === "CALLED");
 
   return (
     <div className="space-y-5">
@@ -123,6 +123,16 @@ export default function GMDashboard() {
                 )}
               </Link>
               <DetectiveLogButton snapshot={data} onDone={refresh} />
+              <Link
+                href="/gm/meeting"
+                className={clsx(
+                  "inline-flex items-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-mono font-bold uppercase tracking-wider min-h-[44px]",
+                  data.meeting ? "border-red-400 bg-red-600/80 text-white animate-pulse" : "border-red-500/60 bg-red-950/40 text-red-200 hover:bg-red-900/50",
+                )}
+              >
+                <AlertTriangle className="w-4 h-4" />
+                {data.meeting ? `Meeting #${data.meeting.number} · ${data.meeting.status.toLowerCase()}` : "Emergency meeting"}
+              </Link>
             </>
           )}
         </div>

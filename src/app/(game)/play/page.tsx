@@ -6,11 +6,15 @@ import { CrewmateVector, type CrewmateColor } from "@/components/CrewmateVector"
 import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip } from "@/components/game/ui";
 import { RoleCard, RoleRevealOverlay } from "@/components/game/roles";
 import { AnnouncementList, GhostBanner, ScorePill, TaskList } from "@/components/game/gameplay";
+import { EmergencyOverlay, MeetingPanel } from "@/components/game/meeting";
 import { useGameState } from "@/lib/client/useGameState";
 import type { PlayerSnapshot } from "@/lib/shared/types";
 
+/** Poll faster during a meeting, fastest while voting (plan §10.3). */
+const pollMs = (s: PlayerSnapshot | null) => (s?.meeting?.status === "VOTING" ? 1500 : s?.meeting ? 2500 : 4000);
+
 export default function PlayerDashboard() {
-  const { data, error, connection, refresh } = useGameState<PlayerSnapshot>("/api/player/state", 4000);
+  const { data, error, connection, refresh, serverOffset } = useGameState<PlayerSnapshot>("/api/player/state", pollMs);
 
   if (error?.status === 410) {
     return <MessageView title="Registration removed" message={error.message} actions={[{ label: "Register again", href: "/play/register" }]} />;
@@ -54,6 +58,9 @@ export default function PlayerDashboard() {
       <div className="flex justify-center">
         <PhaseChip phase={game.phase} />
       </div>
+
+      <EmergencyOverlay meeting={data.meeting} />
+      {data.meeting && <MeetingPanel meeting={data.meeting} serverOffset={serverOffset} onChange={refresh} />}
 
       <AnnouncementList announcements={data.announcements} />
 

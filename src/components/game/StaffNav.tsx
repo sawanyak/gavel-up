@@ -9,6 +9,7 @@ import { api } from "@/lib/client/api";
 
 const GM_LINKS = [
   { href: "/gm", label: "Dashboard" },
+  { href: "/gm/meeting", label: "Meeting" },
   { href: "/gm/tasks", label: "Tasks" },
   { href: "/gm/setup", label: "Teams & Staff" },
   { href: "/gm/qr", label: "Registration QR" },

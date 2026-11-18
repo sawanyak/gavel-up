@@ -5,13 +5,14 @@ import { Search } from "lucide-react";
 import { StaffNav } from "@/components/game/StaffNav";
 import { IssueCodeButton, useStaffMe } from "@/components/game/staff";
 import { AnnouncementList, KillButton, ScorePill, VerificationQueue } from "@/components/game/gameplay";
+import { Countdown } from "@/components/game/meeting";
 import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip, TeamBadge, inputClass } from "@/components/game/ui";
 import { useGameState } from "@/lib/client/useGameState";
 import type { TMSnapshot } from "@/lib/shared/types";
 
 export default function TeamManagerPage() {
   const me = useStaffMe();
-  const { data, error, connection, refresh } = useGameState<TMSnapshot>("/api/tm/state", 3000);
+  const { data, error, connection, refresh, serverOffset } = useGameState<TMSnapshot>("/api/tm/state", (s) => (s?.meeting?.status === "VOTING" ? 1500 : 3000));
   const [search, setSearch] = useState("");
 
   if (error?.status === 401) return <LoadingView label="Redirecting to login…" />;
@@ -19,7 +20,8 @@ export default function TeamManagerPage() {
   if (!data) return <LoadingView />;
 
   const q = search.trim().toLowerCase();
-  const canKill = data.game.phase === "PLAYING" || data.game.phase === "MEETING";
+  const canKill = data.game.phase === "PLAYING" || (data.game.phase === "MEETING" && data.meeting?.status === "CALLED");
+  const meeting = data.meeting;
 
   return (
     <div className="space-y-5">
@@ -33,6 +35,46 @@ export default function TeamManagerPage() {
       {data.teams.length === 0 && <MessageView title="No team assigned" message="Ask a Game Master to assign you to a team." />}
 
       <AnnouncementList announcements={data.announcements} compact />
+
+      {meeting && (
+        <HudCard
+          variant="red"
+          title={`Emergency meeting #${meeting.number} · ${meeting.status.toLowerCase()}`}
+          right={meeting.status === "VOTING" && <Countdown endsAt={meeting.votingEndsAt} serverOffset={serverOffset} />}
+        >
+          {meeting.status === "CALLED" && <p className="text-sm text-slate-300">Gather your team. Voting opens soon.</p>}
+          <div className="grid gap-3 sm:grid-cols-2">
+            {meeting.teams.map((mt) => {
+              const team = data.teams.find((t) => t.id === mt.teamId);
+              return (
+                <div key={mt.teamId} className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-sm">
+                  <p className="font-mono font-bold uppercase tracking-wider mb-1" style={{ color: team?.colorHex }}>
+                    {team?.name} · {mt.voted.length}/{mt.voted.length + mt.notVoted.length} voted
+                  </p>
+                  {mt.notVoted.length > 0 && meeting.status === "VOTING" && (
+                    <p className="text-slate-300">
+                      <b>Still to vote:</b> {mt.notVoted.join(", ")}
+                    </p>
+                  )}
+                  {mt.eliminated !== undefined && (
+                    <p className="text-slate-200 mt-1">
+                      {mt.eliminated ? (
+                        <>
+                          Ejected: <b>{mt.eliminated.name}</b> —{" "}
+                          {mt.eliminated.wasImpostor ? <b className="text-red-400">an impostor</b> : "not an impostor"}
+                        </>
+                      ) : (
+                        "Nobody was ejected"
+                      )}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {meeting.status === "VOTING" && <p className="mt-2 text-xs text-slate-400">Remind players who haven&apos;t voted. Kills are paused until the game resumes.</p>}
+        </HudCard>
+      )}
 
       {(data.queue.length > 0 || canKill) && <VerificationQueue items={data.queue} onChange={refresh} />}
 
