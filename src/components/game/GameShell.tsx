@@ -16,7 +16,7 @@ export function GameShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-cyan-500/20 bg-slate-950/85 backdrop-blur-md select-none">
+      <header className="sticky top-0 z-40 w-full border-b border-cyan-500/20 bg-slate-950/85 backdrop-blur-md select-none print:hidden">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Image
@@ -40,7 +40,7 @@ export function GameShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       </header>
-      <main className="relative z-10 flex-grow w-full max-w-6xl mx-auto px-4 py-5 sm:py-8">{children}</main>
+      <main className="relative z-10 flex-grow w-full max-w-6xl mx-auto px-4 py-5 sm:py-8 print:p-0 print:max-w-none">{children}</main>
     </>
   );
 }
