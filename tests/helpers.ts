@@ -127,3 +127,17 @@ export async function registerPlayer(teamId: Types.ObjectId | string, name = "Te
   const r = await c.call(registerRoute.POST, { body: { name, phone, teamId: String(teamId) } });
   return { client: c, res: r, phone };
 }
+
+/** Registers `n` players per team key, e.g. { red: 5, blue: 4 }. Returns their clients. */
+export async function fillTeams(byKey: Record<string, { _id: Types.ObjectId }>, perTeam: Record<string, number>) {
+  const clients: Record<string, Client[]> = {};
+  for (const [key, n] of Object.entries(perTeam)) {
+    clients[key] = [];
+    for (let i = 0; i < n; i++) {
+      const name = `${key} Player ${String.fromCharCode(65 + i)}`;
+      clients[key].push((await registerPlayer(byKey[key]._id, name)).client);
+    }
+  }
+  return clients;
+}
+

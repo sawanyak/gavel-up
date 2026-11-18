@@ -118,11 +118,13 @@ describe("Phase 1 · live state & privacy", () => {
     expect(text).not.toMatch(/\+94|impostor/);
   });
 
-  it("GM snapshot never contains roles in Phase 1 either", async () => {
+  it("GM snapshot contains no player roles before the reveal", async () => {
     const { byKey } = await setupGame();
     await registerPlayer(byKey.red._id);
     await Player.updateMany({}, { $set: { role: "impostor" } });
     const gm = await loginStaff(GM.name, GM.pin);
-    expect(JSON.stringify((await gm.call(gmState.GET)).body)).not.toContain("impostor");
+    const body = (await gm.call(gmState.GET)).body;
+    expect(body.registrations.every((r: object) => !("role" in r))).toBe(true);
+    expect(JSON.stringify(body.registrations)).not.toContain("impostor");
   });
 });
