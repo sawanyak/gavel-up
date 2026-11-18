@@ -5,7 +5,7 @@ import Link from "next/link";
 import { GavelUpTitle } from "@/components/GavelUpTitle";
 import { SpeakerScene } from "@/components/SpeakerScene";
 import { TaskMiniGame } from "@/components/TaskMiniGame";
-import { eventConfig } from "@/config/eventConfig";
+import { eventConfig, registerLink } from "@/config/eventConfig";
 import { sounds } from "@/lib/sounds";
 import {
   Calendar,
@@ -73,9 +73,9 @@ export default function HomePage() {
       {/* 3. PRIMARY ACTION: GAME START / REGISTER NOW BUTTON */}
       <section className="w-full max-w-md flex flex-col items-center mb-14">
         <a
-          href={eventConfig.googleFormUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={registerLink().href}
+          target={registerLink().external ? "_blank" : undefined}
+          rel={registerLink().external ? "noopener noreferrer" : undefined}
           onClick={() => sounds.playStart()}
           className="w-full group relative"
         >

@@ -22,6 +22,11 @@ export interface EventDetails {
   venue: string;
   registrationClosingDate: string;
   googleFormUrl: string;
+  /**
+   * Event day switch: when true, every "Register" button on the website opens the live
+   * game registration (/play/register) instead of the Google Form.
+   */
+  liveGameRegistrationEnabled: boolean;
   membershipGoogleFormUrl: string; // Google Form to collect details from students joining the club
   countdownTarget: string; // ISO date string for countdown timer
   contacts: ContactPerson[];
@@ -42,6 +47,8 @@ export const eventConfig: EventDetails = {
   
   // Replace this with your actual Google Form URL for the Gavel Up event when ready:
   googleFormUrl: "https://docs.google.com/forms/d/e/your-form-id-here/viewform",
+  // Set to true on event day (21 Nov) so "Register Now" opens the live game sign-up.
+  liveGameRegistrationEnabled: false,
   
   // Replace this with your actual Google Form URL to get details from members joining the club:
   membershipGoogleFormUrl: "https://bit.ly/sliit-gavel",
@@ -85,3 +92,10 @@ export const eventConfig: EventDetails = {
     },
   ],
 };
+
+/** Where "Register" buttons point: the live game on event day, the Google Form before it. */
+export function registerLink(): { href: string; external: boolean } {
+  return eventConfig.liveGameRegistrationEnabled
+    ? { href: "/play/register", external: false }
+    : { href: eventConfig.googleFormUrl, external: true };
+}

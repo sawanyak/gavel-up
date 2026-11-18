@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Volume2, VolumeX, Menu, X, ExternalLink } from "lucide-react";
-import { eventConfig } from "@/config/eventConfig";
+import { eventConfig, registerLink } from "@/config/eventConfig";
 import { sounds } from "@/lib/sounds";
 
 export const Navbar: React.FC = () => {
@@ -98,9 +98,9 @@ export const Navbar: React.FC = () => {
 
           {/* Primary CTA: Register Now (Points to Google Form) */}
           <a
-            href={eventConfig.googleFormUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={registerLink().href}
+            target={registerLink().external ? "_blank" : undefined}
+            rel={registerLink().external ? "noopener noreferrer" : undefined}
             onClick={() => sounds.playStart()}
             className="relative group px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white font-bold text-sm tracking-wider uppercase border-2 border-red-400 shadow-[0_0_20px_rgba(239,68,68,0.6)] hover:shadow-[0_0_30px_rgba(239,68,68,0.9)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
           >
@@ -159,16 +159,16 @@ export const Navbar: React.FC = () => {
 
           <div className="pt-3">
             <a
-              href={eventConfig.googleFormUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={registerLink().href}
+              target={registerLink().external ? "_blank" : undefined}
+              rel={registerLink().external ? "noopener noreferrer" : undefined}
               onClick={() => {
                 sounds.playStart();
                 setIsOpen(false);
               }}
               className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold tracking-wider uppercase border border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.7)]"
             >
-              <span>REGISTER NOW (GOOGLE FORM)</span>
+              <span>{eventConfig.liveGameRegistrationEnabled ? "JOIN THE GAME" : "REGISTER NOW (GOOGLE FORM)"}</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>
