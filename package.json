@@ -16,7 +16,8 @@
     "dev:lan": "next dev -H 0.0.0.0",
     "test:phase2": "vitest run tests/phase2",
     "test:phase3": "vitest run tests/phase3",
-    "test:phase4": "vitest run tests/phase4"
+    "test:phase4": "vitest run tests/phase4",
+    "test:phase5": "vitest run tests/phase5"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

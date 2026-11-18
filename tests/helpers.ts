@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import type { Types } from "mongoose";
-import { Game, Staff, Team, type TeamDoc } from "@/lib/server/models";
+import { Game, Staff, Team, type GameDoc, type TeamDoc } from "@/lib/server/models";
 import { seedGame } from "@/lib/server/seed";
 import { hashPin } from "@/lib/server/services/staff";
 import { normalizeName } from "@/lib/shared/validation";
@@ -147,7 +147,7 @@ export async function startGame(perTeam: Record<string, number> = { red: 4, blue
       players.push({ client: c, id: me.id, name: me.name, team, role: me.role });
     }
   }
-  const game = (await Game.findById(ctx.game._id).lean())!;
+  const game = (await Game.findById(ctx.game._id).lean<GameDoc>())!;
   return { ...ctx, game, gm, players, byRole: (role: string, team?: string) => players.filter((p) => p.role === role && (!team || p.team === team)) };
 }
 
