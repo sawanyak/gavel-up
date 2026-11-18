@@ -42,6 +42,95 @@ export interface PlayerSnapshot {
   tasks: PlayerTask[];
   activities: { id: string; title: string; description: string; points: number }[];
   announcements: AnnouncementView[];
+  meeting: PlayerMeetingView | null;
+}
+
+/* ───────── Phase 4: meetings ───────── */
+
+export type MeetingStatus = "CALLED" | "VOTING" | "CLOSED" | "RESULTS" | "RESOLVED" | "CANCELLED";
+
+export interface MeetingTeamOutcome {
+  teamId: string;
+  teamName: string;
+  colorHex: string;
+  /** null = nobody eliminated in that team. */
+  eliminated: { name: string; wasImpostor: boolean } | null;
+}
+
+export interface PlayerMeetingView {
+  id: string;
+  number: number;
+  status: MeetingStatus;
+  votingEndsAt: string | null;
+  allowSkip: boolean;
+  me: {
+    eligible: boolean;
+    /** Why not eligible (only while voting / after it opened). */
+    notEligibleReason: "ghost" | "late" | null;
+    hasVoted: boolean;
+    skipped: boolean;
+    votedFor: { id: string; name: string } | null;
+  };
+  /** Alive teammates you can vote for (not you). */
+  candidates: { id: string; name: string }[];
+  /** Own team only: how many have voted. */
+  teamProgress: { voted: number; eligible: number };
+  predictions: {
+    enabled: boolean;
+    points: { correct: number; wrong: number };
+    otherTeams: {
+      teamId: string;
+      name: string;
+      colorHex: string;
+      locked: { byName: string; targetName: string; byMe: boolean } | null;
+      candidates: { id: string; name: string }[];
+    }[];
+  };
+  /** After results are revealed. */
+  results: null | {
+    teams: MeetingTeamOutcome[];
+    myTeam: { tally: { name: string; count: number }[]; skipCount: number; notVotedCount: number };
+  };
+}
+
+export interface GMMeetingTeam {
+  teamId: string;
+  teamName: string;
+  colorHex: string;
+  eligibleCount: number;
+  voted: { id: string; name: string }[];
+  notVoted: { id: string; name: string }[];
+  tally: { playerId: string; name: string; count: number }[];
+  skipCount: number;
+  candidates: { id: string; name: string }[];
+  /** After voting closes. */
+  result: null | {
+    topCandidates: { id: string; name: string }[];
+    tie: boolean;
+    mostSkipped: boolean;
+    decision: { eliminated: { id: string; name: string } | null; decidedByName: string } | null;
+    wasImpostor: boolean | null;
+  };
+}
+
+export interface GMMeetingView {
+  id: string;
+  number: number;
+  status: MeetingStatus;
+  calledAt: string;
+  votingOpenedAt: string | null;
+  votingEndsAt: string | null;
+  teams: GMMeetingTeam[];
+  votes: { id: string; voterName: string; teamId: string; targetName: string | null; at: string }[];
+  predictions: { id: string; predictorName: string; predictorTeamName: string; targetTeamName: string; targetName: string; at: string }[];
+}
+
+export interface TMMeetingView {
+  id: string;
+  number: number;
+  status: MeetingStatus;
+  votingEndsAt: string | null;
+  teams: { teamId: string; voted: string[]; notVoted: string[]; eliminated: { name: string; wasImpostor: boolean } | null | undefined }[];
 }
 
 /* ───────── Phase 3: tasks, announcements, detective ───────── */
@@ -166,6 +255,8 @@ export interface GMSnapshot {
   investigations: InvestigationView[];
   announcements: (AnnouncementView & { createdByName: string })[];
   pendingVerifications: number;
+  meeting: GMMeetingView | null;
+  meetings: { held: number; max: number; votingDurationSec: number };
 }
 
 export interface TMSnapshot {
@@ -175,6 +266,7 @@ export interface TMSnapshot {
   teams: (TeamInfo & { score: number; members: { id: string; name: string; status: "alive" | "ghost"; late: boolean }[] })[];
   queue: VerificationItem[];
   announcements: AnnouncementView[];
+  meeting: TMMeetingView | null;
 }
 
 export interface StaffMe {

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { audit, bumpVersion } from "../audit";
 import { assertNotArchived, assertTeamAccess, staffActor } from "../auth/guards";
 import { badRequest, conflict, notFound } from "../errors";
-import { Elimination, Game, Investigation, Player, type GameDoc, type PlayerDoc, type StaffDoc } from "../models";
+import { Elimination, Game, Investigation, Meeting, Player, type GameDoc, type MeetingDoc, type PlayerDoc, type StaffDoc } from "../models";
 
 /** Kills happen while the game runs (roles revealed, before the final reveal). */
 const KILL_PHASES = ["PLAYING", "MEETING"];
@@ -17,6 +17,11 @@ async function getPlayer(game: GameDoc, playerId: string) {
 export async function killPlayer(staff: StaffDoc, game: GameDoc, playerId: string, note: string | undefined, ip: string) {
   assertNotArchived(game);
   if (!KILL_PHASES.includes(game.phase)) throw conflict("INVALID_PHASE", "Kills can only be marked while the game is running.");
+  if (game.phase === "MEETING" && game.activeMeetingId) {
+    // Voters are frozen when voting opens, so kills pause from then until the game resumes.
+    const m = await Meeting.findById(game.activeMeetingId).select("status").lean<MeetingDoc>();
+    if (m && m.status !== "CALLED") throw conflict("KILLS_PAUSED", "Kills are paused while the meeting is voting. Mark it after the game resumes.");
+  }
   const player = await getPlayer(game, playerId);
   assertTeamAccess(staff, player.teamId);
 

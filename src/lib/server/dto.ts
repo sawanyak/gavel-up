@@ -5,6 +5,7 @@
 import type { GamePhase, Role, StaffRole, TeamColorKey } from "@/lib/shared/constants";
 import type { GameRules } from "@/lib/shared/roleContent";
 import { revealPreview, roleConfigOf } from "./services/roles";
+import { gmMeetingView, playerMeetingView, tmMeetingView } from "./meetingDto";
 import type {
   AnnouncementView,
   AssignmentStatus,
@@ -138,11 +139,12 @@ export async function playerSnapshot(game: GameDoc, player: PlayerDoc): Promise<
     game.rolesRevealedAt ? Player.findById(player._id).select("+role").lean<PlayerDoc>() : null,
   ]);
   const role = (withRole?.role as Role | null | undefined) ?? null;
-  const [extras, tasks, activities, announcements] = await Promise.all([
+  const [extras, tasks, activities, announcements, meeting] = await Promise.all([
     role ? roleExtras(game, player, role) : {},
     playerTasks(game, player),
     Task.find({ gameId: game._id, kind: "activity", revealed: true }).sort({ order: 1 }).lean<TaskDoc[]>(),
     announcementsFor(game._id, [player.teamId]),
+    playerMeetingView(game, player),
   ]);
   return {
     version: game.version,
@@ -164,6 +166,7 @@ export async function playerSnapshot(game: GameDoc, player: PlayerDoc): Promise<
     tasks,
     activities: activities.map((t) => ({ id: String(t._id), title: t.title, description: t.description ?? "", points: t.points })),
     announcements,
+    meeting,
   };
 }
 
@@ -398,6 +401,8 @@ export async function gmSnapshot(game: GameDoc): Promise<GMSnapshot> {
     investigations: await gmInvestigations(game._id),
     announcements: (await announcementDocs(game._id, null)).map((a) => ({ ...announcementView(a), createdByName: a.createdBy?.name ?? "" })),
     pendingVerifications: await TaskAssignment.countDocuments({ gameId: game._id, status: "awaiting_verification" }),
+    meeting: await gmMeetingView(game),
+    meetings: { held: game.meetingsHeld ?? 0, max: game.config?.maxMeetings ?? 1, votingDurationSec: game.config?.votingDurationSec ?? 180 },
   };
 }
 
@@ -421,6 +426,7 @@ export async function tmSnapshot(game: GameDoc, staff: StaffDoc): Promise<TMSnap
     })),
     queue: await verificationQueue(game._id, staff.role === "GM" ? null : mine.map((t) => t._id)),
     announcements: (await announcementDocs(game._id, staff.role === "GM" ? null : mine.map((t) => t._id))).map(announcementView),
+    meeting: await tmMeetingView(game, mine.map((t) => t._id)),
   };
 }
 

@@ -61,6 +61,8 @@ const GameSchema = new Schema(
     rolesRevealedAt: { type: Date, default: null },
     revealLock: { type: new Schema({ by: Schema.Types.ObjectId, at: Date }, { _id: false }), default: null },
     activeMeetingId: { type: Schema.Types.ObjectId, default: null },
+    /** Copy of the active meeting's votingEndsAt while voting is open, so every poll can lazily close it without an extra read. */
+    votingDeadline: { type: Date, default: null },
     meetingsHeld: { type: Number, default: 0 },
     display: {
       type: new Schema({ screen: { type: String, default: "LOBBY" }, updatedAt: Date }, { _id: false }),

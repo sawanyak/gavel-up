@@ -22,6 +22,12 @@ export { Investigation } from "./Investigation";
 export type { InvestigationDoc } from "./Investigation";
 export { Announcement } from "./Announcement";
 export type { AnnouncementDoc } from "./Announcement";
+export { Meeting } from "./Meeting";
+export type { MeetingDoc, MeetingStatus, TeamResult } from "./Meeting";
+export { Vote } from "./Vote";
+export type { VoteDoc } from "./Vote";
+export { Prediction } from "./Prediction";
+export type { PredictionDoc } from "./Prediction";
 
 import { Game } from "./Game";
 import { Team } from "./Team";
@@ -37,8 +43,14 @@ import { TaskAssignment } from "./TaskAssignment";
 import { Elimination } from "./Elimination";
 import { Investigation } from "./Investigation";
 import { Announcement } from "./Announcement";
+import { Meeting } from "./Meeting";
+import { Vote } from "./Vote";
+import { Prediction } from "./Prediction";
 
 export const ALL_MODELS = [
+  Meeting,
+  Vote,
+  Prediction,
   Game,
   Team,
   Player,

@@ -180,3 +180,17 @@ export const announcementCreateSchema = z
     pinned: z.boolean().default(false),
   })
   .strict();
+
+/* ───────── Phase 4: meetings and voting ───────── */
+
+export const callMeetingSchema = z.object({ override: z.boolean().optional() });
+export const openVotingSchema = z.object({ durationSec: z.number().int().min(30, "At least 30 seconds.").max(900, "At most 15 minutes.").optional() });
+export const reopenVotingSchema = z.object({ extraSec: z.number().int().min(10).max(600) });
+export const decideSchema = z.object({ teamId: objectId, eliminatePlayerId: objectId.nullable() });
+export const confirmMeetingSchema = z.object({
+  confirm: z.literal("CONFIRM", { errorMap: () => ({ message: 'Type "CONFIRM" to confirm.' }) }),
+});
+export const cancelMeetingSchema = z.object({ reason: reasonSchema });
+export const invalidateSchema = z.object({ reason: reasonSchema });
+export const voteSchema = z.object({ meetingId: objectId, targetId: objectId.nullable() });
+export const predictionSchema = z.object({ meetingId: objectId, targetTeamId: objectId, targetPlayerId: objectId });
