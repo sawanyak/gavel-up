@@ -5,11 +5,12 @@ import { Hourglass, Users } from "lucide-react";
 import { CrewmateVector, type CrewmateColor } from "@/components/CrewmateVector";
 import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip } from "@/components/game/ui";
 import { RoleCard, RoleRevealOverlay } from "@/components/game/roles";
+import { AnnouncementList, GhostBanner, ScorePill, TaskList } from "@/components/game/gameplay";
 import { useGameState } from "@/lib/client/useGameState";
 import type { PlayerSnapshot } from "@/lib/shared/types";
 
 export default function PlayerDashboard() {
-  const { data, error, connection } = useGameState<PlayerSnapshot>("/api/player/state", 4000);
+  const { data, error, connection, refresh } = useGameState<PlayerSnapshot>("/api/player/state", 4000);
 
   if (error?.status === 410) {
     return <MessageView title="Registration removed" message={error.message} actions={[{ label: "Register again", href: "/play/register" }]} />;
@@ -54,6 +55,10 @@ export default function PlayerDashboard() {
         <PhaseChip phase={game.phase} />
       </div>
 
+      <AnnouncementList announcements={data.announcements} />
+
+      {me.status === "ghost" && <GhostBanner teamKey={me.team.key} />}
+
       {!game.rolesRevealed && (
         <HudCard title="Stand by" variant="cyan">
           <div className="flex flex-col items-center text-center gap-3 py-2">
@@ -83,7 +88,16 @@ export default function PlayerDashboard() {
         </HudCard>
       )}
 
-      <HudCard title="Your team" right={<span className="text-xs font-mono text-slate-400">{team.members.length} crew</span>}>
+      {game.rolesRevealed && <TaskList tasks={data.tasks} activities={data.activities} onChange={refresh} />}
+
+      <HudCard
+        title="Your team"
+        right={
+          <span className="flex items-center gap-2 text-xs font-mono text-slate-400">
+            {team.members.length} crew <ScorePill score={team.score} />
+          </span>
+        }
+      >
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {team.members.map((m) => (
             <li key={m.id} className="flex items-center gap-2 rounded-lg bg-slate-900/70 border border-slate-800 px-3 py-2">

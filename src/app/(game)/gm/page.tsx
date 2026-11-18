@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import Link from "next/link";
 import { clsx } from "clsx";
-import { Pencil, Search, Trash2, UserPlus } from "lucide-react";
+import { ClipboardCheck, Pencil, Search, Trash2, UserPlus } from "lucide-react";
 import { StaffNav } from "@/components/game/StaffNav";
 import { IssueCodeButton, useStaffMe } from "@/components/game/staff";
 import { RevealRolesButton, RoleChip, RolesPanel } from "@/components/game/gmRoles";
+import { KillButton, ReviveButton } from "@/components/game/gameplay";
+import { AnnouncementsPanel, DetectiveLogButton } from "@/components/game/gmControl";
 import type { Role } from "@/lib/shared/constants";
 import {
   Alert,
@@ -74,6 +77,7 @@ export default function GMDashboard() {
   };
 
   const now = Date.now() + serverOffset;
+  const canKill = data.game.phase === "PLAYING" || data.game.phase === "MEETING";
 
   return (
     <div className="space-y-5">
@@ -106,10 +110,27 @@ export default function GMDashboard() {
           <span className="hidden sm:block w-px h-8 bg-slate-700" />
           <RevealRolesButton snapshot={data} onDone={refresh} />
           {data.game.phase === "SETUP" && <span className="text-xs text-slate-500">Open registration before revealing roles.</span>}
+          {data.game.rolesRevealed && (
+            <>
+              <span className="hidden sm:block w-px h-8 bg-slate-700" />
+              <Link
+                href="/gm/tasks"
+                className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-700 bg-slate-900/70 px-4 py-2.5 text-sm font-mono font-bold uppercase tracking-wider text-slate-300 hover:text-white min-h-[44px]"
+              >
+                <ClipboardCheck className="w-4 h-4 text-cyan-300" /> Tasks
+                {data.pendingVerifications > 0 && (
+                  <span className="rounded-full bg-red-600 px-2 py-0.5 text-[11px] text-white">{data.pendingVerifications} to check</span>
+                )}
+              </Link>
+              <DetectiveLogButton snapshot={data} onDone={refresh} />
+            </>
+          )}
         </div>
       </HudCard>
 
       <RolesPanel snapshot={data} showNames={showRoles} setShowNames={setShowRoles} onChange={refresh} />
+
+      {data.game.phase !== "SETUP" && <AnnouncementsPanel snapshot={data} onChange={refresh} />}
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -130,6 +151,7 @@ export default function GMDashboard() {
                 {t.name}
               </p>
               <p className="text-2xl font-black text-white">{t.playerCount}</p>
+              {data.game.rolesRevealed && <p className="text-[11px] font-mono text-amber-200">{t.score} pts</p>}
             </div>
           </button>
         ))}
@@ -168,7 +190,7 @@ export default function GMDashboard() {
               const fresh = now - new Date(r.registeredAt).getTime() < 30_000;
               return (
                 <li key={r.id} className={clsx("flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5", fresh && "bg-cyan-500/5 animate-pulse")}>
-                  {t && <TeamBadge team={t} size={26} showName={false} />}
+                  {t && <TeamBadge team={t} size={26} showName={false} dead={r.status === "ghost"} />}
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-white truncate">
                       {r.name}
@@ -176,6 +198,9 @@ export default function GMDashboard() {
                         <span className="ml-2 text-[10px] font-mono uppercase text-amber-300 border border-amber-400/50 rounded px-1">possible dup</span>
                       )}
                       {r.late && <span className="ml-2 text-[10px] font-mono uppercase text-fuchsia-300 border border-fuchsia-400/50 rounded px-1">late</span>}
+                      {r.status === "ghost" && (
+                        <span className="ml-2 text-[10px] font-mono uppercase text-slate-300 border border-slate-500 rounded px-1">ghost</span>
+                      )}
                       {showRoles && "role" in r && (
                         <span className="ml-2">
                           <RoleChip role={r.role} />
@@ -187,6 +212,8 @@ export default function GMDashboard() {
                     </p>
                   </div>
                   <div className="flex gap-1.5">
+                    {canKill && r.status === "alive" && <KillButton player={r} onDone={refresh} />}
+                    {r.status === "ghost" && data.game.phase !== "COMPLETED" && <ReviveButton player={r} onDone={refresh} />}
                     <IssueCodeButton playerId={r.id} playerName={r.name} />
                     <Button size="sm" variant="ghost" onClick={() => setEditing(r)} aria-label="Edit">
                       <Pencil className="w-3.5 h-3.5" />

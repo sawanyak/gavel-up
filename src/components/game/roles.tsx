@@ -177,7 +177,21 @@ export function RoleCard({ snapshot }: { snapshot: PlayerSnapshot }) {
               <p className="text-lg font-black text-amber-200">
                 {me.detective.remaining} of {me.detective.limit} remaining
               </p>
-              <p className="text-xs text-slate-300 mt-1">Go to a host privately and ask: &quot;Is &lt;name&gt; an impostor?&quot;</p>
+              {me.detective.remaining > 0 && (
+                <p className="text-xs text-slate-300 mt-1">Go to a host privately and ask: &quot;Is &lt;name&gt; an impostor?&quot;</p>
+              )}
+              {me.detective.history.length > 0 && (
+                <ul className="mt-2 space-y-1">
+                  {me.detective.history.map((h, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm">
+                      <span className="text-slate-300">Is {h.targetName} an impostor?</span>
+                      <span className={clsx("font-black font-mono", h.answer === "yes" ? "text-red-400" : "text-emerald-300")}>
+                        {h.answer === "yes" ? "YES" : "NO"}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </Block>
           )}
 
