@@ -118,3 +118,65 @@ export const roleConfigSchema = z
     impostorOverrides: z.record(objectId, smallCount).optional(),
   })
   .strict();
+
+/* ───────── Phase 3: game control ───────── */
+
+const reasonSchema = z.string().transform(cleanName).pipe(z.string().min(3, "Give a reason.").max(120));
+const optionalNote = z.string().transform(cleanName).pipe(z.string().max(120)).optional();
+
+export const killSchema = z.object({ note: optionalNote });
+export const reviveSchema = z.object({ reason: reasonSchema });
+export const investigationSchema = z.object({ targetPlayerId: objectId });
+
+export const TASK_KIND_VALUES = ["individual", "team", "paired", "activity"] as const;
+
+const taskTitle = z.string().transform(cleanName).pipe(z.string().min(2, "Title is too short.").max(60, "Title is too long."));
+const taskDescription = z.string().trim().max(300, "Description is too long.");
+const taskPoints = z.number().int("Whole numbers only.").min(0).max(100, "At most 100 points.");
+
+export const taskCreateSchema = z
+  .object({
+    title: taskTitle,
+    description: taskDescription.default(""),
+    kind: z.enum(TASK_KIND_VALUES),
+    points: taskPoints.optional(),
+    verification: z.enum(["none", "staff"]).default("none"),
+    pairScope: z.enum(["same_team", "cross_team"]).optional(),
+    allowGhosts: z.boolean().default(true),
+    order: z.number().int().min(0).max(999).optional(),
+  })
+  .strict();
+
+/** kind and pairScope can't change once a task is created (assignments depend on them). */
+export const taskUpdateSchema = z
+  .object({
+    title: taskTitle.optional(),
+    description: taskDescription.optional(),
+    points: taskPoints.optional(),
+    verification: z.enum(["none", "staff"]).optional(),
+    allowGhosts: z.boolean().optional(),
+    order: z.number().int().min(0).max(999).optional(),
+  })
+  .strict();
+
+/** Who gets the task when it's revealed. Nothing = everyone (all players / all teams). */
+export const taskRevealSchema = z
+  .object({
+    teamIds: z.array(objectId).max(20).optional(),
+    playerIds: z.array(objectId).max(200).optional(),
+  })
+  .strict();
+
+export const taskVerifySchema = z.object({
+  approve: z.boolean(),
+  reason: z.string().transform(cleanName).pipe(z.string().max(120)).optional(),
+});
+
+export const announcementCreateSchema = z
+  .object({
+    text: z.string().trim().min(1, "Write something.").max(280, "At most 280 characters."),
+    level: z.enum(["info", "alert"]).default("info"),
+    teamId: objectId.nullable().optional(),
+    pinned: z.boolean().default(false),
+  })
+  .strict();

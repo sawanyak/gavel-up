@@ -35,10 +35,88 @@ export interface PlayerSnapshot {
     late: boolean;
     /** Impostors only (when impostorsSeeEachOther): the other impostors. */
     allies?: { id: string; name: string; teamName: string; colorHex: string; status: "alive" | "ghost" }[];
-    /** Detectives only. */
-    detective?: { limit: number; used: number; remaining: number };
+    /** Detectives only. `answer` is the host's yes/no to "is <target> an impostor?". */
+    detective?: { limit: number; used: number; remaining: number; history: { targetName: string; answer: "yes" | "no"; at: string }[] };
   };
   team: { score: number; members: { id: string; name: string; status: "alive" | "ghost" }[] };
+  tasks: PlayerTask[];
+  activities: { id: string; title: string; description: string; points: number }[];
+  announcements: AnnouncementView[];
+}
+
+/* ───────── Phase 3: tasks, announcements, detective ───────── */
+
+export type TaskKind = "individual" | "team" | "paired" | "activity";
+export type AssignmentStatus = "open" | "awaiting_partner" | "awaiting_verification" | "completed" | "rejected";
+
+export interface PlayerTask {
+  assignmentId: string;
+  title: string;
+  description: string;
+  points: number;
+  kind: Exclude<TaskKind, "activity">;
+  verification: "none" | "staff";
+  status: AssignmentStatus;
+  /** Paired tasks: whether I've already confirmed. */
+  confirmedByMe: boolean;
+  partner?: { name: string; teamName: string; colorHex: string };
+  rejectReason: string | null;
+}
+
+export interface AnnouncementView {
+  id: string;
+  text: string;
+  level: "info" | "alert";
+  pinned: boolean;
+  teamId: string | null;
+  createdAt: string;
+}
+
+export interface VerificationItem {
+  id: string;
+  taskTitle: string;
+  points: number;
+  playerNames: string[];
+  teams: { id: string; name: string; colorHex: string }[];
+  submittedAt: string | null;
+  rejectedCount: number;
+}
+
+export interface GMTaskView {
+  id: string;
+  title: string;
+  description: string;
+  kind: TaskKind;
+  points: number;
+  verification: "none" | "staff";
+  pairScope: "same_team" | "cross_team" | null;
+  allowGhosts: boolean;
+  revealed: boolean;
+  revealedAt: string | null;
+  order: number;
+  counts: Record<AssignmentStatus, number> & { total: number };
+  assignments: { id: string; status: AssignmentStatus; names: string[]; teamIds: string[] }[];
+}
+
+export interface GMTasksSnapshot {
+  version: number;
+  serverTime: number;
+  phase: GamePhase;
+  tasks: GMTaskView[];
+  queue: VerificationItem[];
+  teams: TeamInfo[];
+  players: { id: string; name: string; teamId: string; status: "alive" | "ghost" }[];
+}
+
+export interface InvestigationView {
+  id: string;
+  detectiveId: string;
+  detectiveName: string;
+  targetId: string;
+  targetName: string;
+  answerIsImpostor: boolean;
+  recordedByName: string;
+  at: string;
 }
 
 export interface RoleCounts {
@@ -85,6 +163,9 @@ export interface GMSnapshot {
     counts: RoleCounts[];
     warnings: string[];
   };
+  investigations: InvestigationView[];
+  announcements: (AnnouncementView & { createdByName: string })[];
+  pendingVerifications: number;
 }
 
 export interface TMSnapshot {
@@ -92,6 +173,8 @@ export interface TMSnapshot {
   serverTime: number;
   game: { code: string; name: string; phase: GamePhase; registrationOpen: boolean };
   teams: (TeamInfo & { score: number; members: { id: string; name: string; status: "alive" | "ghost"; late: boolean }[] })[];
+  queue: VerificationItem[];
+  announcements: AnnouncementView[];
 }
 
 export interface StaffMe {
