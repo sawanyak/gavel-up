@@ -14,7 +14,8 @@
     "seed": "tsx scripts/seed.ts",
     "db:local": "tsx scripts/local-db.ts",
     "dev:lan": "next dev -H 0.0.0.0",
-    "test:phase2": "vitest run tests/phase2"
+    "test:phase2": "vitest run tests/phase2",
+    "test:phase3": "vitest run tests/phase3"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

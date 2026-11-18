@@ -128,6 +128,29 @@ export async function registerPlayer(teamId: Types.ObjectId | string, name = "Te
   return { client: c, res: r, phone };
 }
 
+/**
+ * A game in PLAYING: teams filled, roles revealed, GM logged in.
+ * `players` lists every registered player with their client, id, team key and (secret) role.
+ */
+export async function startGame(perTeam: Record<string, number> = { red: 4, blue: 4 }) {
+  const ctx = await setupGame();
+  const clients = await fillTeams(ctx.byKey, perTeam);
+  const gm = await loginStaff(GM.name, GM.pin);
+  const { POST: revealPOST } = await import("@/app/api/gm/roles/reveal/route");
+  const r = await gm.call(revealPOST, { body: { confirm: "REVEAL" } });
+  if (r.status !== 200) throw new Error(`reveal failed: ${r.status}`);
+  const { GET: stateGET } = await import("@/app/api/player/state/route");
+  const players: { client: Client; id: string; name: string; team: string; role: string }[] = [];
+  for (const [team, cs] of Object.entries(clients)) {
+    for (const c of cs) {
+      const me = (await c.call(stateGET)).body.me;
+      players.push({ client: c, id: me.id, name: me.name, team, role: me.role });
+    }
+  }
+  const game = (await Game.findById(ctx.game._id).lean())!;
+  return { ...ctx, game, gm, players, byRole: (role: string, team?: string) => players.filter((p) => p.role === role && (!team || p.team === team)) };
+}
+
 /** Registers `n` players per team key, e.g. { red: 5, blue: 4 }. Returns their clients. */
 export async function fillTeams(byKey: Record<string, { _id: Types.ObjectId }>, perTeam: Record<string, number>) {
   const clients: Record<string, Client[]> = {};

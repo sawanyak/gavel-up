@@ -69,7 +69,7 @@ describe("Phase 2 · role privacy", () => {
     const dets = views.filter((v) => v.body.me.role === "detective");
     expect(dets).toHaveLength(3);
     for (const v of dets) {
-      expect(v.body.me.detective).toEqual({ limit: 1, used: 0, remaining: 1 });
+      expect(v.body.me.detective).toEqual({ limit: 1, used: 0, remaining: 1, history: [] });
       expect(v.body.me.allies).toBeUndefined();
       expect(JSON.stringify(v.body)).not.toContain("impostor");
     }
