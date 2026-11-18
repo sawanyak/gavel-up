@@ -31,6 +31,8 @@ export function useGameState<T extends Versioned>(url: string, intervalMs: numbe
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stoppedRef = useRef(false);
   const inFlightRef = useRef(false);
+  /** Bumped whenever the URL changes, so responses for an old URL are ignored. */
+  const genRef = useRef(0);
   const intervalRef = useRef(intervalMs);
   intervalRef.current = intervalMs;
 
@@ -42,11 +44,14 @@ export function useGameState<T extends Versioned>(url: string, intervalMs: numbe
   const poll = useCallback(async () => {
     if (stoppedRef.current || inFlightRef.current) return;
     inFlightRef.current = true;
+    const gen = genRef.current;
     const sep = url.includes("?") ? "&" : "?";
     const q = versionRef.current !== null ? `${sep}v=${versionRef.current}` : "";
     let nextDelay: number;
     try {
       const res = await fetch(url + q, { cache: "no-store", credentials: "same-origin" });
+      // The URL changed while this request was in flight (e.g. a filter): drop it.
+      if (gen !== genRef.current) return;
       if (res.status === 304 || res.ok) {
         if (res.ok) {
           const json = (await res.json()) as T;
@@ -81,11 +86,13 @@ export function useGameState<T extends Versioned>(url: string, intervalMs: numbe
         throw info;
       }
     } catch {
+      if (gen !== genRef.current) return;
       failuresRef.current += 1;
       setConnection("reconnecting");
     } finally {
-      inFlightRef.current = false;
+      if (gen === genRef.current) inFlightRef.current = false;
     }
+    if (gen !== genRef.current) return;
     const iv = intervalRef.current;
     const base = typeof iv === "function" ? iv(dataRef.current) : iv;
     const hidden = typeof document !== "undefined" && document.visibilityState === "hidden";
@@ -100,6 +107,8 @@ export function useGameState<T extends Versioned>(url: string, intervalMs: numbe
   }, [poll]);
 
   useEffect(() => {
+    genRef.current += 1;
+    inFlightRef.current = false;
     stoppedRef.current = false;
     versionRef.current = null;
     poll();

@@ -12,13 +12,13 @@ export type ApiResult<T> = { ok: true; status: number; data: T } | { ok: false; 
 /** fetch wrapper for our JSON API. Never throws; network failures return status 0. */
 export async function api<T = unknown>(
   path: string,
-  opts: { method?: string; body?: unknown } = {},
+  opts: { method?: string; body?: unknown; headers?: Record<string, string> } = {},
 ): Promise<ApiResult<T>> {
   let res: Response;
   try {
     res = await fetch(path, {
       method: opts.method ?? (opts.body !== undefined ? "POST" : "GET"),
-      headers: opts.body !== undefined ? { "Content-Type": "application/json" } : undefined,
+      headers: { ...(opts.body !== undefined ? { "Content-Type": "application/json" } : {}), ...opts.headers },
       body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
       credentials: "same-origin",
       cache: "no-store",
@@ -40,6 +40,23 @@ export async function api<T = unknown>(
     status: res.status,
     error: { status: res.status, code: err?.code ?? "HTTP_" + res.status, message: err?.message ?? "Something went wrong.", details: err?.details },
   };
+}
+
+/**
+ * A fresh idempotency key for one user action. `crypto.randomUUID` only exists on HTTPS,
+ * so on the LAN dev server (plain http) we fall back to getRandomValues.
+ */
+export function newIdempotencyKey() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    try {
+      return crypto.randomUUID();
+    } catch {
+      /* not a secure context */
+    }
+  }
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 /** First field error message from a VALIDATION_ERROR response, if any. */

@@ -6,6 +6,7 @@ import { StaffNav } from "@/components/game/StaffNav";
 import { IssueCodeButton, useStaffMe } from "@/components/game/staff";
 import { AnnouncementList, KillButton, ScorePill, VerificationQueue } from "@/components/game/gameplay";
 import { Countdown } from "@/components/game/meeting";
+import { AwardForm, PointsFeed } from "@/components/game/scoring";
 import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip, TeamBadge, inputClass } from "@/components/game/ui";
 import { useGameState } from "@/lib/client/useGameState";
 import type { TMSnapshot } from "@/lib/shared/types";
@@ -77,6 +78,21 @@ export default function TeamManagerPage() {
       )}
 
       {(data.queue.length > 0 || canKill) && <VerificationQueue items={data.queue} onChange={refresh} />}
+
+      {data.teams.length > 0 && data.game.phase !== "SETUP" && data.game.phase !== "LOBBY" && data.game.phase !== "COMPLETED" && (
+        <div className="grid gap-5 lg:grid-cols-2">
+          <AwardForm
+            teams={data.teams}
+            bounds={data.points}
+            activities={data.activities}
+            players={data.teams.flatMap((t) => t.members.map((m) => ({ id: m.id, name: m.name, teamId: t.id })))}
+            onDone={refresh}
+          />
+          <HudCard title="Recent points">
+            <PointsFeed items={data.feed} />
+          </HudCard>
+        </div>
+      )}
 
       <div className="relative max-w-sm">
         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />

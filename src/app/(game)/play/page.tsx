@@ -6,6 +6,7 @@ import { CrewmateVector, type CrewmateColor } from "@/components/CrewmateVector"
 import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip } from "@/components/game/ui";
 import { RoleCard, RoleRevealOverlay } from "@/components/game/roles";
 import { AnnouncementList, GhostBanner, ScorePill, TaskList } from "@/components/game/gameplay";
+import { Leaderboard, PointsFeed } from "@/components/game/scoring";
 import { EmergencyOverlay, MeetingPanel } from "@/components/game/meeting";
 import { useGameState } from "@/lib/client/useGameState";
 import type { PlayerSnapshot } from "@/lib/shared/types";
@@ -114,7 +115,15 @@ export default function PlayerDashboard() {
             </li>
           ))}
         </ul>
+        {game.rolesRevealed && (
+          <div className="mt-4 border-t border-slate-800 pt-3">
+            <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400 mb-1">Recent points</p>
+            <PointsFeed items={data.teamFeed} empty="No points yet — do tasks and join activities!" />
+          </div>
+        )}
       </HudCard>
+
+      {game.rolesRevealed && <Leaderboard rows={data.leaderboard} highlightTeamId={me.team.id} />}
 
       <p className="text-center text-[11px] text-slate-500 font-mono">
         GAME {game.code} · v{data.version}
