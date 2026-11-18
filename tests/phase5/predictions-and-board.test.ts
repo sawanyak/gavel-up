@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import * as scorePredictions from "@/app/api/gm/final/score-predictions/route";
+import { scorePredictions } from "@/lib/server/services/scoring";
+import { ApiError } from "@/lib/server/errors";
+import { Staff, type GameDoc, type StaffDoc } from "@/lib/server/models";
 import * as cancel from "@/app/api/gm/meetings/[id]/cancel/route";
 import * as points from "@/app/api/staff/points/route";
 import * as playerState from "@/app/api/player/state/route";
@@ -10,6 +12,12 @@ import { type Client, createStaffMember, loginStaff, startGame } from "../helper
 import { meetingApi, predict, startVoting } from "../phase4/meetingHelpers";
 
 const toFinal = (gameId: unknown) => Game.updateOne({ _id: gameId }, { $set: { phase: "FINAL", activeMeetingId: null, votingDeadline: null } });
+/** Phase 5 scoring service (Phase 6 wraps it in the ordered final reveal). */
+async function score(gameId: unknown) {
+  const gm = (await Staff.findOne({ role: "GM" }).lean<StaffDoc>())!;
+  const game = (await Game.findById(gameId).lean<GameDoc>())!;
+  return scorePredictions(gm, game, "test");
+}
 let n = 0;
 const give = (c: Client, teamId: string, amount: number, reason = "Q&A answer") =>
   c.call(points.POST, { body: { teamId, amount, reason }, headers: { "idempotency-key": `p-${Date.now()}-${++n}` } });
@@ -30,17 +38,17 @@ describe("Phase 5 · prediction scoring", () => {
     await api.resume(id);
 
     // Not before the final reveal: scoring would give away who the impostors are.
-    expect((await ctx.gm.call(scorePredictions.POST)).status).toBe(409);
+    await expect(score(ctx.game._id)).rejects.toBeInstanceOf(ApiError);
 
     await toFinal(ctx.game._id);
-    const r = await ctx.gm.call(scorePredictions.POST);
+    const r = { status: 200, body: await score(ctx.game._id) };
     expect(r.status).toBe(200);
     expect(r.body.newlyScored).toBe(2);
     const outcomes = r.body.results.map((x: { targetName: string; correct: boolean; amount: number }) => [x.targetName, x.correct, x.amount]).sort();
     expect(outcomes).toEqual([[blueImp.name, true, 30], [greenCrew.name, false, -15]].sort());
     expect((await Team.findById(ctx.byKey.red._id).lean())!.score).toBe(15);
 
-    const again = await ctx.gm.call(scorePredictions.POST);
+    const again = { status: 200, body: await score(ctx.game._id) };
     expect(again.body.newlyScored).toBe(0);
     expect(await PointTransaction.countDocuments({ category: "prediction" })).toBe(2);
     expect((await Prediction.findOne({ targetPlayerId: blueImp.id }).lean())!.outcome).toBe("correct");
@@ -54,7 +62,7 @@ describe("Phase 5 · prediction scoring", () => {
     await predict(red.client, id, String(ctx.byKey.blue._id), blue.id);
     await ctx.gm.call(cancel.POST, { params: { id }, body: { reason: "called by mistake" } });
     await toFinal(ctx.game._id);
-    const r = await ctx.gm.call(scorePredictions.POST);
+    const r = { status: 200, body: await score(ctx.game._id) };
     expect(r.body.newlyScored).toBe(0);
     expect(await PointTransaction.countDocuments({ category: "prediction" })).toBe(0);
   });
