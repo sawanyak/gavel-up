@@ -6,11 +6,11 @@
 
 **What you need:**
 
-| Item | Purpose |
-|---|---|
-| 1 laptop | Runs the site and acts as the **GM screen** |
-| 2–3 phones | Act as **players** (Android and iPhone if possible) |
-| 1 extra phone or browser | Acts as the **Team Manager** |
+| Item                     | Purpose                                             |
+| ------------------------ | --------------------------------------------------- |
+| 1 laptop                 | Runs the site and acts as the **GM screen**         |
+| 2–3 phones               | Act as **players** (Android and iPhone if possible) |
+| 1 extra phone or browser | Acts as the **Team Manager**                        |
 
 Tick each box as you go. If a step fails, write down the step number, what you expected, and what you saw (a screenshot helps).
 
@@ -96,7 +96,7 @@ On the laptop, open `http://localhost:3000`.
 - [ ] **4.1** A QR code is shown, with the URL `http://<host>:3000/play/register?g=GAVELUP26` under it.
   - The URL uses whatever address you opened the GM page with. **To test with phones, open the GM page via the IP address** (`http://192.168.1.23:3000/gm/qr`) so the QR code points to the IP, not `localhost`.
   - In production, set `PUBLIC_BASE_URL` (for example `https://your-site.vercel.app`) so the printed QR code is always correct.
-- [ ] **4.2** The **Print** button shows a clean, printable page (white background, no navigation).
+- [ x ] **4.2** The **Print** button shows a clean, printable page (white background, no navigation).
 
 ---
 
@@ -183,11 +183,11 @@ On the laptop, open `http://localhost:3000`.
 
 ## Result
 
-| | |
-|---|---|
-| Tester | |
-| Date | |
-| Phones and browsers used | |
-| All boxes ticked? | ☐ Yes ☐ No (list failing step numbers below) |
+|                          |                                              |
+| ------------------------ | -------------------------------------------- |
+| Tester                   |                                              |
+| Date                     |                                              |
+| Phones and browsers used |                                              |
+| All boxes ticked?        | ☐ Yes ☐ No (list failing step numbers below) |
 
 Notes / failures:

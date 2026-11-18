@@ -9,12 +9,12 @@
 
 Every requirement is tagged with where it came from:
 
-| Tag | Source |
-|---|---|
-| **[DOC]** | `among_us_IRL.md` (original game description) |
-| **[BRIEF]** | The planning brief (task prompt) |
-| **[USER]** | Decisions the organiser made during planning Q&A. **These override [DOC] and [BRIEF] where they conflict.** |
-| **[REC]** | My recommendation or default. Change these freely. |
+| Tag         | Source                                                                                                      |
+| ----------- | ----------------------------------------------------------------------------------------------------------- |
+| **[DOC]**   | `among_us_IRL.md` (original game description)                                                               |
+| **[BRIEF]** | The planning brief (task prompt)                                                                            |
+| **[USER]**  | Decisions the organiser made during planning Q&A. **These override [DOC] and [BRIEF] where they conflict.** |
+| **[REC]**   | My recommendation or default. Change these freely.                                                          |
 
 ---
 
@@ -46,28 +46,28 @@ The game, as finalised with the organiser:
 
 ### 2.1 Stack (verified by inspection)
 
-| Area | Finding |
-|---|---|
-| Framework | Next.js `^14.2.18`, **App Router** (`src/app`), React 18, TypeScript 5 (`strict` per tsconfig) |
-| Styling | Tailwind 3.4 with a custom theme: `among.*` crewmate colours (red, blue, green, pink, orange, yellow, black, white, purple, cyan, lime, maroon…), `space.*` palette, fonts `font-game` / `font-pixel` / `font-hud`, animations `float`, `pulse-glow`, `emergency-pulse`, shadows `neon-cyan` / `neon-red` / `card-glass` |
-| Global CSS | `globals.css`: Google Fonts (Amatic SC, Press Start 2P, Share Tech Mono, Inter), `.hud-box-cyan`, `.hud-box-red` beveled HUD boxes, custom scrollbar |
-| Icons / utils | `lucide-react`, `clsx`, `tailwind-merge` |
-| Backend | **None.** No `api/` routes, no server actions, no database, no env vars |
-| Auth | **None** |
-| Registration | External **Google Form** (`eventConfig.googleFormUrl`, still a placeholder), linked from the Navbar and home CTA |
-| Game Master UI | **None** |
-| Deployment | Vercel (per `GUIDE.md`), `next.config.mjs` with `images.unoptimized: true` |
-| Tests | None. No test runner installed |
+| Area           | Finding                                                                                                                                                                                                                                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Framework      | Next.js `^14.2.18`, **App Router** (`src/app`), React 18, TypeScript 5 (`strict` per tsconfig)                                                                                                                                                                                                                           |
+| Styling        | Tailwind 3.4 with a custom theme: `among.*` crewmate colours (red, blue, green, pink, orange, yellow, black, white, purple, cyan, lime, maroon…), `space.*` palette, fonts `font-game` / `font-pixel` / `font-hud`, animations `float`, `pulse-glow`, `emergency-pulse`, shadows `neon-cyan` / `neon-red` / `card-glass` |
+| Global CSS     | `globals.css`: Google Fonts (Amatic SC, Press Start 2P, Share Tech Mono, Inter), `.hud-box-cyan`, `.hud-box-red` beveled HUD boxes, custom scrollbar                                                                                                                                                                     |
+| Icons / utils  | `lucide-react`, `clsx`, `tailwind-merge`                                                                                                                                                                                                                                                                                 |
+| Backend        | **None.** No `api/` routes, no server actions, no database, no env vars                                                                                                                                                                                                                                                  |
+| Auth           | **None**                                                                                                                                                                                                                                                                                                                 |
+| Registration   | External **Google Form** (`eventConfig.googleFormUrl`, still a placeholder), linked from the Navbar and home CTA                                                                                                                                                                                                         |
+| Game Master UI | **None**                                                                                                                                                                                                                                                                                                                 |
+| Deployment     | Vercel (per `GUIDE.md`), `next.config.mjs` with `images.unoptimized: true`                                                                                                                                                                                                                                               |
+| Tests          | None. No test runner installed                                                                                                                                                                                                                                                                                           |
 
 ### 2.2 Routes and components
 
-| Path | File | Notes |
-|---|---|---|
-| `/` | `src/app/page.tsx` | Hero, speaker scene, register CTA, countdown, `TaskMiniGame` |
-| `/about` | `src/app/about/page.tsx` | Mission |
-| `/why-join` | `src/app/why-join/page.tsx` | |
-| `/contact` | `src/app/contact/page.tsx` | "EMERGENCY MEETING" styled banner (reusable look) |
-| Root layout | `src/app/layout.tsx` | **`"use client"`**. Renders `LoadingScreen` on **every** full load, plus `SpaceBackground`, `Navbar`, `Footer` |
+| Path        | File                        | Notes                                                                                                          |
+| ----------- | --------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `/`         | `src/app/page.tsx`          | Hero, speaker scene, register CTA, countdown, `TaskMiniGame`                                                   |
+| `/about`    | `src/app/about/page.tsx`    | Mission                                                                                                        |
+| `/why-join` | `src/app/why-join/page.tsx` |                                                                                                                |
+| `/contact`  | `src/app/contact/page.tsx`  | "EMERGENCY MEETING" styled banner (reusable look)                                                              |
+| Root layout | `src/app/layout.tsx`        | **`"use client"`**. Renders `LoadingScreen` on **every** full load, plus `SpaceBackground`, `Navbar`, `Footer` |
 
 Reusable components:
 
@@ -99,21 +99,21 @@ Nothing is rebuilt. The marketing site stays byte-for-byte the same apart from t
 
 ### 3.1 Access levels
 
-| Access level | Who | Source |
-|---|---|---|
-| Game Master (GM) | 2 hosts ("Admin" in [DOC]) | [DOC][BRIEF] |
-| Team Manager (TM) | Exco members, one or more per team | [DOC][BRIEF] |
-| Player | Audience | [DOC][BRIEF] |
-| Public / Projector | Anyone, no login | [BRIEF] |
+| Access level       | Who                                | Source       |
+| ------------------ | ---------------------------------- | ------------ |
+| Game Master (GM)   | 2 hosts ("Admin" in [DOC])         | [DOC][BRIEF] |
+| Team Manager (TM)  | Exco members, one or more per team | [DOC][BRIEF] |
+| Player             | Audience                           | [DOC][BRIEF] |
+| Public / Projector | Anyone, no login                   | [BRIEF]      |
 
 ### 3.2 Characters
 
-| Character | Count | Abilities | Source |
-|---|---|---|---|
-| Crewmate | Everyone else | Tasks, vote, predict | [DOC] |
-| Impostor | **1 per team** (configurable, with per-team overrides) | Physical sticker kills. **Sees the list of all impostors** | [DOC][BRIEF] |
-| Detective | **1 per team** (configurable) | **One** secret physical question to the GM ("Is X an impostor?"), which the GM logs in the app | [USER] overrides [DOC] (3 questions) and [BRIEF] (digital) |
-| ~~Medic~~ | **Removed** | — | [USER] overrides [DOC][BRIEF] |
+| Character | Count                                                  | Abilities                                                                                      | Source                                                     |
+| --------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Crewmate  | Everyone else                                          | Tasks, vote, predict                                                                           | [DOC]                                                      |
+| Impostor  | **1 per team** (configurable, with per-team overrides) | Physical sticker kills. **Sees the list of all impostors**                                     | [DOC][BRIEF]                                               |
+| Detective | **1 per team** (configurable)                          | **One** secret physical question to the GM ("Is X an impostor?"), which the GM logs in the app | [USER] overrides [DOC] (3 questions) and [BRIEF] (digital) |
+| ~~Medic~~ | **Removed**                                            | —                                                                                              | [USER] overrides [DOC][BRIEF]                              |
 
 ### 3.3 Requirement list
 
@@ -181,18 +181,18 @@ Nothing is rebuilt. The marketing site stays byte-for-byte the same apart from t
 
 ## 4. Non-Functional Requirements
 
-| ID | Requirement | Target |
-|---|---|---|
-| NF1 | Concurrency | 80 players + 10 staff + 1 projector polling at the same time. Registration burst of ~20/min at the desk |
-| NF2 | Latency | Phase changes reach every phone within **≤ 4 s** (≤ 2 s during voting) |
-| NF3 | Correctness | The server is authoritative for roles, votes, points, timers and phases. All invariants are enforced by unique indexes or conditional updates |
-| NF4 | Resilience | Refresh, reconnect, function cold start or redeploy never lose or corrupt state. All state lives in Mongo |
-| NF5 | Privacy | No role, vote choice or prediction leaks before an authorised reveal. Phone numbers are visible only to GMs |
-| NF6 | Mobile-first | Works on low-end Android Chrome and iOS Safari at 360 px wide. Tap targets ≥ 44 px |
-| NF7 | Simplicity | One deployable app, one database, no extra realtime vendor |
-| NF8 | Auditability | Every staff mutation is written to `auditLogs` with actor, before and after |
-| NF9 | Recoverability | Every GM action can be undone or compensated (revive, reverse transaction, invalidate vote, reopen voting) |
-| NF10 | Data minimisation | Collect only name, phone and team. Delete phones within 30 days ([REC]) |
+| ID   | Requirement       | Target                                                                                                                                        |
+| ---- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| NF1  | Concurrency       | 80 players + 10 staff + 1 projector polling at the same time. Registration burst of ~20/min at the desk                                       |
+| NF2  | Latency           | Phase changes reach every phone within **≤ 4 s** (≤ 2 s during voting)                                                                        |
+| NF3  | Correctness       | The server is authoritative for roles, votes, points, timers and phases. All invariants are enforced by unique indexes or conditional updates |
+| NF4  | Resilience        | Refresh, reconnect, function cold start or redeploy never lose or corrupt state. All state lives in Mongo                                     |
+| NF5  | Privacy           | No role, vote choice or prediction leaks before an authorised reveal. Phone numbers are visible only to GMs                                   |
+| NF6  | Mobile-first      | Works on low-end Android Chrome and iOS Safari at 360 px wide. Tap targets ≥ 44 px                                                            |
+| NF7  | Simplicity        | One deployable app, one database, no extra realtime vendor                                                                                    |
+| NF8  | Auditability      | Every staff mutation is written to `auditLogs` with actor, before and after                                                                   |
+| NF9  | Recoverability    | Every GM action can be undone or compensated (revive, reverse transaction, invalidate vote, reopen voting)                                    |
+| NF10 | Data minimisation | Collect only name, phone and team. Delete phones within 30 days ([REC])                                                                       |
 
 ---
 
@@ -200,16 +200,16 @@ Nothing is rebuilt. The marketing site stays byte-for-byte the same apart from t
 
 ### 5.1 Options considered
 
-| Concern | Options | Choice |
-|---|---|---|
-| Backend | (a) Next.js Route Handlers on Vercel, (b) separate Express or Nest service, (c) Server Actions only | **(a)**. Same repo and deploy. Route Handlers are easier to test and to call from polling than Server Actions |
-| Realtime | WebSockets/Socket.IO (needs a long-running server, which Vercel doesn't provide), SSE (Vercel functions have execution time limits, so streams get cut), Pusher/Ably (extra vendor), **polling** | **Polling + version numbers** [USER]. With 80 clients this is about 30–55 req/s, each usually a single indexed read that returns `304` |
-| ODM | Native `mongodb` driver, **Mongoose** | **Mongoose**: declarative schemas and indexes, validation and transactions, and familiar to most developers. Request bodies are validated with **zod** at the edge of each handler |
-| Sessions | JWT in a cookie, NextAuth, **opaque token + `sessions` collection** | **Opaque token**: revocable immediately (needed for device recovery and kicking out impostors), no extra libraries |
-| Staff auth | Shared passcodes, Google OAuth, **individual PINs** | **Individual name + 6-digit PIN**, hashed with bcrypt [USER] |
-| Timers | Background workers or cron (not available or reliable on serverless) | **Deadline timestamps** (`votingEndsAt`). The server checks deadlines whenever a request arrives, and closing is idempotent. No background process |
-| QR | `qrcode` npm package, rendered on `/gm/qr` and printable | |
-| Hosting | Vercel (existing) + **MongoDB Atlas** in the closest region | |
+| Concern    | Options                                                                                                                                                                                          | Choice                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend    | (a) Next.js Route Handlers on Vercel, (b) separate Express or Nest service, (c) Server Actions only                                                                                              | **(a)**. Same repo and deploy. Route Handlers are easier to test and to call from polling than Server Actions                                                                      |
+| Realtime   | WebSockets/Socket.IO (needs a long-running server, which Vercel doesn't provide), SSE (Vercel functions have execution time limits, so streams get cut), Pusher/Ably (extra vendor), **polling** | **Polling + version numbers** [USER]. With 80 clients this is about 30–55 req/s, each usually a single indexed read that returns `304`                                             |
+| ODM        | Native `mongodb` driver, **Mongoose**                                                                                                                                                            | **Mongoose**: declarative schemas and indexes, validation and transactions, and familiar to most developers. Request bodies are validated with **zod** at the edge of each handler |
+| Sessions   | JWT in a cookie, NextAuth, **opaque token + `sessions` collection**                                                                                                                              | **Opaque token**: revocable immediately (needed for device recovery and kicking out impostors), no extra libraries                                                                 |
+| Staff auth | Shared passcodes, Google OAuth, **individual PINs**                                                                                                                                              | **Individual name + 6-digit PIN**, hashed with bcrypt [USER]                                                                                                                       |
+| Timers     | Background workers or cron (not available or reliable on serverless)                                                                                                                             | **Deadline timestamps** (`votingEndsAt`). The server checks deadlines whenever a request arrives, and closing is idempotent. No background process                                 |
+| QR         | `qrcode` npm package, rendered on `/gm/qr` and printable                                                                                                                                         |                                                                                                                                                                                    |
+| Hosting    | Vercel (existing) + **MongoDB Atlas** in the closest region                                                                                                                                      |                                                                                                                                                                                    |
 
 ### 5.2 Architecture diagram
 
@@ -316,6 +316,7 @@ All documents carry `gameId` so that a future event (or a rehearsal game) is ful
   createdAt, updatedAt, archivedAt: Date | null
 }
 ```
+
 Indexes: `{ code: 1 } unique`.
 
 ### 6.2 `teams`
@@ -325,6 +326,7 @@ Indexes: `{ code: 1 } unique`.
   score: 0,               // denormalised cache, updated in the same transaction as each pointTransaction
   createdAt }
 ```
+
 Indexes: `{ gameId: 1, key: 1 } unique`. The 5 default colours come from the existing `among.*` palette: red, blue, green, yellow, purple. [REC]
 
 ### 6.3 `players`
@@ -343,7 +345,9 @@ Indexes: `{ gameId: 1, key: 1 } unique`. The 5 default colours come from the exi
   registeredAt, updatedAt
 }
 ```
+
 Indexes:
+
 - `{ gameId: 1, phoneE164: 1 } unique`, which prevents duplicate registration.
 - `{ gameId: 1, teamId: 1, status: 1 }`
 - `{ gameId: 1, role: 1 }`
@@ -358,6 +362,7 @@ Indexes:
   pinHash: string, active: true, failedAttempts: 0, lockedUntil: Date | null,
   createdBy, createdAt }
 ```
+
 Indexes: `{ nameNormalized: 1 } unique`.
 
 ### 6.5 `sessions`
@@ -366,7 +371,9 @@ Indexes: `{ nameNormalized: 1 } unique`.
 { _id, tokenHash: sha256(token), subjectType: "player" | "staff", subjectId, gameId,
   createdAt, lastSeenAt, expiresAt, revokedAt: Date | null, userAgent }
 ```
+
 Indexes:
+
 - `{ tokenHash: 1 } unique`
 - `{ subjectId: 1 }`
 - `{ expiresAt: 1 }` TTL (expireAfterSeconds 0)
@@ -378,6 +385,7 @@ Player sessions last 2 days and staff sessions 12 hours.
 ```ts
 { _id, playerId, gameId, codeHash, issuedBy: staffId, expiresAt (+10 min), usedAt: null }
 ```
+
 Indexes: `{ expiresAt: 1 }` TTL, `{ playerId: 1 }`.
 
 ### 6.7 `tasks` (task definitions)
@@ -391,6 +399,7 @@ Indexes: `{ expiresAt: 1 }` TTL, `{ playerId: 1 }`.
   revealed: false, revealedAt: Date | null,
   order: number, active: true, createdBy, createdAt }
 ```
+
 Indexes: `{ gameId: 1, revealed: 1, order: 1 }`.
 
 `activity` covers table topics, Q&A and icebreakers. These aren't self-completed: staff award points against the activity through the manual award flow, with the activity linked for reporting.
@@ -407,7 +416,9 @@ Indexes: `{ gameId: 1, revealed: 1, order: 1 }`.
   transactionIds: ObjectId[],
   createdAt, updatedAt }
 ```
+
 Indexes:
+
 - `{ gameId: 1, taskId: 1, assignmentKey: 1 } unique`, so the same task can't be assigned twice.
 - `{ gameId: 1, assigneeIds: 1 }`
 - `{ gameId: 1, teamId: 1, status: 1 }`
@@ -430,6 +441,7 @@ Indexes:
   }],
   resultsRevealedAt, resolvedAt, resolvedBy }
 ```
+
 Indexes: `{ gameId: 1, number: 1 } unique`. The "only one active meeting" rule is enforced through `games.activeMeetingId` with a conditional update.
 
 ### 6.10 `votes` (internal team votes)
@@ -439,6 +451,7 @@ Indexes: `{ gameId: 1, number: 1 } unique`. The "only one active meeting" rule i
   targetId: ObjectId | null,          // null = skip
   createdAt, invalidatedAt: null, invalidatedBy, invalidReason }
 ```
+
 Indexes: `{ meetingId: 1, voterId: 1 } unique`, which makes it **one vote per round**. Also `{ meetingId: 1, teamId: 1 }`.
 
 Votes are **final once cast** ([REC]). Allowing changes complicates "who has voted" and invites last-second manipulation.
@@ -453,7 +466,9 @@ Votes are **final once cast** ([REC]). Allowing changes complicates "who has vot
   outcome: null | "correct" | "wrong", scoredAt, transactionId,
   invalidatedAt: null, invalidatedBy, invalidReason }
 ```
+
 Indexes:
+
 - `{ meetingId: 1, predictorTeamId: 1, targetTeamId: 1 } unique`. This **is** the rule that the first prediction locks it for the team. [USER]
 - `{ meetingId: 1, predictorPlayerId: 1 }`
 
@@ -471,7 +486,9 @@ Indexes:
   reversesId: ObjectId | null, reversedById: ObjectId | null,
   createdAt }
 ```
+
 Indexes:
+
 - `{ gameId: 1, idempotencyKey: 1 } unique`
 - `{ gameId: 1, createdAt: -1 }`
 - `{ gameId: 1, teamId: 1 }`
@@ -485,6 +502,7 @@ Indexes:
   meetingId: ObjectId | null, recordedBy: staffId | "system", note,
   createdAt, revertedAt: null, revertedBy, revertReason }
 ```
+
 Index: `{ gameId: 1, playerId: 1, createdAt: -1 }`.
 
 ### 6.14 `investigations` (Detective)
@@ -492,6 +510,7 @@ Index: `{ gameId: 1, playerId: 1, createdAt: -1 }`.
 ```ts
 { _id, gameId, detectiveId, targetId, answerIsImpostor: boolean, recordedBy, createdAt }
 ```
+
 The limit is enforced by a conditional increment on `players.investigationsUsed` (§8.3).
 
 ### 6.15 `announcements`
@@ -508,30 +527,31 @@ The limit is enforced by a conditional increment on `players.investigationsUsed`
   target: { type, id }, before: object | null, after: object | null,
   requestId, ip, createdAt }
 ```
+
 Index: `{ gameId: 1, createdAt: -1 }`. Visible to GMs only. Never deleted during the event.
 
 ### 6.17 Collections not created
 
-| Brief entity | Decision |
-|---|---|
-| Medic protections | **Dropped** [USER]. Can be added later as `protections` |
-| Roles / role assignments | Folded into `players.role` (§6.3) |
-| Task completions | Folded into `taskAssignments` |
-| Game configuration | Embedded in `games.config` |
-| Emergency meetings | `meetings` |
+| Brief entity             | Decision                                                |
+| ------------------------ | ------------------------------------------------------- |
+| Medic protections        | **Dropped** [USER]. Can be added later as `protections` |
+| Roles / role assignments | Folded into `players.role` (§6.3)                       |
+| Task completions         | Folded into `taskAssignments`                           |
+| Game configuration       | Embedded in `games.config`                              |
+| Emergency meetings       | `meetings`                                              |
 
 ### 6.18 Concurrency and idempotency summary
 
-| Risk | Protection |
-|---|---|
-| Double registration | Unique `{gameId, phoneE164}`. A retry from the **same session** returns the existing player (200). A different session gets `409` |
+| Risk                                  | Protection                                                                                                                                                                                                                                                                                |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Double registration                   | Unique `{gameId, phoneE164}`. A retry from the **same session** returns the existing player (200). A different session gets `409`                                                                                                                                                         |
 | Double Reveal click / two GMs at once | `findOneAndUpdate({_id, rolesRevealedAt:null, revealLock:null}, {$set:{revealLock}})` → allocate in a **transaction** → set `rolesRevealedAt`, clear the lock. A second caller gets `200 {alreadyRevealed:true}` or `409 REVEAL_IN_PROGRESS`. A stale lock (>60 s) can be cleared by a GM |
-| Double vote | Unique `{meetingId, voterId}`. A duplicate key returns the existing vote (200, idempotent) |
-| Prediction race between teammates | Unique `{meetingId, predictorTeamId, targetTeamId}`. The loser gets `409 PREDICTION_LOCKED` with the locked target |
-| Duplicate point award | Unique `{gameId, idempotencyKey}`, and the transaction write and `teams.score $inc` happen in **one Mongo transaction** |
-| Two meetings at once | `findOneAndUpdate({_id, activeMeetingId:null, phase:"PLAYING"}, …)` |
-| Phase transitions | Every transition is a conditional update on the expected current phase or status (compare-and-set) |
-| Detective over-limit | `findOneAndUpdate({_id, role:"detective", investigationsUsed:{$lt:limit}}, {$inc:{investigationsUsed:1}})` inside the transaction that inserts the investigation |
+| Double vote                           | Unique `{meetingId, voterId}`. A duplicate key returns the existing vote (200, idempotent)                                                                                                                                                                                                |
+| Prediction race between teammates     | Unique `{meetingId, predictorTeamId, targetTeamId}`. The loser gets `409 PREDICTION_LOCKED` with the locked target                                                                                                                                                                        |
+| Duplicate point award                 | Unique `{gameId, idempotencyKey}`, and the transaction write and `teams.score $inc` happen in **one Mongo transaction**                                                                                                                                                                   |
+| Two meetings at once                  | `findOneAndUpdate({_id, activeMeetingId:null, phase:"PLAYING"}, …)`                                                                                                                                                                                                                       |
+| Phase transitions                     | Every transition is a conditional update on the expected current phase or status (compare-and-set)                                                                                                                                                                                        |
+| Detective over-limit                  | `findOneAndUpdate({_id, role:"detective", investigationsUsed:{$lt:limit}}, {$inc:{investigationsUsed:1}})` inside the transaction that inserts the investigation                                                                                                                          |
 
 ---
 
@@ -575,20 +595,20 @@ stateDiagram-v2
 
 ### 7.2 Transitions
 
-| From → To | Trigger | Validations | Side effects | Player UI |
-|---|---|---|---|---|
-| SETUP → LOBBY | GM "Open registration" | ≥2 teams exist | `registrationOpen=true` | Register form works |
-| LOBBY → PLAYING | GM **Reveal Roles** (type-to-confirm `REVEAL`) | ≥1 player per team. Warn (not block) if a team has fewer than `minTeamSizeForSpecialRoles` | Allocation (§11.1), `rolesRevealedAt`, display→RULES | Full-screen **role reveal** animation + `playRoleReveal()`, shown once (stored in localStorage `seenReveal:<gameId>`). The role card stays available afterwards |
-| PLAYING → MEETING | GM **Emergency Meeting** | `activeMeetingId==null`, `meetingsHeld<maxMeetings` (the GM can override with confirmation) | Create the meeting (CALLED), display→MEETING | Red **EMERGENCY MEETING** overlay + `playEmergency()`. "Discuss with your team" |
-| CALLED → VOTING | GM **Open voting** (duration input, default 180 s) | — | Snapshot of eligible voters and candidates per team. `votingEndsAt=now+duration` | Vote panel + countdown. Prediction panel (optional tab) |
-| VOTING → CLOSED | GM **Close voting**, or deadline + grace has passed (the first request after that closes it, idempotently) | — | Compute tallies, `topCandidateIds`, `tie` | "Voting closed — awaiting results" |
-| CLOSED → VOTING | GM **Reopen** (extra seconds) | Results not yet revealed | Audit entry | Vote panel returns for anyone who hasn't voted |
-| CLOSED → RESULTS | GM **Reveal results** | Every tied team has a GM decision | Display→RESULTS, per-team eliminated player + impostor/crewmate | Your team's result card |
-| RESULTS → RESOLVED | GM **Confirm** | — | Eliminated players → ghost (cause `vote`). Internal-vote points awarded (idempotent). `meetingsHeld++` | Ghost status for the eliminated |
-| MEETING → PLAYING | GM **Resume** | Status RESOLVED or CANCELLED | `activeMeetingId=null` | Normal dashboard |
-| PLAYING → FINAL | GM **Start final reveal** | No active meeting | Voting and predictions disabled. Tasks frozen ([REC]) | "Final reveal in progress — watch the screen" |
-| FINAL steps | GM buttons, in order | Each step requires the previous one | See §11.5 | Their own team's standing. After the impostor reveal, all roles become public |
-| FINAL → COMPLETED | GM **Finish & archive** (type `FINISH`) | Winner announced | `registrationOpen=false`. All mutations rejected (`423 GAME_ARCHIVED`) | Read-only results |
+| From → To          | Trigger                                                                                                    | Validations                                                                                 | Side effects                                                                                           | Player UI                                                                                                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SETUP → LOBBY      | GM "Open registration"                                                                                     | ≥2 teams exist                                                                              | `registrationOpen=true`                                                                                | Register form works                                                                                                                                             |
+| LOBBY → PLAYING    | GM **Reveal Roles** (type-to-confirm `REVEAL`)                                                             | ≥1 player per team. Warn (not block) if a team has fewer than `minTeamSizeForSpecialRoles`  | Allocation (§11.1), `rolesRevealedAt`, display→RULES                                                   | Full-screen **role reveal** animation + `playRoleReveal()`, shown once (stored in localStorage `seenReveal:<gameId>`). The role card stays available afterwards |
+| PLAYING → MEETING  | GM **Emergency Meeting**                                                                                   | `activeMeetingId==null`, `meetingsHeld<maxMeetings` (the GM can override with confirmation) | Create the meeting (CALLED), display→MEETING                                                           | Red **EMERGENCY MEETING** overlay + `playEmergency()`. "Discuss with your team"                                                                                 |
+| CALLED → VOTING    | GM **Open voting** (duration input, default 180 s)                                                         | —                                                                                           | Snapshot of eligible voters and candidates per team. `votingEndsAt=now+duration`                       | Vote panel + countdown. Prediction panel (optional tab)                                                                                                         |
+| VOTING → CLOSED    | GM **Close voting**, or deadline + grace has passed (the first request after that closes it, idempotently) | —                                                                                           | Compute tallies, `topCandidateIds`, `tie`                                                              | "Voting closed — awaiting results"                                                                                                                              |
+| CLOSED → VOTING    | GM **Reopen** (extra seconds)                                                                              | Results not yet revealed                                                                    | Audit entry                                                                                            | Vote panel returns for anyone who hasn't voted                                                                                                                  |
+| CLOSED → RESULTS   | GM **Reveal results**                                                                                      | Every tied team has a GM decision                                                           | Display→RESULTS, per-team eliminated player + impostor/crewmate                                        | Your team's result card                                                                                                                                         |
+| RESULTS → RESOLVED | GM **Confirm**                                                                                             | —                                                                                           | Eliminated players → ghost (cause `vote`). Internal-vote points awarded (idempotent). `meetingsHeld++` | Ghost status for the eliminated                                                                                                                                 |
+| MEETING → PLAYING  | GM **Resume**                                                                                              | Status RESOLVED or CANCELLED                                                                | `activeMeetingId=null`                                                                                 | Normal dashboard                                                                                                                                                |
+| PLAYING → FINAL    | GM **Start final reveal**                                                                                  | No active meeting                                                                           | Voting and predictions disabled. Tasks frozen ([REC])                                                  | "Final reveal in progress — watch the screen"                                                                                                                   |
+| FINAL steps        | GM buttons, in order                                                                                       | Each step requires the previous one                                                         | See §11.5                                                                                              | Their own team's standing. After the impostor reveal, all roles become public                                                                                   |
+| FINAL → COMPLETED  | GM **Finish & archive** (type `FINISH`)                                                                    | Winner announced                                                                            | `registrationOpen=false`. All mutations rejected (`423 GAME_ARCHIVED`)                                 | Read-only results                                                                                                                                               |
 
 ### 7.3 Refresh, reconnect and restart safety
 
@@ -634,26 +654,26 @@ src/app/
 
 ### 8.2 Shared game components (`src/components/game/`)
 
-| Component | Purpose | Reuses |
-|---|---|---|
-| `GameShell` | Header with logo, team badge, phase chip, mute toggle, connection dot | `Navbar` styles, `sounds` |
-| `HudCard` | Panel wrapper (`variant="cyan" or "red"`) | `.hud-box-cyan/red`, `card-glass` |
-| `TeamBadge` / `PlayerChip` | Colour crewmate + name | `CrewmateVector` |
-| `PhaseBanner` | Current phase + instructions | |
-| `RoleCard` | Role name, art, description, objective, abilities, how to score. Has a "hold to reveal" blur so nobody can read it over the player's shoulder | `imposter.png`, `CrewmateVector` |
-| `RoleRevealOverlay` | One-time animated reveal | `playRoleReveal`, `shh.jpg` |
-| `ImpostorAllies` | Impostor-only list of fellow impostors | |
-| `EmergencyOverlay` | Meeting alarm screen | `emergency-pulse`, `playEmergency` |
-| `CountdownTimer` | Server-synced countdown | Home page countdown styling |
-| `VotePanel` | Big tappable candidate list (own team, alive, not self) + Skip + **confirm sheet** + "Vote recorded ✓" | |
-| `PredictionPanel` | Per-other-team picker. Shows "Locked by <teammate>: <target>" when locked | |
-| `TaskList` / `TaskCard` | Status chips, partner name, "Mark complete" / "Confirm" / "Awaiting verification" | `TaskMiniGame` look, `playTaskComplete` |
-| `TeamScoreCard`, `Leaderboard`, `PointsFeed` | Scores and recent transactions | |
-| `VoteMonitor` | GM: per-team voted / not-voted lists + live bars | |
-| `ConfirmDialog` | Standard confirm. **Type-to-confirm** variant for irreversible actions | |
-| `PlayerPicker` | Searchable list (staff) | |
-| `ConnectionStatus` | Online / reconnecting / offline banner | |
-| `StateViews` | `Loading`, `Waiting` ("Roles not revealed yet — stay tuned"), `Error`, `SessionExpired` (link to recovery), `Archived` | |
+| Component                                    | Purpose                                                                                                                                       | Reuses                                  |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `GameShell`                                  | Header with logo, team badge, phase chip, mute toggle, connection dot                                                                         | `Navbar` styles, `sounds`               |
+| `HudCard`                                    | Panel wrapper (`variant="cyan" or "red"`)                                                                                                     | `.hud-box-cyan/red`, `card-glass`       |
+| `TeamBadge` / `PlayerChip`                   | Colour crewmate + name                                                                                                                        | `CrewmateVector`                        |
+| `PhaseBanner`                                | Current phase + instructions                                                                                                                  |                                         |
+| `RoleCard`                                   | Role name, art, description, objective, abilities, how to score. Has a "hold to reveal" blur so nobody can read it over the player's shoulder | `imposter.png`, `CrewmateVector`        |
+| `RoleRevealOverlay`                          | One-time animated reveal                                                                                                                      | `playRoleReveal`, `shh.jpg`             |
+| `ImpostorAllies`                             | Impostor-only list of fellow impostors                                                                                                        |                                         |
+| `EmergencyOverlay`                           | Meeting alarm screen                                                                                                                          | `emergency-pulse`, `playEmergency`      |
+| `CountdownTimer`                             | Server-synced countdown                                                                                                                       | Home page countdown styling             |
+| `VotePanel`                                  | Big tappable candidate list (own team, alive, not self) + Skip + **confirm sheet** + "Vote recorded ✓"                                        |                                         |
+| `PredictionPanel`                            | Per-other-team picker. Shows "Locked by <teammate>: <target>" when locked                                                                     |                                         |
+| `TaskList` / `TaskCard`                      | Status chips, partner name, "Mark complete" / "Confirm" / "Awaiting verification"                                                             | `TaskMiniGame` look, `playTaskComplete` |
+| `TeamScoreCard`, `Leaderboard`, `PointsFeed` | Scores and recent transactions                                                                                                                |                                         |
+| `VoteMonitor`                                | GM: per-team voted / not-voted lists + live bars                                                                                              |                                         |
+| `ConfirmDialog`                              | Standard confirm. **Type-to-confirm** variant for irreversible actions                                                                        |                                         |
+| `PlayerPicker`                               | Searchable list (staff)                                                                                                                       |                                         |
+| `ConnectionStatus`                           | Online / reconnecting / offline banner                                                                                                        |                                         |
+| `StateViews`                                 | `Loading`, `Waiting` ("Roles not revealed yet — stay tuned"), `Error`, `SessionExpired` (link to recovery), `Archived`                        |                                         |
 
 ### 8.3 Client data hook
 
@@ -668,12 +688,12 @@ src/app/
 
 ### 8.4 Role-specific player UI
 
-| Phase | Crewmate | Impostor | Detective | Ghost overlay |
-|---|---|---|---|---|
-| LOBBY | Waiting card + team + rules link | same | same | — |
-| PLAYING | Role card, tasks, team score, announcements | + allies list, "Use stickers discreetly" rules | + "Investigations remaining: 1. Ask a host privately" | Grey ghost styling. Vote and predict hidden. "You can still do tasks for your team" |
-| MEETING | Vote + optional predictions | same (voting among own team, can vote for anyone) | same | "Ghosts can't vote" |
-| FINAL / COMPLETED | Team results, revealed impostors, win banner | same | same | same |
+| Phase             | Crewmate                                     | Impostor                                          | Detective                                             | Ghost overlay                                                                       |
+| ----------------- | -------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| LOBBY             | Waiting card + team + rules link             | same                                              | same                                                  | —                                                                                   |
+| PLAYING           | Role card, tasks, team score, announcements  | + allies list, "Use stickers discreetly" rules    | + "Investigations remaining: 1. Ask a host privately" | Grey ghost styling. Vote and predict hidden. "You can still do tasks for your team" |
+| MEETING           | Vote + optional predictions                  | same (voting among own team, can vote for anyone) | same                                                  | "Ghosts can't vote"                                                                 |
+| FINAL / COMPLETED | Team results, revealed impostors, win banner | same                                              | same                                                  | same                                                                                |
 
 ### 8.5 GM controls and safety
 
@@ -716,78 +736,78 @@ The GM drives which screen shows through `games.display.screen`.
 
 ### 9.2 Public
 
-| Method | URL | Auth | Request | Response | Notes / errors |
-|---|---|---|---|---|---|
-| GET | `/api/public/game?code=` | PUB | — | `{ name, phase, registrationOpen, teams:[{id,key,name,colorHex}], rulesConfig:{maxMeetings, votingDurationSec, points, impostorWinThreshold} }` | `404 GAME_NOT_FOUND` |
-| GET | `/api/public/display?code=&v=` | PUB | — | `DisplaySnapshot` (§10.2) or `304` | |
+| Method | URL                            | Auth | Request | Response                                                                                                                                        | Notes / errors       |
+| ------ | ------------------------------ | ---- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| GET    | `/api/public/game?code=`       | PUB  | —       | `{ name, phase, registrationOpen, teams:[{id,key,name,colorHex}], rulesConfig:{maxMeetings, votingDurationSec, points, impostorWinThreshold} }` | `404 GAME_NOT_FOUND` |
+| GET    | `/api/public/display?code=&v=` | PUB  | —       | `DisplaySnapshot` (§10.2) or `304`                                                                                                              |                      |
 
 ### 9.3 Player
 
-| Method | URL | Auth | Request | Response | Validation / errors |
-|---|---|---|---|---|---|
-| POST | `/api/player/register` | PUB | `{ gameCode, name, phone, teamId }` | `201 { player:{id,name,team} }` + `Set-Cookie` | `name` 2–40 chars, trimmed, letters/spaces/.-'. `phone` must be a valid LK or international number. `teamId` must be in the game. `403 REGISTRATION_CLOSED`. `409 PHONE_ALREADY_REGISTERED` (message: "Already registered — ask a Team Manager for a login code"). Same-session repeat → `200` existing. Rate limit 5/min/IP ([REC]: generous, because the venue Wi-Fi shares one IP; mainly limit per phone) |
-| POST | `/api/player/recover` | PUB | `{ gameCode, phone, code }` | `200` + `Set-Cookie`, revokes other player sessions | `401 INVALID_CODE` (expired or used). 5 attempts per phone per 10 min |
-| POST | `/api/player/logout` | PL | — | `204` | |
-| GET | `/api/player/state?v=` | PL | — | `PlayerSnapshot` (§10.2) or `304` | `401 SESSION_EXPIRED`, `410 PLAYER_REMOVED` |
-| POST | `/api/player/tasks/:assignmentId/complete` | PL | — | `{ assignment }` | Caller must be an assignee (or a team member for team tasks). Task revealed. Phase PLAYING or MEETING. `409 ALREADY_COMPLETED` → returns the current state (idempotent). Ghosts allowed if `allowGhosts` |
-| POST | `/api/player/votes` | PL | `{ meetingId, targetId \| null }` | `201 { vote:{targetId, createdAt} }` | Meeting VOTING and `now ≤ endsAt+grace` (else `409 VOTING_CLOSED`). Caller is in the `eligible.voterIds` snapshot (else `403 NOT_ELIGIBLE`, which covers ghosts and late joiners). Target is in own-team `candidateIds`, not self (`400 INVALID_TARGET`). Null only if `allowSkipVote`. Duplicate → `200` with the existing vote (`alreadyVoted:true`) |
-| POST | `/api/player/predictions` | PL | `{ meetingId, targetTeamId, targetPlayerId }` | `201 { prediction }` | Predictions enabled. Meeting VOTING. Caller alive and eligible. `targetTeamId ≠ own team`. Target is an alive, non-removed member of `targetTeamId`. Not self. Duplicate for (team, targetTeam) → `409 PREDICTION_LOCKED { lockedBy:{name}, target:{name} }` (shown only to own team) |
+| Method | URL                                        | Auth | Request                                       | Response                                            | Validation / errors                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------ | ------------------------------------------ | ---- | --------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/player/register`                     | PUB  | `{ gameCode, name, phone, teamId }`           | `201 { player:{id,name,team} }` + `Set-Cookie`      | `name` 2–40 chars, trimmed, letters/spaces/.-'. `phone` must be a valid LK or international number. `teamId` must be in the game. `403 REGISTRATION_CLOSED`. `409 PHONE_ALREADY_REGISTERED` (message: "Already registered — ask a Team Manager for a login code"). Same-session repeat → `200` existing. Rate limit 5/min/IP ([REC]: generous, because the venue Wi-Fi shares one IP; mainly limit per phone) |
+| POST   | `/api/player/recover`                      | PUB  | `{ gameCode, phone, code }`                   | `200` + `Set-Cookie`, revokes other player sessions | `401 INVALID_CODE` (expired or used). 5 attempts per phone per 10 min                                                                                                                                                                                                                                                                                                                                         |
+| POST   | `/api/player/logout`                       | PL   | —                                             | `204`                                               |                                                                                                                                                                                                                                                                                                                                                                                                               |
+| GET    | `/api/player/state?v=`                     | PL   | —                                             | `PlayerSnapshot` (§10.2) or `304`                   | `401 SESSION_EXPIRED`, `410 PLAYER_REMOVED`                                                                                                                                                                                                                                                                                                                                                                   |
+| POST   | `/api/player/tasks/:assignmentId/complete` | PL   | —                                             | `{ assignment }`                                    | Caller must be an assignee (or a team member for team tasks). Task revealed. Phase PLAYING or MEETING. `409 ALREADY_COMPLETED` → returns the current state (idempotent). Ghosts allowed if `allowGhosts`                                                                                                                                                                                                      |
+| POST   | `/api/player/votes`                        | PL   | `{ meetingId, targetId \| null }`             | `201 { vote:{targetId, createdAt} }`                | Meeting VOTING and `now ≤ endsAt+grace` (else `409 VOTING_CLOSED`). Caller is in the `eligible.voterIds` snapshot (else `403 NOT_ELIGIBLE`, which covers ghosts and late joiners). Target is in own-team `candidateIds`, not self (`400 INVALID_TARGET`). Null only if `allowSkipVote`. Duplicate → `200` with the existing vote (`alreadyVoted:true`)                                                        |
+| POST   | `/api/player/predictions`                  | PL   | `{ meetingId, targetTeamId, targetPlayerId }` | `201 { prediction }`                                | Predictions enabled. Meeting VOTING. Caller alive and eligible. `targetTeamId ≠ own team`. Target is an alive, non-removed member of `targetTeamId`. Not self. Duplicate for (team, targetTeam) → `409 PREDICTION_LOCKED { lockedBy:{name}, target:{name} }` (shown only to own team)                                                                                                                         |
 
 ### 9.4 Staff (TM and GM)
 
-| Method | URL | Auth | Request | Response | Validation / errors |
-|---|---|---|---|---|---|
-| POST | `/api/staff/login` | PUB | `{ name, pin }` | `200 { staff:{id,name,role,teamIds} }` + cookie | 5 failures → 5 min lock (`429 LOCKED`) |
-| POST | `/api/staff/logout` | ST | — | `204` | |
-| GET | `/api/staff/me` | ST | — | `{ staff }` | |
-| GET | `/api/tm/state?v=` | TM | — | `TMSnapshot`: own team roster (name, status, **no roles**), task verification queue, team score, own-team ledger, voted/not-voted for own team during voting (**not choices**) | |
-| POST | `/api/staff/players/:id/kill` | ST | `{ note? }` | `{ player }` | TM: player is in their team. Player alive. Phase PLAYING (or MEETING CALLED, which the GM can allow). `409 ALREADY_GHOST`. Records an `eliminations` doc + audit |
-| POST | `/api/staff/players/:id/login-code` | ST | — | `{ code: "483920", expiresAt }` | TM: own team. Code shown once. Hashed in the DB |
-| POST | `/api/staff/task-assignments/:id/verify` | ST | `{ approve: boolean, reason? }` | `{ assignment }` | Status `awaiting_verification`. TM: own team. Approve → award (idempotent key) |
-| POST | `/api/staff/points` | ST | `{ teamId, amount, reason, activityTaskId?, earnedByPlayerId? }` + `Idempotency-Key` | `201 { transaction, teamScore }` | TM: own team and `tmManualMin ≤ amount ≤ tmManualMax`. GM: GM bounds. `amount ≠ 0`. `reason` 3–120 chars. Key `manual:<staffId>:<Idempotency-Key>`. Rejected in COMPLETED |
+| Method | URL                                      | Auth | Request                                                                              | Response                                                                                                                                                                       | Validation / errors                                                                                                                                                       |
+| ------ | ---------------------------------------- | ---- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/staff/login`                       | PUB  | `{ name, pin }`                                                                      | `200 { staff:{id,name,role,teamIds} }` + cookie                                                                                                                                | 5 failures → 5 min lock (`429 LOCKED`)                                                                                                                                    |
+| POST   | `/api/staff/logout`                      | ST   | —                                                                                    | `204`                                                                                                                                                                          |                                                                                                                                                                           |
+| GET    | `/api/staff/me`                          | ST   | —                                                                                    | `{ staff }`                                                                                                                                                                    |                                                                                                                                                                           |
+| GET    | `/api/tm/state?v=`                       | TM   | —                                                                                    | `TMSnapshot`: own team roster (name, status, **no roles**), task verification queue, team score, own-team ledger, voted/not-voted for own team during voting (**not choices**) |                                                                                                                                                                           |
+| POST   | `/api/staff/players/:id/kill`            | ST   | `{ note? }`                                                                          | `{ player }`                                                                                                                                                                   | TM: player is in their team. Player alive. Phase PLAYING (or MEETING CALLED, which the GM can allow). `409 ALREADY_GHOST`. Records an `eliminations` doc + audit          |
+| POST   | `/api/staff/players/:id/login-code`      | ST   | —                                                                                    | `{ code: "483920", expiresAt }`                                                                                                                                                | TM: own team. Code shown once. Hashed in the DB                                                                                                                           |
+| POST   | `/api/staff/task-assignments/:id/verify` | ST   | `{ approve: boolean, reason? }`                                                      | `{ assignment }`                                                                                                                                                               | Status `awaiting_verification`. TM: own team. Approve → award (idempotent key)                                                                                            |
+| POST   | `/api/staff/points`                      | ST   | `{ teamId, amount, reason, activityTaskId?, earnedByPlayerId? }` + `Idempotency-Key` | `201 { transaction, teamScore }`                                                                                                                                               | TM: own team and `tmManualMin ≤ amount ≤ tmManualMax`. GM: GM bounds. `amount ≠ 0`. `reason` 3–120 chars. Key `manual:<staffId>:<Idempotency-Key>`. Rejected in COMPLETED |
 
 ### 9.5 Game Master
 
-| Method | URL | Request | Response | Validation / errors |
-|---|---|---|---|---|
-| GET | `/api/gm/state?v=` | — | `GMSnapshot` (§10.2) | |
-| PATCH | `/api/gm/config` | partial `config` | `{ config }` | zod bounds. Some keys are locked after reveal (`impostorsPerTeam`, `detectivesPerTeam`) → `409 CONFIG_LOCKED` |
-| POST / PATCH / DELETE | `/api/gm/teams[/:id]` | `{ key, name, colorHex, order }` | `{ team }` | DELETE only if the team has no players. Key and colour unique |
-| POST / PATCH | `/api/gm/staff[/:id]` | `{ name, role, teamIds, pin? }` | `{ staff }` (never pinHash) | PIN is 6 digits. A GM can't deactivate themselves if they're the last active GM |
-| PATCH | `/api/gm/registration` | `{ open: boolean }` | `{ registrationOpen }` | Not in COMPLETED |
-| POST | `/api/gm/roles/reveal` | `{ confirm: "REVEAL", expectedVersion }` | `{ summary: { perTeam:[{teamId, impostors, detectives, crewmates}] } }` | Phase LOBBY. Lock (§6.18). `200 {alreadyRevealed:true}` if already done. `409 REVEAL_IN_PROGRESS`. `422 TEAM_EMPTY` |
-| PATCH | `/api/gm/players/:id` | `{ name?, teamId? }` | `{ player }` | Changing team after reveal requires `force:true` and warns if the player is a special role |
-| DELETE | `/api/gm/players/:id` | `{ reason }` | `204` | Soft delete (`removedAt`). Revokes sessions. If the player was a special role, the GM is prompted to re-assign |
-| POST | `/api/gm/players/:id/role` | `{ role, reason }` | `{ player }` | After reveal only. Audited. Typical use is giving an impostor to a team that had none, or fixing a mistake. Warns if the team's impostor count would go past config |
-| POST | `/api/gm/players/:id/revive` | `{ reason }` | `{ player }` | Player is a ghost. Marks the latest elimination as reverted |
-| POST | `/api/gm/players/:id/investigations` | `{ targetPlayerId }` | `{ answerIsImpostor, remaining }` | Player is a detective, alive ([REC]), under the limit (`409 INVESTIGATION_LIMIT`). Target ≠ self. The answer is shown **only to the GM**. The Detective's dashboard shows only `remaining` and the history (target + answer) |
-| POST / PATCH | `/api/gm/tasks[/:id]` | task fields | `{ task }` | `points` 0–100 |
-| POST | `/api/gm/tasks/:id/reveal` | `{ assign: { mode:"all_players" \| "teams" \| "players" \| "pairs", teamIds?, playerIds?, pairScope? } }` | `{ task, assignmentsCreated }` | Idempotent through the unique `assignmentKey`. Pairs: random shuffle using `crypto.randomInt`. With an odd count, one triple → two pair assignments for that player ([REC]). Only alive and ghost (if allowed), non-removed players |
-| POST | `/api/gm/tasks/:id/hide` | — | `{ task }` | Hides it from players. Completed awards stay |
-| POST | `/api/gm/points/:txId/reverse` | `{ reason }` | `{ reversal, teamScore }` | Not already reversed. Key `reverse:<txId>` |
-| POST | `/api/gm/scores/recompute` | — | `{ teams:[{id, score}] }` | Rebuilds the cache from the ledger |
-| POST | `/api/gm/meetings` | `{ expectedVersion }` | `{ meeting }` | Phase PLAYING. No active meeting. `meetingsHeld < maxMeetings` or `override:true` |
-| POST | `/api/gm/meetings/:id/open-voting` | `{ durationSec? }` (30–900) | `{ meeting }` | Status CALLED. Takes the eligible snapshot |
-| POST | `/api/gm/meetings/:id/close-voting` | — | `{ meeting (with tallies) }` | Status VOTING. Idempotent |
-| POST | `/api/gm/meetings/:id/reopen-voting` | `{ extraSec }` | `{ meeting }` | Status CLOSED, results not revealed |
-| POST | `/api/gm/meetings/:id/decide` | `{ teamId, eliminatePlayerId \| null }` | `{ meeting }` | Status CLOSED. For tied teams the choice must be one of `topCandidateIds` or null. For non-tied teams the GM may also override to null ("no elimination") with confirmation |
-| POST | `/api/gm/meetings/:id/reveal-results` | — | `{ meeting }` | Status CLOSED, every team has a decision (auto for non-tied) |
-| POST | `/api/gm/meetings/:id/confirm` | `{ confirm:"CONFIRM" }` | `{ meeting, eliminations, transactions }` | Status RESULTS. In one transaction: ghost eliminated players and award internal-vote points (keys `ivote:<meetingId>:<teamId>`) |
-| POST | `/api/gm/meetings/:id/resume` | — | `{ phase }` | Status RESOLVED or CANCELLED |
-| POST | `/api/gm/meetings/:id/cancel` | `{ reason }` | `{ meeting }` | Status CALLED or VOTING. Votes kept but marked void. `meetingsHeld` unchanged |
-| POST | `/api/gm/votes/:id/invalidate` | `{ reason }` | `{ vote, tally }` | Before RESULTS. That voter **may then vote again**: the vote is deleted into `auditLogs.before`, which removes the unique index conflict ([REC]) |
-| POST | `/api/gm/predictions/:id/invalidate` | `{ reason }` | `{ prediction }` | Before scoring. Unlocks that (team, targetTeam) pair the same way |
-| POST | `/api/gm/announcements` | `{ text, level, audience, pinned }` | `{ announcement }` | 1–280 chars |
-| PATCH | `/api/gm/display` | `{ screen }` | `{ display }` | The screen must be allowed in the current phase (for example, IMPOSTORS only after the impostor reveal) |
-| POST | `/api/gm/final/start` | `{ confirm:"FINAL" }` | `{ phase }` | Phase PLAYING, no active meeting |
-| POST | `/api/gm/final/reveal-impostors` | — | `{ impostors:[…] }` | Phase FINAL |
-| POST | `/api/gm/final/score-predictions` | — | `{ results:[…], transactions }` | After the impostor reveal. Idempotent (`pred:<predictionId>`) |
-| POST | `/api/gm/final/leaderboard` | — | `{ leaderboard }` | After predictions are scored |
-| POST | `/api/gm/final/announce-winner` | — | `{ winningTeamIds, impostorsWin, impostorsVotedOut }` | After the leaderboard |
-| POST | `/api/gm/final/complete` | `{ confirm:"FINISH" }` | `{ phase:"COMPLETED" }` | After the winner is announced |
-| GET | `/api/gm/export?format=json\|csv` | — | File download | Full game dump (no session tokens or PIN hashes) |
-| GET | `/api/gm/audit?before=&limit=` | — | `{ items }` | Paginated |
-| GET | `/api/gm/qr.png` | — | PNG | Encodes `${PUBLIC_BASE_URL}/play/register?g=<code>` |
+| Method                | URL                                   | Request                                                                                                   | Response                                                                | Validation / errors                                                                                                                                                                                                                 |
+| --------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET                   | `/api/gm/state?v=`                    | —                                                                                                         | `GMSnapshot` (§10.2)                                                    |                                                                                                                                                                                                                                     |
+| PATCH                 | `/api/gm/config`                      | partial `config`                                                                                          | `{ config }`                                                            | zod bounds. Some keys are locked after reveal (`impostorsPerTeam`, `detectivesPerTeam`) → `409 CONFIG_LOCKED`                                                                                                                       |
+| POST / PATCH / DELETE | `/api/gm/teams[/:id]`                 | `{ key, name, colorHex, order }`                                                                          | `{ team }`                                                              | DELETE only if the team has no players. Key and colour unique                                                                                                                                                                       |
+| POST / PATCH          | `/api/gm/staff[/:id]`                 | `{ name, role, teamIds, pin? }`                                                                           | `{ staff }` (never pinHash)                                             | PIN is 6 digits. A GM can't deactivate themselves if they're the last active GM                                                                                                                                                     |
+| PATCH                 | `/api/gm/registration`                | `{ open: boolean }`                                                                                       | `{ registrationOpen }`                                                  | Not in COMPLETED                                                                                                                                                                                                                    |
+| POST                  | `/api/gm/roles/reveal`                | `{ confirm: "REVEAL", expectedVersion }`                                                                  | `{ summary: { perTeam:[{teamId, impostors, detectives, crewmates}] } }` | Phase LOBBY. Lock (§6.18). `200 {alreadyRevealed:true}` if already done. `409 REVEAL_IN_PROGRESS`. `422 TEAM_EMPTY`                                                                                                                 |
+| PATCH                 | `/api/gm/players/:id`                 | `{ name?, teamId? }`                                                                                      | `{ player }`                                                            | Changing team after reveal requires `force:true` and warns if the player is a special role                                                                                                                                          |
+| DELETE                | `/api/gm/players/:id`                 | `{ reason }`                                                                                              | `204`                                                                   | Soft delete (`removedAt`). Revokes sessions. If the player was a special role, the GM is prompted to re-assign                                                                                                                      |
+| POST                  | `/api/gm/players/:id/role`            | `{ role, reason }`                                                                                        | `{ player }`                                                            | After reveal only. Audited. Typical use is giving an impostor to a team that had none, or fixing a mistake. Warns if the team's impostor count would go past config                                                                 |
+| POST                  | `/api/gm/players/:id/revive`          | `{ reason }`                                                                                              | `{ player }`                                                            | Player is a ghost. Marks the latest elimination as reverted                                                                                                                                                                         |
+| POST                  | `/api/gm/players/:id/investigations`  | `{ targetPlayerId }`                                                                                      | `{ answerIsImpostor, remaining }`                                       | Player is a detective, alive ([REC]), under the limit (`409 INVESTIGATION_LIMIT`). Target ≠ self. The answer is shown **only to the GM**. The Detective's dashboard shows only `remaining` and the history (target + answer)        |
+| POST / PATCH          | `/api/gm/tasks[/:id]`                 | task fields                                                                                               | `{ task }`                                                              | `points` 0–100                                                                                                                                                                                                                      |
+| POST                  | `/api/gm/tasks/:id/reveal`            | `{ assign: { mode:"all_players" \| "teams" \| "players" \| "pairs", teamIds?, playerIds?, pairScope? } }` | `{ task, assignmentsCreated }`                                          | Idempotent through the unique `assignmentKey`. Pairs: random shuffle using `crypto.randomInt`. With an odd count, one triple → two pair assignments for that player ([REC]). Only alive and ghost (if allowed), non-removed players |
+| POST                  | `/api/gm/tasks/:id/hide`              | —                                                                                                         | `{ task }`                                                              | Hides it from players. Completed awards stay                                                                                                                                                                                        |
+| POST                  | `/api/gm/points/:txId/reverse`        | `{ reason }`                                                                                              | `{ reversal, teamScore }`                                               | Not already reversed. Key `reverse:<txId>`                                                                                                                                                                                          |
+| POST                  | `/api/gm/scores/recompute`            | —                                                                                                         | `{ teams:[{id, score}] }`                                               | Rebuilds the cache from the ledger                                                                                                                                                                                                  |
+| POST                  | `/api/gm/meetings`                    | `{ expectedVersion }`                                                                                     | `{ meeting }`                                                           | Phase PLAYING. No active meeting. `meetingsHeld < maxMeetings` or `override:true`                                                                                                                                                   |
+| POST                  | `/api/gm/meetings/:id/open-voting`    | `{ durationSec? }` (30–900)                                                                               | `{ meeting }`                                                           | Status CALLED. Takes the eligible snapshot                                                                                                                                                                                          |
+| POST                  | `/api/gm/meetings/:id/close-voting`   | —                                                                                                         | `{ meeting (with tallies) }`                                            | Status VOTING. Idempotent                                                                                                                                                                                                           |
+| POST                  | `/api/gm/meetings/:id/reopen-voting`  | `{ extraSec }`                                                                                            | `{ meeting }`                                                           | Status CLOSED, results not revealed                                                                                                                                                                                                 |
+| POST                  | `/api/gm/meetings/:id/decide`         | `{ teamId, eliminatePlayerId \| null }`                                                                   | `{ meeting }`                                                           | Status CLOSED. For tied teams the choice must be one of `topCandidateIds` or null. For non-tied teams the GM may also override to null ("no elimination") with confirmation                                                         |
+| POST                  | `/api/gm/meetings/:id/reveal-results` | —                                                                                                         | `{ meeting }`                                                           | Status CLOSED, every team has a decision (auto for non-tied)                                                                                                                                                                        |
+| POST                  | `/api/gm/meetings/:id/confirm`        | `{ confirm:"CONFIRM" }`                                                                                   | `{ meeting, eliminations, transactions }`                               | Status RESULTS. In one transaction: ghost eliminated players and award internal-vote points (keys `ivote:<meetingId>:<teamId>`)                                                                                                     |
+| POST                  | `/api/gm/meetings/:id/resume`         | —                                                                                                         | `{ phase }`                                                             | Status RESOLVED or CANCELLED                                                                                                                                                                                                        |
+| POST                  | `/api/gm/meetings/:id/cancel`         | `{ reason }`                                                                                              | `{ meeting }`                                                           | Status CALLED or VOTING. Votes kept but marked void. `meetingsHeld` unchanged                                                                                                                                                       |
+| POST                  | `/api/gm/votes/:id/invalidate`        | `{ reason }`                                                                                              | `{ vote, tally }`                                                       | Before RESULTS. That voter **may then vote again**: the vote is deleted into `auditLogs.before`, which removes the unique index conflict ([REC])                                                                                    |
+| POST                  | `/api/gm/predictions/:id/invalidate`  | `{ reason }`                                                                                              | `{ prediction }`                                                        | Before scoring. Unlocks that (team, targetTeam) pair the same way                                                                                                                                                                   |
+| POST                  | `/api/gm/announcements`               | `{ text, level, audience, pinned }`                                                                       | `{ announcement }`                                                      | 1–280 chars                                                                                                                                                                                                                         |
+| PATCH                 | `/api/gm/display`                     | `{ screen }`                                                                                              | `{ display }`                                                           | The screen must be allowed in the current phase (for example, IMPOSTORS only after the impostor reveal)                                                                                                                             |
+| POST                  | `/api/gm/final/start`                 | `{ confirm:"FINAL" }`                                                                                     | `{ phase }`                                                             | Phase PLAYING, no active meeting                                                                                                                                                                                                    |
+| POST                  | `/api/gm/final/reveal-impostors`      | —                                                                                                         | `{ impostors:[…] }`                                                     | Phase FINAL                                                                                                                                                                                                                         |
+| POST                  | `/api/gm/final/score-predictions`     | —                                                                                                         | `{ results:[…], transactions }`                                         | After the impostor reveal. Idempotent (`pred:<predictionId>`)                                                                                                                                                                       |
+| POST                  | `/api/gm/final/leaderboard`           | —                                                                                                         | `{ leaderboard }`                                                       | After predictions are scored                                                                                                                                                                                                        |
+| POST                  | `/api/gm/final/announce-winner`       | —                                                                                                         | `{ winningTeamIds, impostorsWin, impostorsVotedOut }`                   | After the leaderboard                                                                                                                                                                                                               |
+| POST                  | `/api/gm/final/complete`              | `{ confirm:"FINISH" }`                                                                                    | `{ phase:"COMPLETED" }`                                                 | After the winner is announced                                                                                                                                                                                                       |
+| GET                   | `/api/gm/export?format=json\|csv`     | —                                                                                                         | File download                                                           | Full game dump (no session tokens or PIN hashes)                                                                                                                                                                                    |
+| GET                   | `/api/gm/audit?before=&limit=`        | —                                                                                                         | `{ items }`                                                             | Paginated                                                                                                                                                                                                                           |
+| GET                   | `/api/gm/qr.png`                      | —                                                                                                         | PNG                                                                     | Encodes `${PUBLIC_BASE_URL}/play/register?g=<code>`                                                                                                                                                                                 |
 
 ---
 
@@ -811,16 +831,16 @@ The GM drives which screen shows through `games.display.screen`.
 
 ### 10.2 Snapshots (the "events" are fields that change)
 
-| Brief "event" | How clients notice it |
-|---|---|
-| Registration | `gm.registrations[]` grows, `display.counts` |
-| Character reveal | `phase` LOBBY → PLAYING, `me.role` appears |
-| Phase change | `phase`, `meeting.status` |
-| Voting | `meeting.status=VOTING`, `meeting.votingEndsAt`, `me.hasVoted`, `gm.voteMonitor` |
-| Score updates | `teams[].score`, `recentTransactions` |
-| Eliminations | `me.status`, `team.members[].status` (names only), `display.alivePerTeam` |
-| Announcements | `announcements[]` (latest 5). The client sounds a chime for new IDs |
-| Game completion | `phase=COMPLETED`, `final.*` |
+| Brief "event"    | How clients notice it                                                            |
+| ---------------- | -------------------------------------------------------------------------------- |
+| Registration     | `gm.registrations[]` grows, `display.counts`                                     |
+| Character reveal | `phase` LOBBY → PLAYING, `me.role` appears                                       |
+| Phase change     | `phase`, `meeting.status`                                                        |
+| Voting           | `meeting.status=VOTING`, `meeting.votingEndsAt`, `me.hasVoted`, `gm.voteMonitor` |
+| Score updates    | `teams[].score`, `recentTransactions`                                            |
+| Eliminations     | `me.status`, `team.members[].status` (names only), `display.alivePerTeam`        |
+| Announcements    | `announcements[]` (latest 5). The client sounds a chime for new IDs              |
+| Game completion  | `phase=COMPLETED`, `final.*`                                                     |
 
 **PlayerSnapshot** (built by `dto/player.ts`):
 
@@ -907,16 +927,16 @@ Edge cases:
 
 ### 11.3 Point rules (team points only) [USER defaults, GM-configurable]
 
-| Source | Amount | Idempotency key | Ghost? |
-|---|---|---|---|
-| Individual or team task completed | `task.points` (default 10) | `task:<assignmentId>:team:<teamId>` | Yes (team points) |
-| Paired task (both confirmed) | `task.points` (default 15), to **each player's own team** once | `task:<assignmentId>:team:<teamId>` | Yes |
-| Activity / table topic / Q&A (manual) | GM or TM chosen, within bounds | `manual:<staffId>:<clientKey>` | Yes |
-| Correct internal vote | **+10 × number of team members who voted for the team's actual impostor** (whether or not that impostor was eliminated) | `ivote:<meetingId>:<teamId>` (one aggregated transaction per team, with the voter count in the reason) | — |
-| Correct cross-team prediction | **+30** to the predictor's team | `pred:<predictionId>` | — |
-| Wrong cross-team prediction | **−15** to the predictor's team | `pred:<predictionId>` | — |
-| Manual penalty | Negative manual amount | `manual:…` | — |
-| Correction | `−amount` of the original | `reverse:<txId>` | — |
+| Source                                | Amount                                                                                                                  | Idempotency key                                                                                        | Ghost?            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------- |
+| Individual or team task completed     | `task.points` (default 10)                                                                                              | `task:<assignmentId>:team:<teamId>`                                                                    | Yes (team points) |
+| Paired task (both confirmed)          | `task.points` (default 15), to **each player's own team** once                                                          | `task:<assignmentId>:team:<teamId>`                                                                    | Yes               |
+| Activity / table topic / Q&A (manual) | GM or TM chosen, within bounds                                                                                          | `manual:<staffId>:<clientKey>`                                                                         | Yes               |
+| Correct internal vote                 | **+10 × number of team members who voted for the team's actual impostor** (whether or not that impostor was eliminated) | `ivote:<meetingId>:<teamId>` (one aggregated transaction per team, with the voter count in the reason) | —                 |
+| Correct cross-team prediction         | **+30** to the predictor's team                                                                                         | `pred:<predictionId>`                                                                                  | —                 |
+| Wrong cross-team prediction           | **−15** to the predictor's team                                                                                         | `pred:<predictionId>`                                                                                  | —                 |
+| Manual penalty                        | Negative manual amount                                                                                                  | `manual:…`                                                                                             | —                 |
+| Correction                            | `−amount` of the original                                                                                               | `reverse:<txId>`                                                                                       | —                 |
 
 **Team score** = Σ `amount` over the team's non-reversed transactions. Reversals cancel out naturally, so it's simply Σ amount. Ghost status never blocks team points [DOC]. Because points are team-only, the [DOC] rule that ghosts "can't earn individual points" has no effect.
 
@@ -946,6 +966,7 @@ winningTeamIds = teams with score == maxScore
 stats = { registered, perTeam, kills, voteEliminations, impostorsVotedOut, votesCast, turnout%,
           predictionsMade, predictionsCorrect, tasksCompleted, pointsByCategory, topActivities }
 ```
+
 All of these are stored in `games.final` when announced, so a later refresh shows the identical result.
 
 ---
@@ -954,54 +975,54 @@ All of these are stored in `games.final` when announced, so a later refresh show
 
 ✅ = allowed · 🔸 = own team only · ❌ = denied
 
-| Action | Public | Player | Ghost player | TM | GM |
-|---|---|---|---|---|---|
-| View rules / projector | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Register | ✅ (when open) | — | — | — | — |
-| See own role | — | ✅ (after reveal) | ✅ | — | — |
-| See others' roles | ❌ | Impostors: fellow impostors only | same | ❌ | ✅ |
-| See team roster (names, status) | Counts only | 🔸 | 🔸 | 🔸 | ✅ |
-| See phone numbers | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Complete or confirm own tasks | — | ✅ | ✅ | — | — |
-| Verify task completion | — | ❌ | ❌ | 🔸 | ✅ |
-| Award or deduct points | — | ❌ | ❌ | 🔸 (bounded) | ✅ |
-| Reverse a transaction | — | ❌ | ❌ | ❌ | ✅ |
-| Mark kill | — | ❌ | ❌ | 🔸 | ✅ |
-| Revive / undo kill | — | ❌ | ❌ | ❌ | ✅ |
-| Log Detective investigation | — | ❌ | ❌ | ❌ | ✅ |
-| Issue device login code | — | ❌ | ❌ | 🔸 | ✅ |
-| Internal vote | — | ✅ (own team, alive at open) | ❌ | ❌ | ❌ |
-| Cross-team prediction | — | ✅ (if unlocked) | ❌ | ❌ | ❌ |
-| See who has voted | Totals | ❌ | ❌ | 🔸 names only | ✅ |
-| See vote choices / distribution | After results (counts) | Own vote; team counts after results | same | ❌ live; counts after results | ✅ live |
-| Phase controls, meetings, reveals, config, staff, export, audit | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Action                                                          | Public                 | Player                              | Ghost player | TM                            | GM      |
+| --------------------------------------------------------------- | ---------------------- | ----------------------------------- | ------------ | ----------------------------- | ------- |
+| View rules / projector                                          | ✅                     | ✅                                  | ✅           | ✅                            | ✅      |
+| Register                                                        | ✅ (when open)         | —                                   | —            | —                             | —       |
+| See own role                                                    | —                      | ✅ (after reveal)                   | ✅           | —                             | —       |
+| See others' roles                                               | ❌                     | Impostors: fellow impostors only    | same         | ❌                            | ✅      |
+| See team roster (names, status)                                 | Counts only            | 🔸                                  | 🔸           | 🔸                            | ✅      |
+| See phone numbers                                               | ❌                     | ❌                                  | ❌           | ❌                            | ✅      |
+| Complete or confirm own tasks                                   | —                      | ✅                                  | ✅           | —                             | —       |
+| Verify task completion                                          | —                      | ❌                                  | ❌           | 🔸                            | ✅      |
+| Award or deduct points                                          | —                      | ❌                                  | ❌           | 🔸 (bounded)                  | ✅      |
+| Reverse a transaction                                           | —                      | ❌                                  | ❌           | ❌                            | ✅      |
+| Mark kill                                                       | —                      | ❌                                  | ❌           | 🔸                            | ✅      |
+| Revive / undo kill                                              | —                      | ❌                                  | ❌           | ❌                            | ✅      |
+| Log Detective investigation                                     | —                      | ❌                                  | ❌           | ❌                            | ✅      |
+| Issue device login code                                         | —                      | ❌                                  | ❌           | 🔸                            | ✅      |
+| Internal vote                                                   | —                      | ✅ (own team, alive at open)        | ❌           | ❌                            | ❌      |
+| Cross-team prediction                                           | —                      | ✅ (if unlocked)                    | ❌           | ❌                            | ❌      |
+| See who has voted                                               | Totals                 | ❌                                  | ❌           | 🔸 names only                 | ✅      |
+| See vote choices / distribution                                 | After results (counts) | Own vote; team counts after results | same         | ❌ live; counts after results | ✅ live |
+| Phase controls, meetings, reveals, config, staff, export, audit | ❌                     | ❌                                  | ❌           | ❌                            | ✅      |
 
 ---
 
 ## 13. Security and Failure-Handling Strategy
 
-| Threat / failure | Mitigation |
-|---|---|
-| **Duplicate registration** | Unique phone per game. Name normalisation. GM "possible duplicates" view (same normalised name). Soft-delete |
-| **Impersonation** (someone types another person's name and phone) | The first registration of a phone wins. The real owner then gets `409` and goes to a TM, who checks them in person and issues a code; recovery revokes the impostor's session. The GM can remove the fake. **Residual risk accepted** with name+phone [USER]. The desk staff watch registrations live |
-| **Wrong team selected** | The desk tells the colour, and the confirmation screen shows a big colour crewmate ("You are on RED — show this to the desk"). The GM or TM can move a player (with a warning after reveal) |
-| **Session theft / sharing** | httpOnly, Secure, SameSite=Lax cookie. Opaque 32-byte token, SHA-256 hashed at rest. Revocable. No tokens in URLs |
-| **Session recovery** | Same device: the cookie persists for 2 days. New device: a staff one-time code (6 digits, 10 min, single use, hashed, rate-limited) |
-| **Staff permissions** | Individual PINs (bcrypt). Lockout after 5 failures. TM scope checked on **every** handler via `requireTeamAccess(teamId)`. Staff sessions last 12 h |
-| **Role leakage** | `role` is `select:false`. Responses only come through DTO mappers. The projector and TM DTOs have no role field at all. Automated privacy tests scan every non-GM response for role strings. Role content is static text bundled client-side but only *which* role applies comes from the server. `Cache-Control: no-store` on all state endpoints. Hold-to-reveal blur on the phone |
-| **Vote manipulation** | Server checks phase, deadline, eligibility snapshot, own-team candidate, not-self, and one vote via the unique index. Choices are never shown to other players before results |
-| **Duplicate submissions** | Natural-key unique indexes + idempotency keys. Buttons disabled while pending. Retries are safe |
-| **Concurrent updates** | CAS on phase and status. Transactions for multi-document writes. `expectedVersion` on GM phase actions |
-| **Accidental GM actions** | Type-to-confirm on irreversible steps. Only phase-valid buttons shown. Every action reversible (revive, reverse tx, reopen voting, invalidate vote, cancel meeting, role override). Full audit log |
-| **DB connection failure** | Cached connection with `serverSelectionTimeoutMS: 5000`. Return `503` + `Retry-After`. The client keeps its last snapshot and shows "Reconnecting…", and the vote button retries automatically with the same payload (idempotent) |
-| **Internet drop during voting** | The deadline is server-side, with a grace of 3 s. The GM sees non-voters and can reopen voting for N seconds. The client shows "Vote recorded ✓" **only** after a server 2xx. Venue Wi-Fi: recommend players use mobile data. Test the venue beforehand |
-| **Late joiners** | Auto-crewmate. Excluded from a meeting already in VOTING. Visible to the GM with a "late" tag |
-| **Refresh during voting** | Snapshot restores `hasVoted`, the countdown and the panel. No local state is required |
-| **Timer consistency** | One authoritative `votingEndsAt`. Client offset from `serverTime`. Lazy idempotent close |
-| **Backups and recovery** | (1) `mongodump` the evening before and right after the event. (2) The GM **Export JSON** button, pressed after reveal, after the meeting and at the end. (3) The ledger allows a score recompute. (4) **Paper fallback kit**: printed roster with team + role (sealed envelope, GM only), paper ballots per team, and a manual score sheet |
-| **XSS / injection** | React escaping, zod validation, Mongoose casting, `sanitizeFilter` enabled (blocks `$` operator injection). No raw HTML rendering of user text |
-| **Abuse / scraping** | Rate limits per IP and per subject (a Mongo-backed fixed window, or just per-session counters). Generous limits because the venue Wi-Fi is NAT'd |
-| **PII minimisation and retention** | Only name, phone and team. Phones are visible only to GMs and stored only for dedupe and recovery. **Within 30 days after the event: run `scripts/purge-pii.ts`** (unset `phoneE164`, keep anonymised stats). Show a privacy note on the register form. Exports exclude phones unless explicitly toggled |
+| Threat / failure                                                  | Mitigation                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Duplicate registration**                                        | Unique phone per game. Name normalisation. GM "possible duplicates" view (same normalised name). Soft-delete                                                                                                                                                                                                                                                                         |
+| **Impersonation** (someone types another person's name and phone) | The first registration of a phone wins. The real owner then gets `409` and goes to a TM, who checks them in person and issues a code; recovery revokes the impostor's session. The GM can remove the fake. **Residual risk accepted** with name+phone [USER]. The desk staff watch registrations live                                                                                |
+| **Wrong team selected**                                           | The desk tells the colour, and the confirmation screen shows a big colour crewmate ("You are on RED — show this to the desk"). The GM or TM can move a player (with a warning after reveal)                                                                                                                                                                                          |
+| **Session theft / sharing**                                       | httpOnly, Secure, SameSite=Lax cookie. Opaque 32-byte token, SHA-256 hashed at rest. Revocable. No tokens in URLs                                                                                                                                                                                                                                                                    |
+| **Session recovery**                                              | Same device: the cookie persists for 2 days. New device: a staff one-time code (6 digits, 10 min, single use, hashed, rate-limited)                                                                                                                                                                                                                                                  |
+| **Staff permissions**                                             | Individual PINs (bcrypt). Lockout after 5 failures. TM scope checked on **every** handler via `requireTeamAccess(teamId)`. Staff sessions last 12 h                                                                                                                                                                                                                                  |
+| **Role leakage**                                                  | `role` is `select:false`. Responses only come through DTO mappers. The projector and TM DTOs have no role field at all. Automated privacy tests scan every non-GM response for role strings. Role content is static text bundled client-side but only _which_ role applies comes from the server. `Cache-Control: no-store` on all state endpoints. Hold-to-reveal blur on the phone |
+| **Vote manipulation**                                             | Server checks phase, deadline, eligibility snapshot, own-team candidate, not-self, and one vote via the unique index. Choices are never shown to other players before results                                                                                                                                                                                                        |
+| **Duplicate submissions**                                         | Natural-key unique indexes + idempotency keys. Buttons disabled while pending. Retries are safe                                                                                                                                                                                                                                                                                      |
+| **Concurrent updates**                                            | CAS on phase and status. Transactions for multi-document writes. `expectedVersion` on GM phase actions                                                                                                                                                                                                                                                                               |
+| **Accidental GM actions**                                         | Type-to-confirm on irreversible steps. Only phase-valid buttons shown. Every action reversible (revive, reverse tx, reopen voting, invalidate vote, cancel meeting, role override). Full audit log                                                                                                                                                                                   |
+| **DB connection failure**                                         | Cached connection with `serverSelectionTimeoutMS: 5000`. Return `503` + `Retry-After`. The client keeps its last snapshot and shows "Reconnecting…", and the vote button retries automatically with the same payload (idempotent)                                                                                                                                                    |
+| **Internet drop during voting**                                   | The deadline is server-side, with a grace of 3 s. The GM sees non-voters and can reopen voting for N seconds. The client shows "Vote recorded ✓" **only** after a server 2xx. Venue Wi-Fi: recommend players use mobile data. Test the venue beforehand                                                                                                                              |
+| **Late joiners**                                                  | Auto-crewmate. Excluded from a meeting already in VOTING. Visible to the GM with a "late" tag                                                                                                                                                                                                                                                                                        |
+| **Refresh during voting**                                         | Snapshot restores `hasVoted`, the countdown and the panel. No local state is required                                                                                                                                                                                                                                                                                                |
+| **Timer consistency**                                             | One authoritative `votingEndsAt`. Client offset from `serverTime`. Lazy idempotent close                                                                                                                                                                                                                                                                                             |
+| **Backups and recovery**                                          | (1) `mongodump` the evening before and right after the event. (2) The GM **Export JSON** button, pressed after reveal, after the meeting and at the end. (3) The ledger allows a score recompute. (4) **Paper fallback kit**: printed roster with team + role (sealed envelope, GM only), paper ballots per team, and a manual score sheet                                           |
+| **XSS / injection**                                               | React escaping, zod validation, Mongoose casting, `sanitizeFilter` enabled (blocks `$` operator injection). No raw HTML rendering of user text                                                                                                                                                                                                                                       |
+| **Abuse / scraping**                                              | Rate limits per IP and per subject (a Mongo-backed fixed window, or just per-session counters). Generous limits because the venue Wi-Fi is NAT'd                                                                                                                                                                                                                                     |
+| **PII minimisation and retention**                                | Only name, phone and team. Phones are visible only to GMs and stored only for dedupe and recovery. **Within 30 days after the event: run `scripts/purge-pii.ts`** (unset `phoneE164`, keep anonymised stats). Show a privacy note on the register form. Exports exclude phones unless explicitly toggled                                                                             |
 
 ---
 
@@ -1024,38 +1045,38 @@ All of these are stored in `games.final` when announced, so a later refresh show
 
 ### 14.2 Integration (API + in-memory replica set)
 
-| # | Scenario | Expected |
-|---|---|---|
-| I1 | Register, then register again with the same phone (same session / new session) | 200 existing / 409 |
-| I2 | 50 concurrent registrations, 5 with duplicate phones | 45 created, 5×409, no duplicates in the DB |
-| I3 | Registration while closed | 403 |
-| I4 | 10 concurrent Reveal Roles calls | Exactly one allocation. Others get alreadyRevealed or in-progress. Every player has exactly one role. Counts per team are correct |
-| I5 | Late registration after reveal | Role = crewmate. Existing roles unchanged |
-| I6 | Privacy sweep: call every non-GM endpoint as player, TM and public, and grep the bodies for `impostor`/`detective` (except own role / allies) | No leaks |
-| I7 | Impostor sees allies. Crewmate does not | |
-| I8 | Ghost tries to vote or predict | 403 NOT_ELIGIBLE |
-| I9 | Player votes twice concurrently (20 parallel requests) | One vote stored, all 2xx with the same vote |
-| I10 | Vote for another team's player / self / ghost | 400 INVALID_TARGET |
-| I11 | Vote after deadline + grace | 409 VOTING_CLOSED. Meeting auto-closed |
-| I12 | Two teammates predict the same target team concurrently | One 201, one 409 PREDICTION_LOCKED |
-| I13 | Predict own team | 400 |
-| I14 | Prediction scoring: correct and wrong | +30 / −15 once. Re-running scoring awards nothing new |
-| I15 | Internal-vote points with 3 of 10 voting for the true impostor | +30 to the team, once |
-| I16 | Tie → reveal results without a decision | 409 TIE_UNRESOLVED |
-| I17 | Confirm eliminations twice | Second call is a no-op |
-| I18 | Detective investigation ×2 with limit 1 | Second → 409 INVESTIGATION_LIMIT |
-| I19 | TM awards points to another team / above the bound | 403 / 400 |
-| I20 | Same manual award retried with the same Idempotency-Key | One transaction |
-| I21 | Paired task: one confirms, then the other | Awaiting partner, then completed + one transaction per team |
-| I22 | Task requiring verification: rejected, then resubmitted, then approved | One award |
-| I23 | Ghost completes a task | Team points awarded |
-| I24 | Kill → revive → kill | Audit has 3 entries. Status correct |
-| I25 | Reverse a transaction twice | Second → 409 ALREADY_REVERSED |
-| I26 | Recompute scores equals the cached scores after a randomised sequence of 500 operations | |
-| I27 | Endgame: winner tie (SHARED) and impostorsWin threshold boundaries | Deterministic and stored in `final` |
-| I28 | Mutation in COMPLETED | 423 |
-| I29 | Recovery code: wrong ×5, expired, reused | Locked / 401 / 401. Old session revoked on success |
-| I30 | Staff PIN brute force | Lockout after 5 |
+| #   | Scenario                                                                                                                                      | Expected                                                                                                                          |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| I1  | Register, then register again with the same phone (same session / new session)                                                                | 200 existing / 409                                                                                                                |
+| I2  | 50 concurrent registrations, 5 with duplicate phones                                                                                          | 45 created, 5×409, no duplicates in the DB                                                                                        |
+| I3  | Registration while closed                                                                                                                     | 403                                                                                                                               |
+| I4  | 10 concurrent Reveal Roles calls                                                                                                              | Exactly one allocation. Others get alreadyRevealed or in-progress. Every player has exactly one role. Counts per team are correct |
+| I5  | Late registration after reveal                                                                                                                | Role = crewmate. Existing roles unchanged                                                                                         |
+| I6  | Privacy sweep: call every non-GM endpoint as player, TM and public, and grep the bodies for `impostor`/`detective` (except own role / allies) | No leaks                                                                                                                          |
+| I7  | Impostor sees allies. Crewmate does not                                                                                                       |                                                                                                                                   |
+| I8  | Ghost tries to vote or predict                                                                                                                | 403 NOT_ELIGIBLE                                                                                                                  |
+| I9  | Player votes twice concurrently (20 parallel requests)                                                                                        | One vote stored, all 2xx with the same vote                                                                                       |
+| I10 | Vote for another team's player / self / ghost                                                                                                 | 400 INVALID_TARGET                                                                                                                |
+| I11 | Vote after deadline + grace                                                                                                                   | 409 VOTING_CLOSED. Meeting auto-closed                                                                                            |
+| I12 | Two teammates predict the same target team concurrently                                                                                       | One 201, one 409 PREDICTION_LOCKED                                                                                                |
+| I13 | Predict own team                                                                                                                              | 400                                                                                                                               |
+| I14 | Prediction scoring: correct and wrong                                                                                                         | +30 / −15 once. Re-running scoring awards nothing new                                                                             |
+| I15 | Internal-vote points with 3 of 10 voting for the true impostor                                                                                | +30 to the team, once                                                                                                             |
+| I16 | Tie → reveal results without a decision                                                                                                       | 409 TIE_UNRESOLVED                                                                                                                |
+| I17 | Confirm eliminations twice                                                                                                                    | Second call is a no-op                                                                                                            |
+| I18 | Detective investigation ×2 with limit 1                                                                                                       | Second → 409 INVESTIGATION_LIMIT                                                                                                  |
+| I19 | TM awards points to another team / above the bound                                                                                            | 403 / 400                                                                                                                         |
+| I20 | Same manual award retried with the same Idempotency-Key                                                                                       | One transaction                                                                                                                   |
+| I21 | Paired task: one confirms, then the other                                                                                                     | Awaiting partner, then completed + one transaction per team                                                                       |
+| I22 | Task requiring verification: rejected, then resubmitted, then approved                                                                        | One award                                                                                                                         |
+| I23 | Ghost completes a task                                                                                                                        | Team points awarded                                                                                                               |
+| I24 | Kill → revive → kill                                                                                                                          | Audit has 3 entries. Status correct                                                                                               |
+| I25 | Reverse a transaction twice                                                                                                                   | Second → 409 ALREADY_REVERSED                                                                                                     |
+| I26 | Recompute scores equals the cached scores after a randomised sequence of 500 operations                                                       |                                                                                                                                   |
+| I27 | Endgame: winner tie (SHARED) and impostorsWin threshold boundaries                                                                            | Deterministic and stored in `final`                                                                                               |
+| I28 | Mutation in COMPLETED                                                                                                                         | 423                                                                                                                               |
+| I29 | Recovery code: wrong ×5, expired, reused                                                                                                      | Locked / 401 / 401. Old session revoked on success                                                                                |
+| I30 | Staff PIN brute force                                                                                                                         | Lockout after 5                                                                                                                   |
 
 ### 14.3 End-to-end (Playwright, multiple contexts)
 
@@ -1093,23 +1114,23 @@ Then archive the rehearsal, create the real game (`GAVELUP26`), print the QR cod
 
 **MVP line (required to run the 21 Nov game):** Phases 1, 2, 4, 6-core, and the essentials of 3 and 5.
 
-| Item | MVP? | Fallback if not ready |
-|---|---|---|
-| Registration + sessions + teams | **MVP** | — |
-| Role reveal + player role card + impostor allies | **MVP** | — |
-| GM dashboard (registrations, players, kills) | **MVP** | — |
-| Meeting + internal vote + GM tie break + results | **MVP** | Paper ballots |
-| Manual point awards (GM/TM) + ledger + leaderboard | **MVP** | Score sheet |
-| Endgame reveal + winner + impostors-win | **MVP** | GM announces from the GM view |
-| Projector display | **MVP-lite** (scores, phase, countdown) | GM laptop screen-share |
-| Cross-team predictions | **High** | Skip the feature ([USER] says optional for players) |
-| Tasks: create / reveal / self-complete | **High** | Manual awards by TMs |
-| Paired tasks + partner confirm + staff verification | Medium | Manual awards |
-| Detective log | Medium | GM answers verbally, on paper |
-| Device-recovery codes | **High** (needed for the name+phone choice) | GM edits phone + player re-registers |
-| Audit log UI, export, stats, recompute | Medium (the log is written from Phase 1; the UI comes later) | Atlas UI |
-| Announcements | Low | Hosts announce on the mic |
-| Configurable everything UI (`/gm/setup` config editor) | Low | Seed script values |
+| Item                                                   | MVP?                                                         | Fallback if not ready                               |
+| ------------------------------------------------------ | ------------------------------------------------------------ | --------------------------------------------------- |
+| Registration + sessions + teams                        | **MVP**                                                      | —                                                   |
+| Role reveal + player role card + impostor allies       | **MVP**                                                      | —                                                   |
+| GM dashboard (registrations, players, kills)           | **MVP**                                                      | —                                                   |
+| Meeting + internal vote + GM tie break + results       | **MVP**                                                      | Paper ballots                                       |
+| Manual point awards (GM/TM) + ledger + leaderboard     | **MVP**                                                      | Score sheet                                         |
+| Endgame reveal + winner + impostors-win                | **MVP**                                                      | GM announces from the GM view                       |
+| Projector display                                      | **MVP-lite** (scores, phase, countdown)                      | GM laptop screen-share                              |
+| Cross-team predictions                                 | **High**                                                     | Skip the feature ([USER] says optional for players) |
+| Tasks: create / reveal / self-complete                 | **High**                                                     | Manual awards by TMs                                |
+| Paired tasks + partner confirm + staff verification    | Medium                                                       | Manual awards                                       |
+| Detective log                                          | Medium                                                       | GM answers verbally, on paper                       |
+| Device-recovery codes                                  | **High** (needed for the name+phone choice)                  | GM edits phone + player re-registers                |
+| Audit log UI, export, stats, recompute                 | Medium (the log is written from Phase 1; the UI comes later) | Atlas UI                                            |
+| Announcements                                          | Low                                                          | Hosts announce on the mic                           |
+| Configurable everything UI (`/gm/setup` config editor) | Low                                                          | Seed script values                                  |
 
 ### Phase 1 — Foundation (Priority P0, Effort L)
 
@@ -1188,13 +1209,13 @@ Then archive the rehearsal, create the real game (`GAVELUP26`), print the QR cod
 
 ### Suggested calendar
 
-| When | Dev A (backend) | Dev B (frontend) | Dev C / organiser |
-|---|---|---|---|
-| 18 Nov (pm) | Phase 1 backend, ledger core | Route groups, GameShell, register/login pages | Atlas + Vercel setup, team colours, staff list + PINs, task bank content, role texts |
-| 19 Nov | Phase 2 + Phase 4 backend | Role UI, player dashboard, vote/prediction UI | Rules page copy, tests I1–I10 |
-| 20 Nov (am) | Phase 3 (kills, tasks basic, detective) + Phase 5 + finals | GM dashboard, meeting room, projector, endgame | Load test, device sweep |
-| 20 Nov (pm) | Fixes | Fixes | **Rehearsal**, runbook, print kit, backups |
-| 21 Nov 7:00 | Smoke test on production. Freeze deploys | | Desk setup |
+| When        | Dev A (backend)                                            | Dev B (frontend)                               | Dev C / organiser                                                                    |
+| ----------- | ---------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ |
+| 18 Nov (pm) | Phase 1 backend, ledger core                               | Route groups, GameShell, register/login pages  | Atlas + Vercel setup, team colours, staff list + PINs, task bank content, role texts |
+| 19 Nov      | Phase 2 + Phase 4 backend                                  | Role UI, player dashboard, vote/prediction UI  | Rules page copy, tests I1–I10                                                        |
+| 20 Nov (am) | Phase 3 (kills, tasks basic, detective) + Phase 5 + finals | GM dashboard, meeting room, projector, endgame | Load test, device sweep                                                              |
+| 20 Nov (pm) | Fixes                                                      | Fixes                                          | **Rehearsal**, runbook, print kit, backups                                           |
+| 21 Nov 7:00 | Smoke test on production. Freeze deploys                   |                                                | Desk setup                                                                           |
 
 ---
 
@@ -1203,55 +1224,55 @@ Then archive the rehearsal, create the real game (`GAVELUP26`), print the QR cod
 **Registration and identity**
 
 1. **As a participant**, I scan the QR code, enter my name and phone, and pick my team colour, so I can join the game.
-   - *AC:* the form works on a 360 px phone. On success I see my coloured crewmate and team name. Refreshing keeps me logged in. Using the same phone again shows "already registered — see a Team Manager".
+   - _AC:_ the form works on a 360 px phone. On success I see my coloured crewmate and team name. Refreshing keeps me logged in. Using the same phone again shows "already registered — see a Team Manager".
 2. **As a participant on a new phone**, I get a code from my TM and log back in.
-   - *AC:* the code works once, within 10 min. My old device is logged out.
+   - _AC:_ the code works once, within 10 min. My old device is logged out.
 3. **As a GM**, I watch registrations arrive live and fix mistakes.
-   - *AC:* a new player appears in ≤4 s. I can edit the name or team and remove a duplicate. Every change is in the audit log.
+   - _AC:_ a new player appears in ≤4 s. I can edit the name or team and remove a duplicate. Every change is in the audit log.
 
 **Roles**
 
 4. **As a GM**, I press Reveal Roles once and every registered player gets a role.
-   - *AC:* each team has exactly the configured impostors and detectives (if it has enough players). A second press changes nothing. The summary shows counts per team, not names, until I expand it.
+   - _AC:_ each team has exactly the configured impostors and detectives (if it has enough players). A second press changes nothing. The summary shows counts per team, not names, until I expand it.
 5. **As a player**, I privately see my role with instructions.
-   - *AC:* a reveal animation and sound play once. A hold-to-reveal card shows the description, objective, abilities and how my team earns points. Before reveal I see a waiting screen.
+   - _AC:_ a reveal animation and sound play once. A hold-to-reveal card shows the description, objective, abilities and how my team earns points. Before reveal I see a waiting screen.
 6. **As an impostor**, I see who the other impostors are.
-   - *AC:* a list of names + team colours. Not shown to any other role.
+   - _AC:_ a list of names + team colours. Not shown to any other role.
 7. **As a late arrival**, I can still join after roles are revealed.
-   - *AC:* I am a crewmate, and nobody else's role changes.
+   - _AC:_ I am a crewmate, and nobody else's role changes.
 
 **Gameplay**
 
 8. **As a GM**, I reveal a prepared task to everyone or to pairs at the chosen moment.
-   - *AC:* the task appears on the targeted phones within 4 s. Paired tasks show the partner's name and team.
+   - _AC:_ the task appears on the targeted phones within 4 s. Paired tasks show the partner's name and team.
 9. **As a player**, I mark a task complete and my team earns points once.
-   - *AC:* paired tasks complete only when both confirm. Tasks needing verification show "awaiting verification". Repeated taps never double-award.
+   - _AC:_ paired tasks complete only when both confirm. Tasks needing verification show "awaiting verification". Repeated taps never double-award.
 10. **As a TM**, I award table-topic or Q&A points to my team and verify my team's tasks.
-    - *AC:* I can't act on other teams or exceed ±20 per award. Each award shows in the ledger with my name.
+    - _AC:_ I can't act on other teams or exceed ±20 per award. Each award shows in the ledger with my name.
 11. **As a TM or GM**, I mark a player killed when I see a red sticker.
-    - *AC:* the player's phone shows Ghost within 4 s, and vote/predict disappear for them. Only a GM can undo it, with a reason.
+    - _AC:_ the player's phone shows Ghost within 4 s, and vote/predict disappear for them. Only a GM can undo it, with a reason.
 12. **As a GM**, I log a Detective's single question and get the true answer privately.
-    - *AC:* the answer shows only on my screen and in the Detective's history. A second attempt is blocked.
+    - _AC:_ the answer shows only on my screen and in the Detective's history. A second attempt is blocked.
 
 **Meeting**
 
 13. **As a GM**, I trigger the emergency meeting and open a timed vote.
-    - *AC:* every phone shows the emergency overlay with an alarm. The countdown matches across devices to within 1 s. Voting closes automatically at the deadline.
+    - _AC:_ every phone shows the emergency overlay with an alarm. The countdown matches across devices to within 1 s. Voting closes automatically at the deadline.
 14. **As an alive player**, I vote for the suspected impostor in my team.
-    - *AC:* only alive teammates (not me) are selectable, plus Skip. There's a confirm step. "Vote recorded ✓" appears only after the server confirms. I can't vote twice.
+    - _AC:_ only alive teammates (not me) are selectable, plus Skip. There's a confirm step. "Vote recorded ✓" appears only after the server confirms. I can't vote twice.
 15. **As an alive player**, I optionally predict an impostor in another team.
-    - *AC:* if a teammate already predicted for that team, I see "Locked by <name>: <target>" and can't change it. Predictions never eliminate anyone.
+    - _AC:_ if a teammate already predicted for that team, I see "Locked by <name>: <target>" and can't change it. Predictions never eliminate anyone.
 16. **As a GM**, I watch who hasn't voted and the live tally, then resolve ties and reveal results.
-    - *AC:* per-team voted/not-voted lists. "Reveal" is blocked until every tie has a decision. Eliminated players become ghosts on confirm. Each team sees whether the eliminated player was the impostor. Internal-vote points are awarded once.
+    - _AC:_ per-team voted/not-voted lists. "Reveal" is blocked until every tie has a decision. Eliminated players become ghosts on confirm. Each team sees whether the eliminated player was the impostor. Internal-vote points are awarded once.
 
 **Endgame**
 
 17. **As a GM**, I run the final reveal step by step on the projector.
-    - *AC:* the order is impostors → predictions scored → leaderboard → winner + "Impostors win/Crew wins". Each step is one click, irreversible (with confirm), and re-displays identically after a refresh.
+    - _AC:_ the order is impostors → predictions scored → leaderboard → winner + "Impostors win/Crew wins". Each step is one click, irreversible (with confirm), and re-displays identically after a refresh.
 18. **As the audience**, I see only safe information on the projector.
-    - *AC:* no roles, vote choices or phones are visible before the corresponding reveal.
+    - _AC:_ no roles, vote choices or phones are visible before the corresponding reveal.
 19. **As a GM**, I finish and archive the game and export the data.
-    - *AC:* all mutations are rejected afterwards. The export downloads JSON/CSV without secrets.
+    - _AC:_ all mutations are rejected afterwards. The export downloads JSON/CSV without secrets.
 
 ---
 
@@ -1259,18 +1280,18 @@ Then archive the rehearsal, create the real game (`GAVELUP26`), print the QR cod
 
 ### 17.1 Conflicts resolved during planning
 
-| # | Topic | [DOC] | [BRIEF] | **Decision** |
-|---|---|---|---|---|
-| C1 | Medic | Exists (protection cards) | Digital/physical protection | **Removed** [USER] |
-| C2 | Detective | 3 questions | Digital request + GM approval | **1 question, physical, GM logs it** [USER] |
-| C3 | Number of meetings | "a couple" | "at any time" | **One** (`maxMeetings=1`, configurable) [USER] |
-| C4 | Vote scope | "person with the most votes is killed" (global) | Within own team | **Within own team. Top-voted per team eliminated** [USER] |
-| C5 | Ties | — | Plan required | **GM decides (or no elimination)** [USER] |
-| C6 | Impostor win | "if no impostor is found" | — | **If fewer than 2 impostors are voted out** [USER] |
-| C7 | Individual points / MVP | Individual marks + outstanding crewmate | Individual + MVP | **Team points only. No MVP** [USER]. The ghost "no individual points" rule becomes moot |
-| C8 | Cross-team prediction | — | Per player, bonus | **Per player, team points. First per (team → target team) locks. Wrong = penalty** [USER] |
-| C9 | Kill recording | — | GM marks | **GM or that team's TM** [USER] |
-| C10 | Registration identity | QR = attendance | Anti-impersonation | **Name + phone** [USER] + staff recovery codes [REC] |
+| #   | Topic                   | [DOC]                                           | [BRIEF]                       | **Decision**                                                                              |
+| --- | ----------------------- | ----------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------- |
+| C1  | Medic                   | Exists (protection cards)                       | Digital/physical protection   | **Removed** [USER]                                                                        |
+| C2  | Detective               | 3 questions                                     | Digital request + GM approval | **1 question, physical, GM logs it** [USER]                                               |
+| C3  | Number of meetings      | "a couple"                                      | "at any time"                 | **One** (`maxMeetings=1`, configurable) [USER]                                            |
+| C4  | Vote scope              | "person with the most votes is killed" (global) | Within own team               | **Within own team. Top-voted per team eliminated** [USER]                                 |
+| C5  | Ties                    | —                                               | Plan required                 | **GM decides (or no elimination)** [USER]                                                 |
+| C6  | Impostor win            | "if no impostor is found"                       | —                             | **If fewer than 2 impostors are voted out** [USER]                                        |
+| C7  | Individual points / MVP | Individual marks + outstanding crewmate         | Individual + MVP              | **Team points only. No MVP** [USER]. The ghost "no individual points" rule becomes moot   |
+| C8  | Cross-team prediction   | —                                               | Per player, bonus             | **Per player, team points. First per (team → target team) locks. Wrong = penalty** [USER] |
+| C9  | Kill recording          | —                                               | GM marks                      | **GM or that team's TM** [USER]                                                           |
+| C10 | Registration identity   | QR = attendance                                 | Anti-impersonation            | **Name + phone** [USER] + staff recovery codes [REC]                                      |
 
 ### 17.2 Assumptions and defaults to confirm before build ([REC], all configurable)
 
@@ -1288,7 +1309,7 @@ Then archive the rehearsal, create the real game (`GAVELUP26`), print the QR cod
 12. **Winning-team tie:** shared win.
 13. **Late joiners** get crewmate and can't vote in a meeting whose voting already opened.
 14. **TM manual award bounds:** −20 to +20 per award. GM: −100 to +100.
-15. **Navbar "Register Now"** keeps pointing to the Google Form until event morning, then switches to `/play/register` through a config flag. *Is the Google Form still used for pre-registration?*
+15. **Navbar "Register Now"** keeps pointing to the Google Form until event morning, then switches to `/play/register` through a config flag. _Is the Google Form still used for pre-registration?_
 16. **Phone data is purged 30 days** after the event.
 17. **Atlas tier:** the organiser will pay for a small tier for 2 days. If not, accept the M0 risk and run the load test against M0 to check it.
 18. **Teams have about 12–16 players**, so 1 impostor + 1 detective per team is enough. With 5 teams that's 5 impostors, and the threshold of 2 voted out means the crew needs at least 2 of 5 teams to catch their impostor.
