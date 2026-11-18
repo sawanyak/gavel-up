@@ -46,6 +46,8 @@ export interface PlayerSnapshot {
   leaderboard: LeaderboardRow[];
   /** Own team's latest point changes. */
   teamFeed: FeedItem[];
+  /** Null until the final reveal starts; then grows step by step. */
+  final: FinalState | null;
 }
 
 /* ───────── Phase 4: meetings ───────── */
@@ -260,6 +262,9 @@ export interface GMSnapshot {
   pendingVerifications: number;
   meeting: GMMeetingView | null;
   meetings: { held: number; max: number; votingDurationSec: number };
+  final: FinalState;
+  display: { screen: DisplayScreen; available: DisplayScreen[] };
+  tieRule: "SHARED" | "GM_DECIDES";
 }
 
 export interface TMSnapshot {
@@ -273,6 +278,7 @@ export interface TMSnapshot {
   points: { min: number; max: number };
   feed: FeedItem[];
   activities: { id: string; title: string }[];
+  final: FinalState | null;
 }
 
 export interface StaffMe {
@@ -334,4 +340,101 @@ export interface GMPointsSnapshot {
   players: { id: string; name: string; teamId: string }[];
   activities: { id: string; title: string }[];
   bounds: { min: number; max: number };
+}
+
+/* ───────── Phase 6: final reveal, projector ───────── */
+
+export interface FinalImpostor {
+  id: string;
+  name: string;
+  teamId: string;
+  teamName: string;
+  colorHex: string;
+  status: "alive" | "ghost";
+  votedOut: boolean;
+}
+
+export interface FinalPredictionResult {
+  id: string;
+  predictorName: string;
+  predictorTeamId: string;
+  predictorTeamName: string;
+  predictorColorHex: string;
+  targetName: string;
+  targetTeamId: string;
+  targetTeamName: string;
+  correct: boolean;
+  amount: number;
+}
+
+export interface GameStats {
+  registered: number;
+  perTeam: { teamId: string; name: string; colorHex: string; players: number; ghosts: number }[];
+  kills: number;
+  voteEliminations: number;
+  impostorsVotedOut: number;
+  meetingsHeld: number;
+  votesCast: number;
+  turnoutPct: number;
+  predictionsMade: number;
+  predictionsCorrect: number;
+  tasksCompleted: number;
+  investigations: number;
+  pointsByCategory: Record<string, number>;
+}
+
+/** Stored in games.final; each part appears only after its step (ISO timestamps). */
+export interface FinalState {
+  startedAt?: string;
+  impostorsRevealedAt?: string;
+  impostors?: FinalImpostor[];
+  predictionsScoredAt?: string;
+  predictionResults?: FinalPredictionResult[];
+  leaderboardShownAt?: string;
+  leaderboard?: LeaderboardRow[];
+  winnerAnnouncedAt?: string;
+  winningTeamIds?: string[];
+  tied?: boolean;
+  impostorsWin?: boolean;
+  impostorsVotedOut?: number;
+  threshold?: number;
+  stats?: GameStats;
+  completedAt?: string;
+}
+
+export const DISPLAY_SCREENS = ["LOBBY", "REGISTRATION", "RULES", "MEETING", "VOTING", "RESULTS", "FINAL", "IMPOSTORS", "LEADERBOARD", "WINNER", "STATS"] as const;
+export type DisplayScreen = (typeof DISPLAY_SCREENS)[number];
+
+/** Projector view: safe data only. Roles appear only after the final impostor reveal. */
+export interface DisplaySnapshot {
+  version: number;
+  serverTime: number;
+  game: { code: string; name: string; phase: GamePhase; registrationOpen: boolean };
+  screen: DisplayScreen;
+  registrationUrl: string;
+  counts: { registered: number; alive: number; ghosts: number };
+  teams: { teamId: string; name: string; colorHex: string; key: TeamColorKey; players: number; alive: number; ghosts: number; score: number }[];
+  leaderboard: LeaderboardRow[];
+  meeting: null | {
+    number: number;
+    status: MeetingStatus;
+    votingEndsAt: string | null;
+    votesCast: number;
+    eligibleTotal: number;
+    perTeam: { teamId: string; voted: number; eligible: number }[];
+    results: MeetingTeamOutcome[] | null;
+  };
+  final: FinalState;
+  announcements: AnnouncementView[];
+  rules: GameRules;
+}
+
+export interface AuditItem {
+  id: string;
+  at: string;
+  actor: { type: string; name: string };
+  action: string;
+  target: { type: string; id: string } | null;
+  before: unknown;
+  after: unknown;
 }

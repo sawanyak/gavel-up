@@ -1,13 +1,12 @@
 import { clientIp, getActiveGame, requireGM } from "@/lib/server/auth/guards";
 import { json, route } from "@/lib/server/errors";
-import { scorePredictions } from "@/lib/server/services/scoring";
+import { scoreFinalPredictions } from "@/lib/server/services/final";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-/** POST /api/gm/final/score-predictions — final reveal only. Idempotent (`pred:<id>`). */
+/** POST /api/gm/final/score-predictions — step 2, after the impostors are revealed. Idempotent. */
 export const POST = route(async (req) => {
   const { staff } = await requireGM(req);
-  const game = await getActiveGame();
-  return json(await scorePredictions(staff, game, clientIp(req)));
+  return json({ results: await scoreFinalPredictions(staff, await getActiveGame(), clientIp(req)) });
 });

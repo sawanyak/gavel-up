@@ -5,12 +5,15 @@
 import type { GamePhase, Role, StaffRole, TeamColorKey } from "@/lib/shared/constants";
 import type { GameRules } from "@/lib/shared/roleContent";
 import { revealPreview, roleConfigOf } from "./services/roles";
-import { gmMeetingView, playerMeetingView, tmMeetingView } from "./meetingDto";
-import { gameLeaderboard, teamFeed } from "./scoringDto";
+import { displayMeetingView, gmMeetingView, playerMeetingView, tmMeetingView } from "./meetingDto";
+import { gameLeaderboard, leaderboard, teamFeed } from "./scoringDto";
+import { effectiveScreen } from "./services/display";
 import { manualBounds } from "./services/scoring";
 import type {
   AnnouncementView,
   AssignmentStatus,
+  DisplaySnapshot,
+  FinalState,
   GMSnapshot,
   GMTasksSnapshot,
   InvestigationView,
@@ -147,7 +150,8 @@ export async function playerSnapshot(game: GameDoc, player: PlayerDoc): Promise<
     Task.find({ gameId: game._id, kind: "activity", revealed: true }).sort({ order: 1 }).lean<TaskDoc[]>(),
     announcementsFor(game._id, [player.teamId]),
     playerMeetingView(game, player),
-    game.rolesRevealedAt ? gameLeaderboard(game._id) : [],
+    // Hidden during the finale until the official leaderboard step (it would spoil the result).
+    game.rolesRevealedAt && !(game.phase === "FINAL" && !(game.final as FinalState | undefined)?.leaderboardShownAt) ? gameLeaderboard(game._id) : [],
     game.rolesRevealedAt ? teamFeed(game._id, [player.teamId], 8) : [],
   ]);
   return {
@@ -173,6 +177,45 @@ export async function playerSnapshot(game: GameDoc, player: PlayerDoc): Promise<
     meeting,
     leaderboard: board,
     teamFeed: feed,
+    final: publicFinal(game),
+  };
+}
+
+/** The final reveal is public by design: each part appears only after its step. */
+export function publicFinal(game: GameDoc): FinalState | null {
+  return game.phase === "FINAL" || game.phase === "COMPLETED" ? ((game.final ?? {}) as FinalState) : null;
+}
+
+/** Projector (plan §8.6, §10.2 DisplaySnapshot): safe data only, no phones, no vote choices. */
+export async function displaySnapshot(game: GameDoc, registrationUrl: string): Promise<DisplaySnapshot> {
+  const f = (game.final ?? {}) as FinalState;
+  const [teams, players, meeting, announcements, { screen }] = await Promise.all([
+    teamsOf(game._id),
+    Player.find({ gameId: game._id, removedAt: null }).select("teamId status").lean<PlayerDoc[]>(),
+    displayMeetingView(game),
+    Announcement.find({ gameId: game._id, deletedAt: null, teamId: null }).sort({ createdAt: -1 }).limit(3).lean<AnnouncementDoc[]>(),
+    effectiveScreen(game),
+  ]);
+  const hideScores = game.phase === "FINAL" && !f.leaderboardShownAt;
+  const rows = teams.map((t) => {
+    const mine = players.filter((p) => String(p.teamId) === String(t._id));
+    const ghosts = mine.filter((p) => p.status === "ghost").length;
+    return { teamId: String(t._id), name: t.name, colorHex: t.colorHex, key: t.key as TeamColorKey, players: mine.length, alive: mine.length - ghosts, ghosts, score: hideScores ? 0 : (t.score ?? 0) };
+  });
+  const ghosts = players.filter((p) => p.status === "ghost").length;
+  return {
+    version: game.version,
+    serverTime: Date.now(),
+    game: gameHeader(game),
+    screen,
+    registrationUrl,
+    counts: { registered: players.length, alive: players.length - ghosts, ghosts },
+    teams: rows,
+    leaderboard: hideScores ? [] : game.phase === "COMPLETED" || f.leaderboardShownAt ? (f.leaderboard ?? leaderboard(teams)) : leaderboard(teams),
+    meeting,
+    final: publicFinal(game) ?? {},
+    announcements: announcements.map(announcementView),
+    rules: gameRules(game),
   };
 }
 
@@ -409,6 +452,9 @@ export async function gmSnapshot(game: GameDoc): Promise<GMSnapshot> {
     pendingVerifications: await TaskAssignment.countDocuments({ gameId: game._id, status: "awaiting_verification" }),
     meeting: await gmMeetingView(game),
     meetings: { held: game.meetingsHeld ?? 0, max: game.config?.maxMeetings ?? 1, votingDurationSec: game.config?.votingDurationSec ?? 180 },
+    final: (game.final ?? {}) as FinalState,
+    display: await effectiveScreen(game),
+    tieRule: (game.config?.winningTeamTieRule as "SHARED" | "GM_DECIDES") ?? "SHARED",
   };
 }
 
@@ -433,6 +479,7 @@ export async function tmSnapshot(game: GameDoc, staff: StaffDoc): Promise<TMSnap
     queue: await verificationQueue(game._id, staff.role === "GM" ? null : mine.map((t) => t._id)),
     announcements: (await announcementDocs(game._id, staff.role === "GM" ? null : mine.map((t) => t._id))).map(announcementView),
     meeting: await tmMeetingView(game, mine.map((t) => t._id)),
+    final: publicFinal(game),
     points: manualBounds(game, staff),
     feed: await teamFeed(game._id, mine.map((t) => t._id), 20),
     activities: (await Task.find({ gameId: game._id, kind: "activity" }).select("title").sort({ order: 1 }).lean<TaskDoc[]>()).map((a) => ({

@@ -224,3 +224,26 @@ export const ledgerQuerySchema = z.object({
   category: z.enum(["task", "activity", "manual", "internal_vote", "prediction", "penalty", "reversal"]).optional(),
   limit: z.coerce.number().int().min(1).max(500).default(200),
 });
+
+/* ───────── Phase 6: final reveal, projector, export, audit ───────── */
+
+export const finalStartSchema = z.object({
+  confirm: z.literal("FINAL", { errorMap: () => ({ message: 'Type "FINAL" to confirm.' }) }),
+});
+export const finalCompleteSchema = z.object({
+  confirm: z.literal("FINISH", { errorMap: () => ({ message: 'Type "FINISH" to confirm.' }) }),
+});
+export const announceWinnerSchema = z.object({ winningTeamIds: z.array(objectId).min(1).max(10).optional() });
+export const displaySchema = z.object({
+  screen: z.enum(["LOBBY", "REGISTRATION", "RULES", "MEETING", "VOTING", "RESULTS", "FINAL", "IMPOSTORS", "LEADERBOARD", "WINNER", "STATS"]),
+});
+export const auditQuerySchema = z.object({
+  before: z.string().datetime().optional(),
+  limit: z.coerce.number().int().min(1).max(200).default(50),
+  action: z.string().regex(/^[A-Z_]{2,40}$/).optional(),
+});
+export const exportQuerySchema = z.object({
+  format: z.enum(["json", "csv"]).default("json"),
+  table: z.enum(["players", "transactions"]).default("players"),
+  includePhones: z.enum(["0", "1"]).default("0"),
+});

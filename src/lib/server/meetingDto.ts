@@ -185,6 +185,38 @@ export async function gmMeetingView(game: GameDoc): Promise<GMMeetingView | null
   };
 }
 
+/** Projector: totals only (never who voted or for whom); per-team outcomes after results. */
+export async function displayMeetingView(game: GameDoc) {
+  const ctx = await load(game);
+  if (!ctx) return null;
+  const { m, teams, nameOf } = ctx;
+  const votes = await Vote.find({ meetingId: m._id }).select("teamId").lean<VoteDoc[]>();
+  const perTeam = m.eligible.map((e) => ({
+    teamId: String(e.teamId),
+    voted: votes.filter((v) => String(v.teamId) === String(e.teamId)).length,
+    eligible: e.voterIds.length,
+  }));
+  const team = new Map(teams.map((t) => [String(t._id), t]));
+  return {
+    number: m.number,
+    status: m.status as MeetingStatus,
+    votingEndsAt: m.votingEndsAt ? m.votingEndsAt.toISOString() : null,
+    votesCast: votes.length,
+    eligibleTotal: perTeam.reduce((s, t) => s + t.eligible, 0),
+    perTeam,
+    results: AFTER_RESULTS.includes(m.status as MeetingStatus)
+      ? m.teamResults
+          .filter((r) => team.has(String(r.teamId)))
+          .map((r) => ({
+            teamId: String(r.teamId),
+            teamName: team.get(String(r.teamId))!.name,
+            colorHex: team.get(String(r.teamId))!.colorHex,
+            eliminated: r.decision?.eliminatedPlayerId ? { name: nameOf(r.decision.eliminatedPlayerId), wasImpostor: !!r.wasImpostor } : null,
+          }))
+      : null,
+  };
+}
+
 export async function tmMeetingView(game: GameDoc, teamIds: Types.ObjectId[]): Promise<TMMeetingView | null> {
   const ctx = await load(game);
   if (!ctx) return null;

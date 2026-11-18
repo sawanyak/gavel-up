@@ -1,5 +1,5 @@
 import mongoose, { type ClientSession, type Types } from "mongoose";
-import { isDuplicateKey } from "../errors";
+import { conflict, isDuplicateKey } from "../errors";
 import { Game, PointTransaction, Team, type PointCategory, type PointTransactionDoc } from "../models";
 
 /**
@@ -26,6 +26,9 @@ export interface AwardInput {
 
 /** Writes one transaction inside an existing session. Throws E11000 if the key was already used. */
 export async function awardInSession(input: AwardInput, session: ClientSession): Promise<PointTransactionDoc> {
+  // Once the final leaderboard is on screen, scores are frozen so the announced result can't change.
+  const g = await Game.findById(input.gameId).select("final").session(session).lean<{ final?: { leaderboardShownAt?: string } }>();
+  if (g?.final?.leaderboardShownAt) throw conflict("SCORES_FROZEN", "Scores are final — the leaderboard has already been shown.");
   const [tx] = await PointTransaction.create(
     [
       {
