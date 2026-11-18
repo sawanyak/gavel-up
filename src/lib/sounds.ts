@@ -42,6 +42,13 @@ class SoundManager {
     return this.isMuted;
   }
 
+  /** Turns on sound effects without the looping theme music (used by the projector). */
+  public enableEffectsOnly() {
+    this.isMuted = false;
+    this.bgMusic?.pause();
+    this.notify();
+  }
+
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
 

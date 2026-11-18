@@ -7,6 +7,7 @@ import { IssueCodeButton, useStaffMe } from "@/components/game/staff";
 import { AnnouncementList, KillButton, ScorePill, VerificationQueue } from "@/components/game/gameplay";
 import { Countdown } from "@/components/game/meeting";
 import { AwardForm, PointsFeed } from "@/components/game/scoring";
+import { FinalView } from "@/components/game/final";
 import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip, TeamBadge, inputClass } from "@/components/game/ui";
 import { useGameState } from "@/lib/client/useGameState";
 import type { TMSnapshot } from "@/lib/shared/types";
@@ -34,6 +35,8 @@ export default function TeamManagerPage() {
       </div>
 
       {data.teams.length === 0 && <MessageView title="No team assigned" message="Ask a Game Master to assign you to a team." />}
+
+      {data.final && <FinalView final={data.final} myTeamId={data.teams.length === 1 ? data.teams[0].id : undefined} />}
 
       <AnnouncementList announcements={data.announcements} compact />
 
@@ -79,7 +82,7 @@ export default function TeamManagerPage() {
 
       {(data.queue.length > 0 || canKill) && <VerificationQueue items={data.queue} onChange={refresh} />}
 
-      {data.teams.length > 0 && data.game.phase !== "SETUP" && data.game.phase !== "LOBBY" && data.game.phase !== "COMPLETED" && (
+      {data.teams.length > 0 && data.game.phase !== "SETUP" && data.game.phase !== "LOBBY" && data.game.phase !== "COMPLETED" && !data.final?.leaderboardShownAt && (
         <div className="grid gap-5 lg:grid-cols-2">
           <AwardForm
             teams={data.teams}

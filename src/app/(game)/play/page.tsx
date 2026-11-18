@@ -7,6 +7,7 @@ import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip } from "
 import { RoleCard, RoleRevealOverlay } from "@/components/game/roles";
 import { AnnouncementList, GhostBanner, ScorePill, TaskList } from "@/components/game/gameplay";
 import { Leaderboard, PointsFeed } from "@/components/game/scoring";
+import { FinalView } from "@/components/game/final";
 import { EmergencyOverlay, MeetingPanel } from "@/components/game/meeting";
 import { useGameState } from "@/lib/client/useGameState";
 import type { PlayerSnapshot } from "@/lib/shared/types";
@@ -60,6 +61,8 @@ export default function PlayerDashboard() {
         <PhaseChip phase={game.phase} />
       </div>
 
+      {data.final && <FinalView final={data.final} myTeamId={me.team.id} />}
+
       <EmergencyOverlay meeting={data.meeting} />
       {data.meeting && <MeetingPanel meeting={data.meeting} serverOffset={serverOffset} onChange={refresh} />}
 
@@ -96,7 +99,7 @@ export default function PlayerDashboard() {
         </HudCard>
       )}
 
-      {game.rolesRevealed && <TaskList tasks={data.tasks} activities={data.activities} onChange={refresh} />}
+      {game.rolesRevealed && !data.final && <TaskList tasks={data.tasks} activities={data.activities} onChange={refresh} />}
 
       <HudCard
         title="Your team"
@@ -123,7 +126,8 @@ export default function PlayerDashboard() {
         )}
       </HudCard>
 
-      {game.rolesRevealed && <Leaderboard rows={data.leaderboard} highlightTeamId={me.team.id} />}
+      {/* During the finale the official leaderboard comes from the final reveal instead. */}
+      {game.rolesRevealed && !data.final && <Leaderboard rows={data.leaderboard} highlightTeamId={me.team.id} />}
 
       <p className="text-center text-[11px] text-slate-500 font-mono">
         GAME {game.code} · v{data.version}

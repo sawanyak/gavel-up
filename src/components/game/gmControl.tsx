@@ -2,9 +2,9 @@
 
 import React, { useMemo, useState } from "react";
 import { clsx } from "clsx";
-import { Megaphone, Pin, Search, Send, Trash2 } from "lucide-react";
+import { Megaphone, MonitorPlay, Pin, Search, Send, Trash2 } from "lucide-react";
 import { api, type ApiErrorInfo } from "@/lib/client/api";
-import type { GMSnapshot } from "@/lib/shared/types";
+import type { DisplayScreen, GMSnapshot } from "@/lib/shared/types";
 import { Alert, Button, Field, HudCard, Modal, inputClass } from "./ui";
 
 /* ───────────────────────── Detective log ───────────────────────── */
@@ -118,6 +118,63 @@ export function DetectiveLogButton({ snapshot, onDone }: { snapshot: GMSnapshot;
         )}
       </Modal>
     </>
+  );
+}
+
+/* ───────────────────────── Projector ───────────────────────── */
+
+const SCREEN_LABEL: Record<DisplayScreen, string> = {
+  LOBBY: "Welcome",
+  REGISTRATION: "Join QR",
+  RULES: "Rules",
+  MEETING: "Meeting",
+  VOTING: "Voting",
+  RESULTS: "Meeting results",
+  FINAL: "Final reveal",
+  IMPOSTORS: "Impostors",
+  LEADERBOARD: "Leaderboard",
+  WINNER: "Winner",
+  STATS: "Stats",
+};
+
+/** Switches what the projector (/display) shows. Only screens allowed right now are enabled. */
+export function DisplayControl({ snapshot, onChange }: { snapshot: GMSnapshot; onChange: () => void }) {
+  const [busy, setBusy] = useState<DisplayScreen | null>(null);
+  const [error, setError] = useState<ApiErrorInfo | null>(null);
+  const { screen, available } = snapshot.display;
+  const go = async (s: DisplayScreen) => {
+    setBusy(s);
+    setError(null);
+    const r = await api("/api/gm/display", { method: "PATCH", body: { screen: s } });
+    setBusy(null);
+    if (!r.ok) setError(r.error);
+    onChange();
+  };
+  return (
+    <HudCard
+      title="Projector"
+      right={
+        <a href="/display" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-mono text-cyan-300 hover:text-white">
+          <MonitorPlay className="w-4 h-4" /> Open /display
+        </a>
+      }
+    >
+      <div className="flex flex-wrap gap-2">
+        {(Object.keys(SCREEN_LABEL) as DisplayScreen[]).map((s) => (
+          <Button key={s} size="sm" variant={s === screen ? "primary" : "ghost"} disabled={!available.includes(s)} loading={busy === s} onClick={() => go(s)}>
+            {SCREEN_LABEL[s]}
+          </Button>
+        ))}
+      </div>
+      <p className="mt-2 text-xs text-slate-400">
+        Showing: <b className="text-slate-200">{SCREEN_LABEL[screen]}</b>. Greyed-out screens unlock as the game goes on (e.g. Impostors only after the final reveal).
+      </p>
+      {error && (
+        <div className="mt-2">
+          <Alert>{error.message}</Alert>
+        </div>
+      )}
+    </HudCard>
   );
 }
 

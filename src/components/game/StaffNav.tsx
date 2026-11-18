@@ -12,6 +12,8 @@ const GM_LINKS = [
   { href: "/gm/meeting", label: "Meeting" },
   { href: "/gm/tasks", label: "Tasks" },
   { href: "/gm/points", label: "Points" },
+  { href: "/gm/final", label: "Final" },
+  { href: "/gm/audit", label: "Audit" },
   { href: "/gm/setup", label: "Teams & Staff" },
   { href: "/gm/qr", label: "Registration QR" },
   { href: "/tm", label: "TM View" },

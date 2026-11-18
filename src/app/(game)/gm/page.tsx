@@ -8,7 +8,7 @@ import { StaffNav } from "@/components/game/StaffNav";
 import { IssueCodeButton, useStaffMe } from "@/components/game/staff";
 import { RevealRolesButton, RoleChip, RolesPanel } from "@/components/game/gmRoles";
 import { KillButton, ReviveButton } from "@/components/game/gameplay";
-import { AnnouncementsPanel, DetectiveLogButton } from "@/components/game/gmControl";
+import { AnnouncementsPanel, DetectiveLogButton, DisplayControl } from "@/components/game/gmControl";
 import type { Role } from "@/lib/shared/constants";
 import {
   Alert,
@@ -140,7 +140,12 @@ export default function GMDashboard() {
 
       <RolesPanel snapshot={data} showNames={showRoles} setShowNames={setShowRoles} onChange={refresh} />
 
-      {data.game.phase !== "SETUP" && <AnnouncementsPanel snapshot={data} onChange={refresh} />}
+      {data.game.phase !== "SETUP" && (
+        <div className="grid gap-5 lg:grid-cols-2">
+          <AnnouncementsPanel snapshot={data} onChange={refresh} />
+          <DisplayControl snapshot={data} onChange={refresh} />
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
