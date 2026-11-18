@@ -3,6 +3,7 @@ import type { FeedItem, GMPointsSnapshot, LeaderboardRow, LedgerItem, PointCateg
 import type { GamePhase, TeamColorKey } from "@/lib/shared/constants";
 import { Player, PointTransaction, Task, Team, type GameDoc, type PlayerDoc, type PointTransactionDoc, type StaffDoc, type TaskDoc, type TeamDoc } from "./models";
 import { manualBounds } from "./services/scoring";
+import { shared } from "./snapshotCache";
 
 /** Teams by score (desc), then name. Equal scores share a rank (1, 1, 3). */
 export function leaderboard(teams: Pick<TeamDoc, "_id" | "key" | "name" | "colorHex" | "score">[]): LeaderboardRow[] {
@@ -26,9 +27,9 @@ const feedItem = (t: PointTransactionDoc): FeedItem => ({
   at: t.createdAt.toISOString(),
 });
 
-export async function teamFeed(gameId: Types.ObjectId, teamIds: Types.ObjectId[], limit = 10): Promise<FeedItem[]> {
-  const txs = await PointTransaction.find({ gameId, teamId: { $in: teamIds } }).sort({ createdAt: -1, _id: -1 }).limit(limit).lean<PointTransactionDoc[]>();
-  return txs.map(feedItem);
+/** A team's latest point changes — shared per game version (every teammate polls the same thing). */
+export async function teamFeed(game: GameDoc, teamIds: Types.ObjectId[], limit = 10): Promise<FeedItem[]> {
+  return (await shared(game).teamFeed(teamIds, limit)).map(feedItem);
 }
 
 export async function gameLeaderboard(gameId: Types.ObjectId) {

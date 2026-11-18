@@ -6,7 +6,8 @@ import type { GamePhase, Role, StaffRole, TeamColorKey } from "@/lib/shared/cons
 import type { GameRules } from "@/lib/shared/roleContent";
 import { revealPreview, roleConfigOf } from "./services/roles";
 import { displayMeetingView, gmMeetingView, playerMeetingView, tmMeetingView } from "./meetingDto";
-import { gameLeaderboard, leaderboard, teamFeed } from "./scoringDto";
+import { leaderboard, teamFeed } from "./scoringDto";
+import { shared } from "./snapshotCache";
 import { effectiveScreen } from "./services/display";
 import { manualBounds } from "./services/scoring";
 import type {
@@ -60,12 +61,13 @@ const gameHeader = (g: GameDoc) => ({
   registrationOpen: g.registrationOpen,
 });
 
-async function teamsOf(gameId: GameDoc["_id"]) {
-  return Team.find({ gameId }).sort({ order: 1, name: 1 }).lean<TeamDoc[]>();
+/** Teams in display order — shared per game version (see snapshotCache). */
+function teamsOf(game: GameDoc) {
+  return shared(game).teams();
 }
 
 export async function publicGameInfo(game: GameDoc): Promise<PublicGameInfo> {
-  const teams = await teamsOf(game._id);
+  const teams = await teamsOf(game);
   const p = game.config?.points;
   return {
     ...gameHeader(game),
@@ -134,26 +136,27 @@ async function roleExtras(game: GameDoc, player: PlayerDoc, role: Role | null): 
 }
 
 export async function playerSnapshot(game: GameDoc, player: PlayerDoc): Promise<PlayerSnapshot> {
-  const [team, members, withRole] = await Promise.all([
-    Team.findById(player.teamId).lean<TeamDoc>(),
-    Player.find({ teamId: player.teamId, removedAt: null })
-      .select("name status") // explicit projection: no phone, no role
-      .sort({ name: 1 })
-      .lean<PlayerDoc[]>(),
-    // Own role only, and only once roles are revealed.
+  const s = shared(game);
+  const [teams, roster, revealedTasks, withRole] = await Promise.all([
+    s.teams(),
+    s.roster(),
+    s.revealedTasks(),
+    // Own role only, and only once roles are revealed. (Per player — never shared.)
     game.rolesRevealedAt ? Player.findById(player._id).select("+role").lean<PlayerDoc>() : null,
   ]);
+  const team = teams.find((t) => String(t._id) === String(player.teamId));
+  const members = roster.filter((m) => String(m.teamId) === String(player.teamId));
+  const activities = revealedTasks.filter((t) => t.kind === "activity");
   const role = (withRole?.role as Role | null | undefined) ?? null;
-  const [extras, tasks, activities, announcements, meeting, board, feed] = await Promise.all([
+  const [extras, tasks, announcements, meeting, feed] = await Promise.all([
     role ? roleExtras(game, player, role) : {},
     playerTasks(game, player),
-    Task.find({ gameId: game._id, kind: "activity", revealed: true }).sort({ order: 1 }).lean<TaskDoc[]>(),
-    announcementsFor(game._id, [player.teamId]),
+    announcementsFor(game, [player.teamId]),
     playerMeetingView(game, player),
-    // Hidden during the finale until the official leaderboard step (it would spoil the result).
-    game.rolesRevealedAt && !(game.phase === "FINAL" && !(game.final as FinalState | undefined)?.leaderboardShownAt) ? gameLeaderboard(game._id) : [],
-    game.rolesRevealedAt ? teamFeed(game._id, [player.teamId], 8) : [],
+    game.rolesRevealedAt ? teamFeed(game, [player.teamId], 8) : [],
   ]);
+  // Hidden during the finale until the official leaderboard step (it would spoil the result).
+  const board = game.rolesRevealedAt && !(game.phase === "FINAL" && !(game.final as FinalState | undefined)?.leaderboardShownAt) ? leaderboard(teams) : [];
   return {
     version: game.version,
     serverTime: Date.now(),
@@ -189,13 +192,15 @@ export function publicFinal(game: GameDoc): FinalState | null {
 /** Projector (plan §8.6, §10.2 DisplaySnapshot): safe data only, no phones, no vote choices. */
 export async function displaySnapshot(game: GameDoc, registrationUrl: string): Promise<DisplaySnapshot> {
   const f = (game.final ?? {}) as FinalState;
-  const [teams, players, meeting, announcements, { screen }] = await Promise.all([
-    teamsOf(game._id),
-    Player.find({ gameId: game._id, removedAt: null }).select("teamId status").lean<PlayerDoc[]>(),
+  const s = shared(game);
+  const [teams, players, meeting, allAnnouncements, { screen }] = await Promise.all([
+    s.teams(),
+    s.roster(),
     displayMeetingView(game),
-    Announcement.find({ gameId: game._id, deletedAt: null, teamId: null }).sort({ createdAt: -1 }).limit(3).lean<AnnouncementDoc[]>(),
+    s.announcements(),
     effectiveScreen(game),
   ]);
+  const announcements = allAnnouncements.filter((a) => !a.teamId).slice(0, 3);
   const hideScores = game.phase === "FINAL" && !f.leaderboardShownAt;
   const rows = teams.map((t) => {
     const mine = players.filter((p) => String(p.teamId) === String(t._id));
@@ -223,21 +228,16 @@ export async function displaySnapshot(game: GameDoc, registrationUrl: string): P
 
 /** The player's own assignments (individual, paired, and their team's team tasks). Revealed tasks only. */
 async function playerTasks(game: GameDoc, player: PlayerDoc): Promise<PlayerTask[]> {
-  const assignments = await TaskAssignment.find({
-    gameId: game._id,
-    $or: [{ assigneeIds: player._id }, { assigneeIds: { $size: 0 }, teamIds: player.teamId }],
-  }).lean<TaskAssignmentDoc[]>();
+  const s = shared(game);
+  const me = String(player._id);
+  const all = await s.assignments();
+  const assignments = all.filter((a) =>
+    a.assigneeIds.length ? a.assigneeIds.some((id) => String(id) === me) : a.teamIds.some((t) => String(t) === String(player.teamId)),
+  );
   if (assignments.length === 0) return [];
-  const tasks = await Task.find({ _id: { $in: assignments.map((a) => a.taskId) }, revealed: true }).lean<TaskDoc[]>();
+  const [tasks, roster, teams] = await Promise.all([s.revealedTasks(), s.roster(), s.teams()]);
   const taskById = new Map(tasks.map((t) => [String(t._id), t]));
-  const partnerIds = assignments.flatMap((a) => a.assigneeIds.filter((id) => String(id) !== String(player._id)));
-  const [partners, teams] = partnerIds.length
-    ? await Promise.all([
-        Player.find({ _id: { $in: partnerIds } }).select("name teamId").lean<PlayerDoc[]>(),
-        Team.find({ gameId: game._id }).lean<TeamDoc[]>(),
-      ])
-    : [[], []];
-  const partnerById = new Map(partners.map((p) => [String(p._id), p]));
+  const partnerById = new Map(roster.map((p) => [String(p._id), p]));
   const teamById = new Map(teams.map((t) => [String(t._id), t]));
 
   return assignments
@@ -276,15 +276,14 @@ const announcementView = (a: AnnouncementDoc): AnnouncementView => ({
 });
 
 /** Pinned announcements plus the latest 5. `teamIds` = everyone + those teams; null = all (GM). */
-async function announcementDocs(gameId: Types.ObjectId, teamIds: Types.ObjectId[] | null) {
-  const filter: Record<string, unknown> = { gameId, deletedAt: null };
-  if (teamIds) filter.$or = [{ teamId: null }, { teamId: { $in: teamIds } }];
-  const docs = await Announcement.find(filter).sort({ createdAt: -1 }).limit(30).lean<AnnouncementDoc[]>();
+async function announcementDocs(game: GameDoc, teamIds: Types.ObjectId[] | null) {
+  const wanted = teamIds?.map(String);
+  const docs = (await shared(game).announcements()).filter((d) => !wanted || !d.teamId || wanted.includes(String(d.teamId)));
   return [...docs.filter((d) => d.pinned), ...docs.filter((d) => !d.pinned).slice(0, 5)];
 }
 
-async function announcementsFor(gameId: Types.ObjectId, teamIds: Types.ObjectId[]) {
-  return (await announcementDocs(gameId, teamIds)).map(announcementView);
+async function announcementsFor(game: GameDoc, teamIds: Types.ObjectId[]) {
+  return (await announcementDocs(game, teamIds)).map(announcementView);
 }
 
 /** Tasks waiting for a TM or GM to approve. `teamIds` null = all teams (GM). */
@@ -319,7 +318,7 @@ export async function gmTasksSnapshot(game: GameDoc): Promise<GMTasksSnapshot> {
   const [tasks, assignments, teams, players, queue] = await Promise.all([
     Task.find({ gameId: game._id }).sort({ order: 1, createdAt: 1 }).lean<TaskDoc[]>(),
     TaskAssignment.find({ gameId: game._id }).select("taskId status assigneeIds teamIds").lean<TaskAssignmentDoc[]>(),
-    teamsOf(game._id),
+    teamsOf(game),
     Player.find({ gameId: game._id, removedAt: null }).select("name teamId status").sort({ name: 1 }).lean<PlayerDoc[]>(),
     verificationQueue(game._id, null),
   ]);
@@ -416,7 +415,7 @@ async function gmRoles(game: GameDoc, teams: TeamDoc[], players: PlayerDoc[]): P
 export async function gmSnapshot(game: GameDoc): Promise<GMSnapshot> {
   const revealed = !!game.rolesRevealedAt;
   const [teams, players, removed, onlineStaff] = await Promise.all([
-    teamsOf(game._id),
+    teamsOf(game),
     // Roles are loaded for the GM only once they've been revealed.
     (revealed
       ? Player.find({ gameId: game._id, removedAt: null }).select("+role")
@@ -448,7 +447,7 @@ export async function gmSnapshot(game: GameDoc): Promise<GMSnapshot> {
     staffOnline: onlineStaff.map((s) => ({ id: String(s._id), name: s.name, role: s.role as StaffRole })),
     roles: await gmRoles(game, teams, players),
     investigations: await gmInvestigations(game._id),
-    announcements: (await announcementDocs(game._id, null)).map((a) => ({ ...announcementView(a), createdByName: a.createdBy?.name ?? "" })),
+    announcements: (await announcementDocs(game, null)).map((a) => ({ ...announcementView(a), createdByName: a.createdBy?.name ?? "" })),
     pendingVerifications: await TaskAssignment.countDocuments({ gameId: game._id, status: "awaiting_verification" }),
     meeting: await gmMeetingView(game),
     meetings: { held: game.meetingsHeld ?? 0, max: game.config?.maxMeetings ?? 1, votingDurationSec: game.config?.votingDurationSec ?? 180 },
@@ -459,7 +458,7 @@ export async function gmSnapshot(game: GameDoc): Promise<GMSnapshot> {
 }
 
 export async function tmSnapshot(game: GameDoc, staff: StaffDoc): Promise<TMSnapshot> {
-  const allTeams = await teamsOf(game._id);
+  const allTeams = await teamsOf(game);
   const mine = staff.role === "GM" ? allTeams : allTeams.filter((t) => staff.teamIds.some((id) => String(id) === String(t._id)));
   const members = await Player.find({ teamId: { $in: mine.map((t) => t._id) }, removedAt: null })
     .select("name status teamId late") // no phone, no role
@@ -477,11 +476,11 @@ export async function tmSnapshot(game: GameDoc, staff: StaffDoc): Promise<TMSnap
         .map((m) => ({ id: String(m._id), name: m.name, status: m.status as "alive" | "ghost", late: !!m.late })),
     })),
     queue: await verificationQueue(game._id, staff.role === "GM" ? null : mine.map((t) => t._id)),
-    announcements: (await announcementDocs(game._id, staff.role === "GM" ? null : mine.map((t) => t._id))).map(announcementView),
+    announcements: (await announcementDocs(game, staff.role === "GM" ? null : mine.map((t) => t._id))).map(announcementView),
     meeting: await tmMeetingView(game, mine.map((t) => t._id)),
     final: publicFinal(game),
     points: manualBounds(game, staff),
-    feed: await teamFeed(game._id, mine.map((t) => t._id), 20),
+    feed: await teamFeed(game, mine.map((t) => t._id), 20),
     activities: (await Task.find({ gameId: game._id, kind: "activity" }).select("title").sort({ order: 1 }).lean<TaskDoc[]>()).map((a) => ({
       id: String(a._id),
       title: a.title,

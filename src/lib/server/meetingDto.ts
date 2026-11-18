@@ -7,22 +7,21 @@
  */
 import type { Types } from "mongoose";
 import { tallyTeam } from "./game/tally";
-import { Meeting, Player, Prediction, Team, Vote, type GameDoc, type MeetingDoc, type PlayerDoc, type PredictionDoc, type TeamDoc, type VoteDoc } from "./models";
+import type { GameDoc, PlayerDoc } from "./models";
+import { shared } from "./snapshotCache";
 import type { GMMeetingTeam, GMMeetingView, MeetingStatus, PlayerMeetingView, TMMeetingView } from "@/lib/shared/types";
 
 const AFTER_RESULTS: MeetingStatus[] = ["RESULTS", "RESOLVED"];
 const VOTING_STARTED: MeetingStatus[] = ["VOTING", "CLOSED", "RESULTS", "RESOLVED"];
 
+/** Everything here is shared per game version (see snapshotCache): no per-phone queries. */
 async function load(game: GameDoc) {
   if (!game.activeMeetingId) return null;
-  const m = await Meeting.findById(game.activeMeetingId).lean<MeetingDoc>();
+  const s = shared(game);
+  const m = await s.meeting();
   if (!m || m.status === "CANCELLED") return null;
-  const [teams, players] = await Promise.all([
-    Team.find({ gameId: game._id }).sort({ order: 1, name: 1 }).lean<TeamDoc[]>(),
-    Player.find({ gameId: game._id }).select("name teamId status").lean<PlayerDoc[]>(),
-  ]);
-  const name = new Map(players.map((p) => [String(p._id), p.name]));
-  return { m, teams, players, nameOf: (id: Types.ObjectId | string | null | undefined) => (id ? (name.get(String(id)) ?? "?") : "?") };
+  const [teams, players, name, votes, predictions] = await Promise.all([s.teams(), s.roster(), s.names(), s.votes(), s.predictions()]);
+  return { m, teams, players, votes, predictions, nameOf: (id: Types.ObjectId | string | null | undefined) => (id ? (name.get(String(id)) ?? "?") : "?") };
 }
 
 const ids = (xs: Types.ObjectId[] | undefined) => (xs ?? []).map(String);
@@ -30,16 +29,14 @@ const ids = (xs: Types.ObjectId[] | undefined) => (xs ?? []).map(String);
 export async function playerMeetingView(game: GameDoc, player: PlayerDoc): Promise<PlayerMeetingView | null> {
   const ctx = await load(game);
   if (!ctx) return null;
-  const { m, teams, nameOf } = ctx;
+  const { m, teams, nameOf, votes, predictions } = ctx;
   const started = VOTING_STARTED.includes(m.status as MeetingStatus);
   const mine = m.eligible.find((e) => String(e.teamId) === String(player.teamId));
   const eligible = started ? ids(mine?.voterIds).includes(String(player._id)) : player.status === "alive";
 
-  const [myVote, teamVotes, locks] = await Promise.all([
-    started ? Vote.findOne({ meetingId: m._id, voterId: player._id }).lean<VoteDoc>() : null,
-    started ? Vote.countDocuments({ meetingId: m._id, teamId: player.teamId }) : 0,
-    started ? Prediction.find({ meetingId: m._id, predictorTeamId: player.teamId }).lean<PredictionDoc[]>() : [],
-  ]);
+  const myVote = started ? (votes.find((v) => String(v.voterId) === String(player._id)) ?? null) : null;
+  const teamVotes = started ? votes.filter((v) => String(v.teamId) === String(player.teamId)).length : 0;
+  const locks = started ? predictions.filter((p) => String(p.predictorTeamId) === String(player.teamId)) : [];
   const predictionsEnabled = game.config?.predictionsEnabled ?? true;
 
   let results: PlayerMeetingView["results"] = null;
@@ -115,11 +112,7 @@ export async function playerMeetingView(game: GameDoc, player: PlayerDoc): Promi
 export async function gmMeetingView(game: GameDoc): Promise<GMMeetingView | null> {
   const ctx = await load(game);
   if (!ctx) return null;
-  const { m, teams, players, nameOf } = ctx;
-  const [votes, predictions] = await Promise.all([
-    Vote.find({ meetingId: m._id }).sort({ createdAt: 1 }).lean<VoteDoc[]>(),
-    Prediction.find({ meetingId: m._id }).sort({ createdAt: 1 }).lean<PredictionDoc[]>(),
-  ]);
+  const { m, teams, players, nameOf, votes, predictions } = ctx;
   const teamName = new Map(teams.map((t) => [String(t._id), t.name]));
   const started = VOTING_STARTED.includes(m.status as MeetingStatus);
 
@@ -190,7 +183,7 @@ export async function displayMeetingView(game: GameDoc) {
   const ctx = await load(game);
   if (!ctx) return null;
   const { m, teams, nameOf } = ctx;
-  const votes = await Vote.find({ meetingId: m._id }).select("teamId").lean<VoteDoc[]>();
+  const { votes } = ctx;
   const perTeam = m.eligible.map((e) => ({
     teamId: String(e.teamId),
     voted: votes.filter((v) => String(v.teamId) === String(e.teamId)).length,
@@ -221,7 +214,7 @@ export async function tmMeetingView(game: GameDoc, teamIds: Types.ObjectId[]): P
   const ctx = await load(game);
   if (!ctx) return null;
   const { m, nameOf } = ctx;
-  const votes = await Vote.find({ meetingId: m._id, teamId: { $in: teamIds } }).select("voterId").lean<VoteDoc[]>();
+  const votes = ctx.votes.filter((v) => teamIds.some((t) => String(t) === String(v.teamId)));
   const voted = new Set(votes.map((v) => String(v.voterId)));
   const revealed = AFTER_RESULTS.includes(m.status as MeetingStatus);
   return {
