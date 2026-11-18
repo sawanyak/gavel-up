@@ -23,6 +23,7 @@ export const Navbar: React.FC = () => {
     { label: "Home", href: "/" },
     { label: "About Mission", href: "/about" },
     { label: "Why Join?", href: "/why-join" },
+    { label: "How to Play", href: "/how-to-play" },
     { label: "Emergency Contact", href: "/contact" },
   ];
 

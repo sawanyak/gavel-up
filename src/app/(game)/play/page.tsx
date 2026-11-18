@@ -4,6 +4,7 @@ import React from "react";
 import { Hourglass, Users } from "lucide-react";
 import { CrewmateVector, type CrewmateColor } from "@/components/CrewmateVector";
 import { ConnectionBanner, HudCard, LoadingView, MessageView, PhaseChip } from "@/components/game/ui";
+import { RoleCard, RoleRevealOverlay } from "@/components/game/roles";
 import { useGameState } from "@/lib/client/useGameState";
 import type { PlayerSnapshot } from "@/lib/shared/types";
 
@@ -41,7 +42,7 @@ export default function PlayerDashboard() {
       >
         <CrewmateVector color={me.team.key as CrewmateColor} size={76} isDead={me.status === "ghost"} />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Crewmate</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Player</p>
           <h1 className="text-2xl font-black text-white truncate">{me.name}</h1>
           <p className="font-mono font-bold uppercase tracking-wider" style={{ color: me.team.colorHex }}>
             {me.team.name} team
@@ -66,9 +67,19 @@ export default function PlayerDashboard() {
         </HudCard>
       )}
 
-      {game.rolesRevealed && (
-        <HudCard title="Your role" variant="red">
-          <p className="text-sm text-slate-300">Roles have been revealed. (The role card arrives in the next update.)</p>
+      {game.rolesRevealed && me.role && (
+        <>
+          <RoleRevealOverlay snapshot={data} />
+          <RoleCard snapshot={data} />
+          {me.late && (
+            <p className="text-center text-xs text-slate-400">You joined after roles were revealed, so you&apos;re part of the crew.</p>
+          )}
+        </>
+      )}
+
+      {game.rolesRevealed && !me.role && (
+        <HudCard title="Role pending" variant="cyan">
+          <p className="text-sm text-slate-300">Your role is being assigned — this page will update in a moment.</p>
         </HudCard>
       )}
 

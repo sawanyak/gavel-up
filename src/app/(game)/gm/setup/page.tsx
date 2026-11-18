@@ -31,6 +31,7 @@ export default function SetupPage() {
     <div className="space-y-5">
       {me && <StaffNav role={me.role} name={me.name} />}
       <TeamsSection snapshot={data} onChange={refresh} />
+      <RoleSettings snapshot={data} onChange={refresh} />
       <StaffSection staff={staff} snapshot={data} onChange={loadStaff} />
     </div>
   );
@@ -281,5 +282,99 @@ function StaffForm({
         </div>
       </div>
     </Modal>
+  );
+}
+
+/* ───────────────────────── Role settings (Phase 2) ───────────────────────── */
+
+function RoleSettings({ snapshot, onChange }: { snapshot: GMSnapshot; onChange: () => void }) {
+  const c = snapshot.roles.config;
+  const locked = !!snapshot.roles.revealedAt;
+  const [imp, setImp] = useState(c.impostorsPerTeam);
+  const [det, setDet] = useState(c.detectivesPerTeam);
+  const [minSize, setMinSize] = useState(c.minTeamSizeForSpecialRoles);
+  const [see, setSee] = useState(c.impostorsSeeEachOther);
+  const [overrides, setOverrides] = useState<Record<string, number>>(c.impostorOverrides ?? {});
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<{ kind: "error" | "success"; text: string } | null>(null);
+
+  const save = async () => {
+    setSaving(true);
+    setMsg(null);
+    const r = await api("/api/gm/config", {
+      method: "PATCH",
+      body: { impostorsPerTeam: imp, detectivesPerTeam: det, minTeamSizeForSpecialRoles: minSize, impostorsSeeEachOther: see, impostorOverrides: overrides },
+    });
+    setSaving(false);
+    setMsg(r.ok ? { kind: "success", text: "Saved. The Reveal Roles preview on the dashboard is updated." } : { kind: "error", text: r.error.message });
+    onChange();
+  };
+
+  const num = (v: number, set: (n: number) => void, max = 5) => (
+    <input
+      type="number"
+      min={0}
+      max={max}
+      disabled={locked}
+      className={`${inputClass} py-2 w-24`}
+      value={v}
+      onChange={(e) => set(Math.max(0, Math.min(max, Number(e.target.value) || 0)))}
+    />
+  );
+
+  return (
+    <HudCard title="Role settings" variant="red" right={locked && <span className="text-xs font-mono text-amber-300">LOCKED — roles revealed</span>}>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Impostors per team">{num(imp, setImp)}</Field>
+        <Field label="Detectives per team">{num(det, setDet)}</Field>
+        <Field label="Min team size for full roles" hint="Smaller teams get at most 1 impostor and no detective.">
+          {num(minSize, setMinSize, 20)}
+        </Field>
+        <Field label="Impostors see each other">
+          <label className="flex items-center gap-2 py-2">
+            <input type="checkbox" className="w-5 h-5 accent-red-500" checked={see} disabled={locked} onChange={(e) => setSee(e.target.checked)} />
+            <span className="text-sm text-slate-300">{see ? "Yes — they get a list of fellow impostors" : "No — each impostor works alone"}</span>
+          </label>
+        </Field>
+      </div>
+
+      <div className="mt-4">
+        <span className="block text-xs font-mono font-bold uppercase tracking-widest text-cyan-300 mb-2">Extra impostors for a specific team</span>
+        <div className="flex flex-wrap gap-3">
+          {snapshot.teams.map((t) => (
+            <div key={t.id} className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-2 py-1">
+              <TeamBadge team={t} size={22} />
+              <select
+                className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm"
+                disabled={locked}
+                value={overrides[t.id] ?? ""}
+                onChange={(e) => {
+                  const next = { ...overrides };
+                  if (e.target.value === "") delete next[t.id];
+                  else next[t.id] = Number(e.target.value);
+                  setOverrides(next);
+                }}
+              >
+                <option value="">default ({imp})</option>
+                {[0, 1, 2, 3].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {msg && <div className="mt-4"><Alert kind={msg.kind}>{msg.text}</Alert></div>}
+      {!locked && (
+        <div className="mt-4 flex justify-end">
+          <Button loading={saving} onClick={save}>
+            <Save className="w-4 h-4" /> Save role settings
+          </Button>
+        </div>
+      )}
+    </HudCard>
   );
 }

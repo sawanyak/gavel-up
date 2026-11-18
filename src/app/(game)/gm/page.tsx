@@ -5,6 +5,8 @@ import { clsx } from "clsx";
 import { Pencil, Search, Trash2, UserPlus } from "lucide-react";
 import { StaffNav } from "@/components/game/StaffNav";
 import { IssueCodeButton, useStaffMe } from "@/components/game/staff";
+import { RevealRolesButton, RoleChip, RolesPanel } from "@/components/game/gmRoles";
+import type { Role } from "@/lib/shared/constants";
 import {
   Alert,
   Button,
@@ -34,6 +36,8 @@ export default function GMDashboard() {
   const [actionError, setActionError] = useState<ApiErrorInfo | null>(null);
   const [editing, setEditing] = useState<GMRegistration | null>(null);
   const [removing, setRemoving] = useState<GMRegistration | null>(null);
+  // Roles stay hidden on the GM screen unless explicitly shown (projector / shoulder-surfing safety).
+  const [showRoles, setShowRoles] = useState(false);
 
   const teamsById = useMemo(() => new Map((data?.teams ?? []).map((t) => [t.id, t])), [data?.teams]);
 
@@ -99,9 +103,13 @@ export default function GMDashboard() {
           <span className={clsx("text-xs font-mono uppercase tracking-wider", data.game.registrationOpen ? "text-emerald-300" : "text-slate-400")}>
             Registration is {data.game.registrationOpen ? "OPEN" : "CLOSED"}
           </span>
-          <span className="text-xs text-slate-500">More controls (Reveal Roles, Meeting…) arrive in later phases.</span>
+          <span className="hidden sm:block w-px h-8 bg-slate-700" />
+          <RevealRolesButton snapshot={data} onDone={refresh} />
+          {data.game.phase === "SETUP" && <span className="text-xs text-slate-500">Open registration before revealing roles.</span>}
         </div>
       </HudCard>
+
+      <RolesPanel snapshot={data} showNames={showRoles} setShowNames={setShowRoles} onChange={refresh} />
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -168,6 +176,11 @@ export default function GMDashboard() {
                         <span className="ml-2 text-[10px] font-mono uppercase text-amber-300 border border-amber-400/50 rounded px-1">possible dup</span>
                       )}
                       {r.late && <span className="ml-2 text-[10px] font-mono uppercase text-fuchsia-300 border border-fuchsia-400/50 rounded px-1">late</span>}
+                      {showRoles && "role" in r && (
+                        <span className="ml-2">
+                          <RoleChip role={r.role} />
+                        </span>
+                      )}
                     </p>
                     <p className="text-xs font-mono text-slate-400">
                       {r.phone} · {t?.name ?? "?"} · {new Date(r.registeredAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -218,18 +231,32 @@ function EditPlayerModal({
 }) {
   const [name, setName] = useState(player.name);
   const [teamId, setTeamId] = useState(player.teamId);
+  const [role, setRole] = useState<Role | "">(player.role ?? "");
+  const [reason, setReason] = useState("");
+  const [revealRole, setRevealRole] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ApiErrorInfo | null>(null);
+  const revealed = !!snapshot.roles.revealedAt;
+  const roleChanged = revealed && role !== "" && role !== player.role;
 
   const save = async (force = false) => {
     setLoading(true);
     setError(null);
     const r = await api(`/api/gm/players/${player.id}`, { method: "PATCH", body: { name, teamId, force } });
+    if (!r.ok) {
+      setLoading(false);
+      return setError(r.error);
+    }
+    if (roleChanged) {
+      const rr = await api(`/api/gm/players/${player.id}/role`, { body: { role, reason } });
+      if (!rr.ok) {
+        setLoading(false);
+        return setError(rr.error);
+      }
+    }
     setLoading(false);
-    if (r.ok) {
-      onDone();
-      onClose();
-    } else setError(r.error);
+    onDone();
+    onClose();
   };
 
   return (
@@ -247,6 +274,30 @@ function EditPlayerModal({
             ))}
           </select>
         </Field>
+        {revealed && (
+          <div className="rounded-xl border border-red-500/40 bg-red-950/30 p-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-red-300">Secret role</span>
+              <Button size="sm" variant="ghost" onClick={() => setRevealRole(!revealRole)}>
+                {revealRole ? "Hide" : "Show / change"}
+              </Button>
+            </div>
+            {revealRole && (
+              <>
+                <select className={inputClass} value={role} onChange={(e) => setRole(e.target.value as Role)}>
+                  <option value="crewmate">Crewmate</option>
+                  <option value="impostor">Impostor</option>
+                  <option value="detective">Detective</option>
+                </select>
+                {roleChanged && (
+                  <Field label="Reason (audit log)">
+                    <input className={inputClass} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. fix mistake" />
+                  </Field>
+                )}
+              </>
+            )}
+          </div>
+        )}
         {error && <Alert>{error.message}</Alert>}
         <div className="flex justify-end gap-2">
           <Button variant="ghost" onClick={onClose}>
