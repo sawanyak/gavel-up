@@ -21,17 +21,17 @@ function CountsTable({ counts }: { counts: GMSnapshot["roles"]["counts"] }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
-            <th className="text-left py-1.5">Team</th>
-            <th className="py-1.5">Players</th>
-            <th className="py-1.5 text-red-300">Impostors</th>
-            <th className="py-1.5 text-amber-300">Detectives</th>
-            <th className="py-1.5 text-cyan-300">Crewmates</th>
+            <th className="text-left py-1.5 pr-3">Team</th>
+            <th className="py-1.5 px-2 whitespace-nowrap">Players</th>
+            <th className="py-1.5 px-2 whitespace-nowrap text-red-300">Impostors</th>
+            <th className="py-1.5 px-2 whitespace-nowrap text-amber-300">Detectives</th>
+            <th className="py-1.5 px-2 whitespace-nowrap text-cyan-300">Crewmates</th>
           </tr>
         </thead>
         <tbody>
           {counts.map((c) => (
             <tr key={c.teamId} className="border-t border-slate-800 text-center">
-              <td className="text-left py-1.5 font-semibold text-white">{c.teamName}</td>
+              <td className="text-left py-1.5 pr-3 font-semibold text-white whitespace-nowrap">{c.teamName}</td>
               <td>{c.players}</td>
               <td className={c.players > 0 && c.impostors === 0 ? "text-amber-300 font-bold" : ""}>{c.impostors}</td>
               <td>{c.detectives}</td>
@@ -83,6 +83,7 @@ export function RevealRolesButton({ snapshot, onDone }: { snapshot: GMSnapshot; 
       <ConfirmDialog
         open={open}
         danger
+        wide
         title="Reveal roles to everyone?"
         confirmLabel="Reveal roles"
         typeToConfirm="REVEAL"

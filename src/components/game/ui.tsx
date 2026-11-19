@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { AlertTriangle, Loader2, WifiOff, X } from "lucide-react";
 import { clsx } from "clsx";
@@ -122,12 +123,14 @@ export function Modal({
   title,
   children,
   variant = "cyan",
+  wide,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
   variant?: "cyan" | "red";
+  wide?: boolean;
 }) {
   useEffect(() => {
     if (!open) return;
@@ -135,15 +138,17 @@ export function Modal({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
-  if (!open) return null;
-  return (
+  if (!open || typeof document === "undefined") return null;
+  // Portal to <body>: HudCard's backdrop-blur would otherwise make it the containing block for `fixed`.
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
         className={clsx(
-          "w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl border-2 bg-slate-950 p-5 max-h-[90vh] overflow-y-auto",
+          "w-full rounded-t-2xl sm:rounded-2xl border-2 bg-slate-950 p-5 max-h-[90vh] overflow-y-auto",
+          wide ? "sm:max-w-2xl" : "sm:max-w-md",
           variant === "red" ? "border-red-500/70" : "border-cyan-500/50",
         )}
       >
@@ -155,7 +160,8 @@ export function Modal({
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -174,6 +180,7 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
   children,
+  wide,
 }: {
   open: boolean;
   title: string;
@@ -185,6 +192,7 @@ export function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
   children?: React.ReactNode;
+  wide?: boolean;
 }) {
   const [typed, setTyped] = useState("");
   useEffect(() => {
@@ -192,7 +200,7 @@ export function ConfirmDialog({
   }, [open]);
   const ready = !typeToConfirm || typed.trim().toUpperCase() === typeToConfirm;
   return (
-    <Modal open={open} onClose={onCancel} title={title} variant={danger ? "red" : "cyan"}>
+    <Modal open={open} onClose={onCancel} title={title} variant={danger ? "red" : "cyan"} wide={wide}>
       <div className="text-sm text-slate-300 mb-4">{message}</div>
       {children}
       {typeToConfirm && (
