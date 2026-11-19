@@ -5,7 +5,6 @@ import { eventConfig, ContactPerson } from "@/config/eventConfig";
 import { sounds } from "@/lib/sounds";
 import {
   Phone,
-  Mail,
   Copy,
   Check,
   AlertTriangle,
@@ -17,7 +16,9 @@ export default function ContactPage() {
 
   const handleCopy = (text: string, idx: number) => {
     sounds.playClick();
-    navigator.clipboard.writeText(text);
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
     setCopiedIndex(idx);
     setTimeout(() => setCopiedIndex(null), 2500);
   };
@@ -85,20 +86,20 @@ export default function ContactPage() {
                 {/* Image Placeholder & Role Info */}
                 <div className="flex flex-col items-center text-center mb-5">
                   <div
-                    className="relative w-24 h-24 rounded-2xl border-2 border-dashed border-cyan-500/40 bg-slate-900/80 flex flex-col items-center justify-center mb-3 group hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(0,240,255,0.25)] transition-all overflow-hidden cursor-pointer shadow-inner"
+                    className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-2xl border-2 border-cyan-500/40 bg-slate-900/80 flex flex-col items-center justify-center mb-4 group hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(0,240,255,0.35)] transition-all overflow-hidden cursor-pointer shadow-lg"
                     onClick={() => sounds.playClick()}
-                    title="Organizer Photo Placeholder"
+                    title={contact.name}
                   >
                     {contact.image ? (
                       <img
                         src={contact.image}
                         alt={contact.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-top"
                       />
                     ) : (
                       <>
-                        <User className="w-9 h-9 text-slate-500 group-hover:text-cyan-400 transition-colors mb-1" />
-                        <span className="text-[9px] font-mono font-bold tracking-widest text-slate-500 uppercase group-hover:text-cyan-300 transition-colors">
+                        <User className="w-12 h-12 text-slate-500 group-hover:text-cyan-400 transition-colors mb-1" />
+                        <span className="text-[10px] font-mono font-bold tracking-widest text-slate-500 uppercase group-hover:text-cyan-300 transition-colors">
                           PHOTO TBA
                         </span>
                       </>
@@ -124,30 +125,11 @@ export default function ContactPage() {
                       <span className="truncate">{contact.phone}</span>
                     </div>
                     <button
-                      onClick={() => handleCopy(contact.phone, idx * 2)}
+                      onClick={() => handleCopy(contact.phone, idx)}
                       className="text-slate-400 hover:text-white p-1"
                       title="Copy phone"
                     >
-                      {copiedIndex === idx * 2 ? (
-                        <Check className="w-3.5 h-3.5 text-green-400" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5" />
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900/80 border border-slate-800">
-                    <div className="flex items-center gap-2 text-slate-300 truncate">
-                      <Mail className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
-                      <span className="truncate text-[11px]">{contact.email}</span>
-                    </div>
-                    <button
-                      onClick={() => handleCopy(contact.email, idx * 2 + 1)}
-                      className="text-slate-400 hover:text-white p-1"
-                      title="Copy email"
-                    >
-                      {copiedIndex === idx * 2 + 1 ? (
+                      {copiedIndex === idx ? (
                         <Check className="w-3.5 h-3.5 text-green-400" />
                       ) : (
                         <Copy className="w-3.5 h-3.5" />

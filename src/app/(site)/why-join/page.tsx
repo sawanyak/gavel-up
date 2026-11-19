@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { CrewmateVector } from "@/components/CrewmateVector";
 import { eventConfig } from "@/config/eventConfig";
 import { sounds } from "@/lib/sounds";
 import {
@@ -66,30 +65,6 @@ export default function WhyJoinPage() {
       description:
         "Coding skills get you the interview; communication skills land you the job and executive promotion. Gavel graduates routinely lead clubs, win national competitions, and secure top tier jobs.",
       stat: "CAREER ACCELERATION",
-    },
-  ];
-
-  const testimonials = [
-    {
-      name: "Past Club President",
-      role: "Batch of '24 // Software Engineer",
-      color: "cyan" as const,
-      quote:
-        "I used to tremble whenever a lecturer asked me to present. Joining Gavel transformed my university life. By my final year, I was hosting national tech symposiums without any notes!",
-    },
-    {
-      name: "VP Education Alum",
-      role: "Batch of '25 // Business Analyst",
-      color: "yellow" as const,
-      quote:
-        "Gavel Club gave me the exact skills needed to crush corporate case interviews. Learning to give constructive feedback taught me how to be a real empathetic leader.",
-    },
-    {
-      name: "Novice Speaker Recruit",
-      role: "1st Year Undergraduate",
-      color: "lime" as const,
-      quote:
-        "I was terrified I'd be judged because English isn't my first language. But the club embraced me with open arms. Gavel Up orientation was the best decision of my freshman year!",
     },
   ];
 
@@ -179,47 +154,7 @@ export default function WhyJoinPage() {
         </div>
       </section>
 
-      {/* 4. Member Log Entries (Testimonials) */}
-      <section className="mb-16">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl sm:text-4xl font-black tracking-widest text-white uppercase font-mono">
-            CREWMATE LOG ARCHIVES
-          </h2>
-          <p className="text-xs sm:text-sm font-mono text-slate-400">
-            Real testimonies from students who survived the stage and leveled up
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((t, idx) => (
-            <div
-              key={idx}
-              className="p-6 rounded-2xl border border-slate-800 bg-slate-950/90 flex flex-col justify-between"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <CrewmateVector color={t.color} size={48} />
-                <div>
-                  <h4 className="text-sm font-bold text-white font-mono uppercase">
-                    {t.name}
-                  </h4>
-                  <p className="text-[11px] font-mono text-cyan-400">{t.role}</p>
-                </div>
-              </div>
-
-              <p className="text-xs sm:text-sm text-slate-300 italic leading-relaxed">
-                &quot;{t.quote}&quot;
-              </p>
-
-              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-slate-500 uppercase flex justify-between">
-                <span>STATUS: VERIFIED</span>
-                <span>DECK SLIIT</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. Bottom CTA */}
+      {/* 4. Bottom CTA */}
       <section className="text-center p-8 sm:p-12 rounded-3xl border-2 border-cyan-500/40 bg-slate-950/90 shadow-2xl">
         <h3 className="text-2xl sm:text-4xl font-black text-white font-mono uppercase mb-3">
           HAVE QUESTIONS ABOUT THE MISSION?
